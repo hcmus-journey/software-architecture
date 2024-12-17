@@ -19,6 +19,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "App";
 import "assets/css/Loading.css";
 import "assets/css/Button.css";
+import "assets/css/Input.css";
 
 // Material Dashboard 2 React Context Provider
 import { MaterialUIControllerProvider } from "context";

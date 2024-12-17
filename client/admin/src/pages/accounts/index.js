@@ -30,7 +30,7 @@ import AddNewButton from "./components/AddNewButton";
 
 function Accounts() {
   const [loading, setLoading] = useState(false);
-  const [filters, setFilters] = useState(null);
+  const [filters, setFilters] = useState({});
   const [accounts, setAccounts] = useState([]);
 
   const updateAccount = (account) => {

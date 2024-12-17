@@ -14,7 +14,6 @@ import MDInput from "components/MDInput";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
-import toggleStyle from "../accounts.module.css";
 
 const style = {
   position: "absolute",
@@ -112,7 +111,7 @@ function AccountFormModal({ updateAccount }) {
             { label: "Username", key: "username", type: "text" },
             { label: "Email", key: "email", type: "email" },
             { label: "Phone", key: "phone", type: "text" },
-            { label: "Password", key: "password", type: "password" },
+            { label: "Password", key: "password", type: "text" },
           ].map(({ label, key, type }) => (
             <Grid
               key={key}
@@ -133,8 +132,13 @@ function AccountFormModal({ updateAccount }) {
                 {label}
               </Typography>
               <MDInput
+                placeholder={
+                  label === "Password" && cloneAccount.hasOwnProperty("id")
+                    ? "Type new password (*option)"
+                    : "Type here..."
+                }
                 fullWidth
-                className={toggleStyle.input}
+                className="input"
                 type={type}
                 value={cloneAccount[key]}
                 onChange={(e) => handleChange(key, e.target.value)}
@@ -156,8 +160,8 @@ function AccountFormModal({ updateAccount }) {
             <Select
               value={cloneAccount.role}
               onChange={(e) => handleChange("role", e.target.value)}
-              sx={{ padding: "12px 2px", margin: "9px 0px 8px" }}
-              className={toggleStyle.input}
+              sx={{ padding: "5px 2px", margin: "9px 0px 8px" }}
+              className="input"
               fullWidth
             >
               {roles.map((r) => (
@@ -179,16 +183,16 @@ function AccountFormModal({ updateAccount }) {
               Active
             </Typography>
             <MDBox>
-              <label className={toggleStyle.switch}>
+              <label className="switch">
                 <input
                   type="checkbox"
-                  className={toggleStyle.checkbox}
+                  className="checkbox"
                   checked={cloneAccount.status.toUpperCase() === "ACTIVE" ? true : false}
                   onChange={(e) =>
                     handleChange("status", e.target.checked === true ? "ACTIVE" : "INACTIVE")
                   }
                 />
-                <div className={toggleStyle.slider}></div>
+                <div className="slider"></div>
               </label>
             </MDBox>
           </Grid>

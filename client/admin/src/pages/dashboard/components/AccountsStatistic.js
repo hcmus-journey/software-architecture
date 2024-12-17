@@ -64,7 +64,7 @@ function AccountsStatistic() {
   }, [accountTypeTab]);
 
   return (
-    <Card Card sx={{ height: "100%", minHeight: "440px" }}>
+    <Card sx={{ height: "100%", minHeight: "440px" }}>
       <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">
         <MDBox>
           <MDTypography variant="h6" fontWeight="medium">

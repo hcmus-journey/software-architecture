@@ -17,7 +17,6 @@ import CardMedia from "@mui/material/CardMedia";
 import MDInput from "components/MDInput";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
-import toggleStyle from "../games.module.css";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -159,7 +158,7 @@ function AccountFormModal({ updateGames }) {
               </Typography>
               <MDInput
                 fullWidth
-                className={toggleStyle.input}
+                className="input"
                 type="text"
                 value={cloneGame.title}
                 onChange={(e) => handleChange("title", e.target.value)}
@@ -190,7 +189,7 @@ function AccountFormModal({ updateGames }) {
                 fullWidth
                 multiline
                 rows={3}
-                className={toggleStyle.input}
+                className="input"
                 type="text"
                 value={cloneGame.guide}
                 onChange={(e) => handleChange("guide", e.target.value)}
@@ -220,9 +219,9 @@ function AccountFormModal({ updateGames }) {
               <Select
                 value={cloneGame.type}
                 onChange={(e) => handleChange("type", e.target.value)}
-                sx={{ padding: "12px 2px", margin: "9px 0px 8px" }}
+                sx={{ padding: "5px 2px", margin: "9px 0px 8px" }}
                 inputProps={{ "aria-label": "Without label" }}
-                className={toggleStyle.input}
+                className="input"
                 fullWidth
               >
                 {types.map((t) => (
@@ -246,14 +245,14 @@ function AccountFormModal({ updateGames }) {
                 Tradable
               </Typography>
               <MDBox>
-                <label className={toggleStyle.switch}>
+                <label className="switch">
                   <input
                     type="checkbox"
-                    className={toggleStyle.checkbox}
+                    className="checkbox"
                     checked={cloneGame.tradable}
                     onChange={(e) => handleChange("tradable", e.target.checked)}
                   />
-                  <div className={toggleStyle.slider}></div>
+                  <div className="slider"></div>
                 </label>
               </MDBox>
             </Grid>
