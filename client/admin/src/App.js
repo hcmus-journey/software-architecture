@@ -20,6 +20,7 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import CssBaseline from "@mui/material/CssBaseline";
 import Sidenav from "examples/Sidenav";
 import Configurator from "examples/Configurator";
+import Notification from "examples/Notification";
 import theme from "assets/theme";
 import themeDark from "assets/theme-dark";
 import routes from "routes";
@@ -95,6 +96,7 @@ export default function App() {
             onMouseLeave={handleOnMouseLeave}
           />
           <Configurator />
+          <Notification />
         </>
       )}
       {layout === "vr" && <Configurator />}
