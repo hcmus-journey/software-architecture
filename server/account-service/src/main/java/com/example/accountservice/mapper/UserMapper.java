@@ -1,6 +1,7 @@
 package com.example.accountservice.mapper;
 
 import com.example.accountservice.dto.SignUpRequest;
+import com.example.accountservice.dto.UserDto;
 import com.example.accountservice.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -11,4 +12,8 @@ public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     User convertToUser(SignUpRequest signUpRequest);
+
+    User convertToUser(UserDto userDto);
+
+    UserDto convertToUserDto(User user);
 }

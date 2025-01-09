@@ -3,12 +3,15 @@ package com.example.accountservice.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
+import com.example.accountservice.constants.SecurityConstants;
 import com.example.accountservice.entity.User;
 import com.example.accountservice.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -69,5 +72,21 @@ public class JwtUtil {
 
     public String getUserNameFromRefreshToken(String refreshToken) {
         return getClaimFromToken(refreshToken, "username", getAlgorithm(jwtProperties.getRefreshTokenSecretKey())).asString();
+    }
+
+    public String extractTokenFromAuthorizationHeader(String authorizationHeader) {
+        return authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, Strings.EMPTY);
+    }
+
+    public  UUID getUserIdFromAuthorizationHeader(String authorizationHeader) {
+        try {
+            String token = extractTokenFromAuthorizationHeader(authorizationHeader);
+            return UUID.fromString(JWT.require(getAlgorithm(jwtProperties.getAccessTokenSecretKey()))
+                    .build()
+                    .verify(token)
+                    .getSubject());
+        } catch (Exception e) {
+            throw new BadRequestException("Invalid token");
+        }
     }
 }

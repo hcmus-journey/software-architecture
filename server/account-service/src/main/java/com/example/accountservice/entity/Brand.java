@@ -16,7 +16,6 @@ public class Brand {
 
     @Id
     @Column(name = "brand_id")
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID brandId;
 
     @Column(name = "name")

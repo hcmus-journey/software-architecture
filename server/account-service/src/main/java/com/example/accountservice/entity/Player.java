@@ -3,7 +3,7 @@ package com.example.accountservice.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -17,7 +17,6 @@ public class Player {
 
     @Id
     @Column(name = "player_id")
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID playerId;
 
     @Column(name = "name")
@@ -33,7 +32,7 @@ public class Player {
     private String avatarUrl;
 
     @Column(name = "birthday")
-    private Date birthday;
+    private LocalDate birthday;
 
     @Column(name = "gender")
     private String gender;
