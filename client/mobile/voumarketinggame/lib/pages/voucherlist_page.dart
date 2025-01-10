@@ -66,12 +66,11 @@ class VoucherlistScreen extends StatelessWidget {
 
         const SizedBox(height: 5),
 
-        // Wishlist ListView
         if (wishlistEvent.wishlist.isEmpty)
           Expanded(
             child: Center(
               child: Text(
-                'Danh sách yêu thích trống!',
+                'Danh sách voucher trống!',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.grey.shade700,
@@ -93,7 +92,7 @@ class VoucherlistScreen extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => VoucherDetailScreen(
                           voucher: voucher,
-                          type: 'Chi tiết voucher',
+                          type: 'Chi tiết Voucher',
                         ),
                       ),
                     );

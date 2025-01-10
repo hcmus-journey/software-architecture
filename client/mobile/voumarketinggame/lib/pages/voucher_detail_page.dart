@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voumarketinggame/providers/event_provider.dart';
 import 'package:voumarketinggame/widgets/guide_widget.dart';
+import 'package:voumarketinggame/widgets/item_voucher_widget.dart';
 
 class VoucherDetailScreen extends StatelessWidget {
   final Map<String, dynamic> voucher;
@@ -57,25 +58,7 @@ class VoucherDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
 
-                  Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.4),
-                          blurRadius: 3, 
-                          offset: const Offset(0, 3), 
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      child: Image.asset(
-                        event['image']!,
-                        height: MediaQuery.of(context).size.height * 0.25,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
+                  //const SizedBox(height: 16.0),
 
                   Container(
                     margin: const EdgeInsets.symmetric(
@@ -97,7 +80,7 @@ class VoucherDetailScreen extends StatelessWidget {
                             const Icon(Icons.timelapse, color: Colors.black),
                             const SizedBox(width: 8),
                             Text(
-                            type,
+                            "Hạn sử dụng tới ${voucher['date_exp']}",
                             style: const TextStyle(
                               color: Colors.black87,
                               fontSize: 16,
@@ -110,6 +93,10 @@ class VoucherDetailScreen extends StatelessWidget {
                     ),
                   ),
       
+                  const SizedBox(height: 12), 
+                  // Item Voucher
+                  VoucherCard(voucher: voucher),
+
                   // Title and Store Info
                   const SizedBox(height: 7), 
                   Container(
@@ -192,7 +179,7 @@ class VoucherDetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Điều khoản sử dụng voucher',
+                          'Điều khoản sử dụng:',
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
@@ -203,6 +190,7 @@ class VoucherDetailScreen extends StatelessWidget {
                           '• Áp dụng cho khách hàng mới và cũ.',
                           style: TextStyle(fontSize: 16),
                         ),
+                        const SizedBox(height: 5),
                         const Text(
                           '• Voucher áp dụng tại cửa hàng/online.',
                           style: TextStyle(fontSize: 16),
@@ -257,7 +245,7 @@ class VoucherDetailScreen extends StatelessWidget {
                               'assets/images/fashion.png',
                               'assets/images/trasuadodo.png',
                             ],
-                            title: 'Hướng dẫn chơi game',
+                            title: 'Hướng dẫn sử dụng voucher',
                           );
                         },
                       );
@@ -281,7 +269,7 @@ class VoucherDetailScreen extends StatelessWidget {
                               Icon(Icons.help_outline, color: Colors.grey),
                               SizedBox(width: 8),
                               Text(
-                                'Hướng dẫn chơi game',
+                                'Hướng dẫn sử dụng voucher',
                                 style: TextStyle(fontSize: 16),
                               ),
                             ],

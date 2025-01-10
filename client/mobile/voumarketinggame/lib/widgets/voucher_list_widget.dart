@@ -49,7 +49,7 @@ class VoucherItem extends StatelessWidget {
                   child: Stack(
                     children: [
                       Image.asset(
-                        voucher['image']!,
+                        event['image']!,
                         width: 90,
                         height: 70,
                         fit: BoxFit.cover,
@@ -64,7 +64,7 @@ class VoucherItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Discount: ${voucher['discount']!}',
+                        'Voucher: Discount ${voucher['discount']!}',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
@@ -72,7 +72,7 @@ class VoucherItem extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        voucher['detail']!,
+                        event['detail']!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -88,7 +88,7 @@ class VoucherItem extends StatelessWidget {
                           fontSize: 12,
                         ),
                       ),
-                      const SizedBox(height: 13),
+                      const SizedBox(height: 4),
                       Text(
                         'HSD: ${voucher['date_exp']}',
                         style: const TextStyle(
@@ -115,18 +115,24 @@ class VoucherItem extends StatelessWidget {
                   const Spacer(),
                   Align(
                   alignment: Alignment.bottomRight,
-                  child: OutlinedButton(
+                  child: ElevatedButton(
                     onPressed: onTap,
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.pink),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pink, // Màu nền hồng
+                      foregroundColor: Colors.white, // Màu chữ trắng
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10), // Bo góc
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      elevation: 6, // Độ nổi (shadow)
+                      shadowColor: Colors.pink.withOpacity(0.5), // Màu bóng hồng nhạt
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), // Padding
                     ),
                     child: const Text(
-                      'Chi tiết',
-                      style: TextStyle(color: Colors.pink, fontSize: 12),
+                      'Sử dụng ngay',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600, // Tăng độ đậm cho chữ
+                      ),
                     ),
                   ),
                 ),
