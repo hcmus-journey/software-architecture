@@ -11,7 +11,7 @@ class GuideWidget extends StatefulWidget {
   });
 
   @override
-  _GuideWidgetState createState() => _GuideWidgetState();
+  State<GuideWidget> createState() => _GuideWidgetState();
 }
 
 class _GuideWidgetState extends State<GuideWidget> {

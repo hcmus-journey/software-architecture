@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -31,25 +32,25 @@ class BottomNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildNavItem(
-            icon: Icons.home_sharp,
+            icon: CupertinoIcons.house_fill,
             label: 'Dashboard',
             isSelected: currentIndex == 0,
             onTap: () => onTap(0),
           ),
           _buildNavItem(
-            icon: Icons.card_giftcard_outlined,
+            icon: CupertinoIcons.heart_circle,
             label: 'Wishlist',
             isSelected: currentIndex == 1,
             onTap: () => onTap(1),
           ),
           _buildNavItem(
-            icon: Icons.notifications_active_outlined,
-            label: 'Notification',
+            icon: CupertinoIcons.gift_alt_fill,
+            label: 'Voucher',
             isSelected: currentIndex == 2,
             onTap: () => onTap(2),
           ),
           _buildNavItem(
-            icon: Icons.menu,
+            icon: CupertinoIcons.text_justify,
             label: 'Menu',
             isSelected: currentIndex == 3,
             onTap: () => onTap(3),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voumarketinggame/pages/event_detail_page.dart';
 import 'package:voumarketinggame/pages/event_viewall_page.dart';
+import 'package:voumarketinggame/pages/voucherlist_page.dart';
 import 'package:voumarketinggame/pages/wishlist_page.dart';
 import 'package:voumarketinggame/providers/bottom_navigation_provider.dart';
 import 'package:voumarketinggame/providers/event_provider.dart';
@@ -127,7 +128,7 @@ class _DashBoardScreenState extends State<DashboardScreen> {
   final List<Widget> _pagesContent = [
     const ContentDashboard(), 
     const WishlistScreen(), 
-    const Center(child: Text('Notification Page')),
+    const VoucherlistScreen(),
     const Center(child: Text('Menu Page')), 
   ];
 
