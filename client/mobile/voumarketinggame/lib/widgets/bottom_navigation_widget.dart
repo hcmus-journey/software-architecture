@@ -44,8 +44,8 @@ class BottomNavBar extends StatelessWidget {
             onTap: () => onTap(1),
           ),
           _buildNavItem(
-            icon: CupertinoIcons.gift_alt_fill,
-            label: 'Voucher',
+            icon: CupertinoIcons.tickets_fill,
+            label: 'My voucher',
             isSelected: currentIndex == 2,
             onTap: () => onTap(2),
           ),

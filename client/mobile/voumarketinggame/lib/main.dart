@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:voumarketinggame/pages/slash_page.dart';
 import 'package:voumarketinggame/pages/welcome_page.dart';
 import 'package:voumarketinggame/providers/bottom_navigation_provider.dart';
 import 'package:voumarketinggame/providers/event_provider.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: lightMode,
-      home: const WelcomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }

@@ -118,20 +118,20 @@ class VoucherItem extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: onTap,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink, // Màu nền hồng
-                      foregroundColor: Colors.white, // Màu chữ trắng
+                      backgroundColor: Colors.pink, 
+                      foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10), // Bo góc
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       elevation: 6, // Độ nổi (shadow)
-                      shadowColor: Colors.pink.withOpacity(0.5), // Màu bóng hồng nhạt
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), // Padding
+                      shadowColor: Colors.pink.withOpacity(0.5), 
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), 
                     ),
                     child: const Text(
                       'Sử dụng ngay',
                       style: TextStyle(
                         fontSize: 12,
-                        fontWeight: FontWeight.w600, // Tăng độ đậm cho chữ
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),

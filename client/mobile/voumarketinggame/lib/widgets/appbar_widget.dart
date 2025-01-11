@@ -1,8 +1,9 @@
 // app_bar_widget.dart
 import 'package:flutter/material.dart';
+import 'package:voumarketinggame/pages/notification_page.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({Key? key}) : super(key: key);
+  const CustomAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +47,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.notifications),
+          color: Colors.white,
+          iconSize: 28,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NotificationScreen(),
+              ),
+            );
+          },
+        ),
+        const SizedBox(width: 10),
+      ],
     );
   }
 
