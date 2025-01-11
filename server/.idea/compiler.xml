@@ -3,6 +3,18 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="voucher-service" />
+        <module name="inventory-service" />
+        <module name="game-service" />
+        <module name="event-service" />
+        <module name="api-gateway" />
+        <module name="account-service" />
+        <module name="service-registry" />
+      </profile>
       <profile name="Annotation profile for vou-system" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -10,20 +22,8 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
-        <module name="voucher-service" />
-        <module name="inventory-service" />
-        <module name="game-service" />
         <module name="statistic-service" />
-        <module name="event-service" />
         <module name="notification-service" />
-      </profile>
-      <profile name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="account-service" />
-        <module name="api-gateway" />
-        <module name="service-registry" />
       </profile>
     </annotationProcessing>
   </component>
