@@ -19,10 +19,10 @@ public class GameController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     @Operation(tags = "Admin", description = "Get all games from the system.")
-    public ResponseEntity<Map<String, List<GameDto>>> getGames(
+    public ResponseEntity<List<GameDto>> getGames(
             @RequestHeader("Authorization") String authorizationHeader) {
         List<GameDto> games = gameService.getAllGames();
-        return ResponseEntity.ok(Map.of("data", games));
+        return ResponseEntity.ok(games);
     }
 
     @RequestMapping(value = "/{gameId}", method = RequestMethod.GET)

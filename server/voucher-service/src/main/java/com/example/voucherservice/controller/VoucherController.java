@@ -2,6 +2,7 @@ package com.example.voucherservice.controller;
 
 import com.example.voucherservice.dto.EventVoucherDto;
 import com.example.voucherservice.security.JwtUtil;
+import com.example.voucherservice.service.EventVoucherService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -28,8 +29,7 @@ public class VoucherController {
         // Get the brand ID from the JWT token
         UUID brandId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
 
-        // Create the event
-        eventService.createEvent(brandId, eventDto);
+       // eventService.createEvent(brandId, eventDto);
 
         return ResponseEntity.ok(Map.of("message", "Event created successfully"));
     }

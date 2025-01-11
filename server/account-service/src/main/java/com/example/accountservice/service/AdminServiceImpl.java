@@ -1,6 +1,5 @@
 package com.example.accountservice.service;
 
-import com.example.accountservice.dto.GetUsersResponse;
 import com.example.accountservice.dto.UserDto;
 import com.example.accountservice.entity.User;
 import com.example.accountservice.entity.UserRole;
@@ -42,12 +41,7 @@ public class AdminServiceImpl implements AdminService{
     }
 
     @Override
-    public GetUsersResponse getAllUsers() {
-        List<User> users = userRepository.findAll();
-        List<UserDto> userDtos = new ArrayList<>();
-        for (User user : users) {
-            userDtos.add(UserMapper.INSTANCE.convertToUserDto(user));
-        }
-        return new GetUsersResponse(userDtos);
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream().map(UserMapper.INSTANCE::convertToUserDto).toList();
     }
 }

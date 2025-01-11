@@ -17,15 +17,15 @@ import java.util.UUID;
 public class QuizGameController {
     final private QuizGameService quizGameService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/quizzes", method = RequestMethod.GET)
     @Operation(tags = "Admin", description = "Get all quizzes from the system.")
-    public ResponseEntity<Map<String, List<QuizDto>>> getQuizzes(
+    public ResponseEntity<List<QuizDto>> getQuizzes(
             @RequestHeader("Authorization") String authorizationHeader) {
         List<QuizDto> quizzes = quizGameService.getAllQuizzes();
-        return ResponseEntity.ok(Map.of("data", quizzes));
+        return ResponseEntity.ok(quizzes);
     }
 
-    @RequestMapping(value = "/{quizId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/quizzes/{quizId}", method = RequestMethod.GET)
     @Operation(tags = "Admin", description = "Get a quiz from the system.")
     public ResponseEntity<QuizDto> getQuiz(
             @PathVariable String quizId,
@@ -34,7 +34,7 @@ public class QuizGameController {
         return ResponseEntity.ok(quiz);
     }
 
-    @RequestMapping(value = "/{quizId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/quizzes/{quizId}", method = RequestMethod.PUT)
     @Operation(tags = "Admin", description = "Update a quiz in the system.")
     public ResponseEntity<Map<String, String>> updateQuiz(
             @PathVariable String quizId,
@@ -43,6 +43,4 @@ public class QuizGameController {
         quizGameService.updateQuiz(UUID.fromString(quizId), quizDto);
         return ResponseEntity.ok(Map.of("message", "Quiz updated successfully"));
     }
-
-
 }

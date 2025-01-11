@@ -1,6 +1,6 @@
 package com.example.accountservice.controller;
 
-import com.example.accountservice.dto.GetUsersResponse;
+import com.example.accountservice.dto.UserDto;
 import com.example.accountservice.entity.UserRole;
 import com.example.accountservice.entity.UserStatus;
 import com.example.accountservice.service.AdminService;
@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,11 +23,8 @@ public class AdminController {
 
     @GetMapping("/users")
     @Operation(tags = "Admin", description = "Get all users")
-    public ResponseEntity<GetUsersResponse> getAllUser() {
-
-        GetUsersResponse getUsersResponse = adminService.getAllUsers();
-
-        return ResponseEntity.ok(getUsersResponse);
+    public ResponseEntity<List<UserDto>> getAllUser() {
+        return ResponseEntity.ok(adminService.getAllUsers());
     }
 
     @PostMapping("/users/{userId}/status")
