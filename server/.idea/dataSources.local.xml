@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="IU-243.22562.218">
+    <data-source name="account_service_db@ep-hidden-mode-a16whkln.ap-southeast-1.aws.neon.tech" uuid="b1376f85-aa07-4062-8d05-dd90688b4b3c">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="POSTGRES" />
+      <schema-mapping />
+    </data-source>
+    <data-source name="event_service_db@ep-hidden-mode-a16whkln.ap-southeast-1.aws.neon.tech" uuid="cecdc175-8793-471d-a478-2a2b25248c3d">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="POSTGRES" />
+      <schema-mapping />
+    </data-source>
+    <data-source name="voucher_service_db@ep-hidden-mode-a16whkln.ap-southeast-1.aws.neon.tech" uuid="5f020a58-89bf-4336-899d-4312ea07c31d">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="POSTGRES" />
+      <schema-mapping />
+    </data-source>
+    <data-source name="inventory_service_db@ep-hidden-mode-a16whkln.ap-southeast-1.aws.neon.tech" uuid="d8969aba-1452-4f07-bf1a-c45e318269ee">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="POSTGRES" />
+      <schema-mapping />
+    </data-source>
+    <data-source name="game_service_db" uuid="c11a7043-5a8d-4af5-9c51-beb75defda50">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MONGO" />
+      <schema-mapping />
+    </data-source>
+  </component>
+</project>
