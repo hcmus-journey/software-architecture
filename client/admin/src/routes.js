@@ -40,7 +40,7 @@ import Dashboard from "pages/dashboard";
 import Accounts from "pages/accounts";
 import Games from "pages/games";
 import Test from "pages/test";
-import SignIn from "layouts/authentication/sign-in";
+import Login from "pages/login";
 import Icon from "@mui/material/Icon";
 
 const routes = [
@@ -81,17 +81,9 @@ const routes = [
     name: "Log out",
     key: "log-out",
     icon: <Icon fontSize="small">exit_to_app</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
+    route: "/login",
+    component: <Login />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Sign Up",
-  //   key: "sign-up",
-  //   icon: <Icon fontSize="small">assignment</Icon>,
-  //   route: "/authentication/sign-up",
-  //   component: <SignUp />,
-  // },
 ];
 
 export default routes;

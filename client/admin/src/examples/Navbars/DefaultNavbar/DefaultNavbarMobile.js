@@ -44,12 +44,12 @@ function DefaultNavbarMobile({ open, close }) {
       onClose={close}
       MenuListProps={{ style: { width: `calc(${width}px - 4rem)` } }}
     >
-      <MDBox px={0.5}>
+      {/* <MDBox px={0.5}>
         <DefaultNavbarLink icon="donut_large" name="dashboard" route="/dashboard" />
         <DefaultNavbarLink icon="person" name="profile" route="/profile" />
         <DefaultNavbarLink icon="account_circle" name="sign up" route="/authentication/sign-up" />
         <DefaultNavbarLink icon="key" name="sign in" route="/authentication/sign-in" />
-      </MDBox>
+      </MDBox> */}
     </Menu>
   );
 }
