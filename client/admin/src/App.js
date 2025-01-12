@@ -85,7 +85,7 @@ export default function App() {
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      {layout === "dashboard" && (
+      {layout === "dashboard" && pathname !== "/login" && (
         <>
           <Sidenav
             color={sidenavColor}
