@@ -7,4 +7,5 @@ import java.util.UUID;
 public interface BrandService {
     void updateProfile(UUID brandID, BrandProfileDto brandProfileDto);
     void activeBrand(UUID brandID, BrandProfileDto brandProfileDto);
+    BrandProfileDto getBrandProfile(UUID playerId);
 }
