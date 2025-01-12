@@ -1,6 +1,8 @@
 package com.example.gameservice.controller;
 
 import com.example.gameservice.dto.QuizDto;
+import com.example.gameservice.dto.VoucherDto;
+import com.example.gameservice.security.JwtUtil;
 import com.example.gameservice.service.QuizGameService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,8 @@ import java.util.UUID;
 @RequestMapping("/api/quiz-games")
 @AllArgsConstructor
 public class QuizGameController {
+    final private JwtUtil jwtUtil;
+
     final private QuizGameService quizGameService;
 
     @RequestMapping(value = "/quizzes", method = RequestMethod.GET)
@@ -51,5 +55,32 @@ public class QuizGameController {
             @RequestHeader("Authorization") String authorizationHeader) {
         quizGameService.updateQuiz(UUID.fromString(quizId), quizDto);
         return ResponseEntity.ok(Map.of("message", "Quiz updated successfully"));
+    }
+
+    @RequestMapping(value = "/start", method = RequestMethod.POST)
+    @Operation(tags = "Player", description = "Start a quiz game.")
+    public ResponseEntity<List<QuizDto>> startQuizGame(
+            @RequestPart UUID eventId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
+        List<QuizDto> quizDtos = quizGameService.startQuizGame(eventId, playerId);
+        return ResponseEntity.ok(quizDtos);
+    }
+
+    @RequestMapping(value = "/end", method = RequestMethod.POST)
+    @Operation(tags = "Player", description = "End a quiz game.")
+    public ResponseEntity<VoucherDto> endQuizGame(
+            @RequestPart UUID eventId,
+            @RequestPart Integer questionCount,
+            @RequestPart Integer correctAnswerCount,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
+        VoucherDto voucherDto = quizGameService.endQuizGame(eventId, playerId, questionCount, correctAnswerCount);
+        if(voucherDto == null) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.ok(voucherDto);
     }
 }

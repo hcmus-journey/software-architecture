@@ -30,4 +30,8 @@ public interface EventService {
     void addQuizGameEvent(UUID eventId, QuizGameEventDto quizGameEventDto);
 
     void addShakeGameEvent(UUID eventId, ShakeGameEventDto shakeGameEventDto);
+
+    QuizGameEventDto getQuizGameEvent(UUID eventId);
+
+    ShakeGameEventDto getShakeGameEvent(UUID eventId);
 }

@@ -1,8 +1,10 @@
 package com.example.voucherservice.controller;
 
 import com.example.voucherservice.dto.EventVoucherDto;
+import com.example.voucherservice.dto.VoucherDto;
 import com.example.voucherservice.security.JwtUtil;
 import com.example.voucherservice.service.EventVoucherService;
+import com.example.voucherservice.service.VoucherService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -18,6 +20,8 @@ import java.util.UUID;
 public class VoucherController {
 
     final private EventVoucherService eventVoucherService;
+
+    final private VoucherService voucherService;
 
     final private JwtUtil jwtUtil;
 
@@ -55,5 +59,13 @@ public class VoucherController {
         EventVoucherDto eventVoucherDto = eventVoucherService.getEventVoucher(UUID.fromString(id));
 
         return ResponseEntity.ok(eventVoucherDto);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    @Operation(hidden = true)
+    public ResponseEntity<VoucherDto> distributeVoucher(@RequestPart UUID eventId, @RequestPart UUID playerId) {
+        VoucherDto voucherDto = voucherService.distributeVoucher(eventId, playerId);
+
+        return ResponseEntity.ok(voucherDto);
     }
 }

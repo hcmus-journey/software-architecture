@@ -153,4 +153,27 @@ public class EventController {
 
         return ResponseEntity.ok().build();
     }
+
+    @RequestMapping(value ="/{eventId}/quiz-game-event", method = RequestMethod.GET)
+    @Operation(hidden = true)
+    public ResponseEntity<QuizGameEventDto> getQuizGameEvent(
+            @PathVariable String eventId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        QuizGameEventDto quizGameEventDto = eventService.getQuizGameEvent(UUID.fromString(eventId));
+
+        return ResponseEntity.ok(quizGameEventDto);
+    }
+
+    @RequestMapping(value ="/{eventId}/shake-game-event", method = RequestMethod.GET)
+    @Operation(hidden = true)
+    public ResponseEntity<ShakeGameEventDto> getShakeGameEvent(
+            @PathVariable String eventId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        ShakeGameEventDto shakeGameEventDto = eventService.getShakeGameEvent(UUID.fromString(eventId));
+
+        return ResponseEntity.ok(shakeGameEventDto);
+    }
+
 }

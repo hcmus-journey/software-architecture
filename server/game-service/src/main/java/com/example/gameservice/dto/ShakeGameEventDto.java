@@ -9,8 +9,10 @@ import java.util.UUID;
 @Setter
 @Getter
 @AllArgsConstructor
-public class ShakeGameDto {
+public class ShakeGameEventDto {
     private UUID eventId;
+
+    private UUID gameId;
 
     private Integer requiredCoins;
 
