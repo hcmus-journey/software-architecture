@@ -10,4 +10,6 @@ public interface QuizMapper {
     QuizMapper INSTANCE = org.mapstruct.factory.Mappers.getMapper(QuizMapper.class);
 
     QuizDto convertToQuizDto(Quiz quiz);
+
+    Quiz convertToQuiz(QuizDto quizDto);
 }

@@ -25,6 +25,15 @@ public class QuizGameController {
         return ResponseEntity.ok(quizzes);
     }
 
+    @RequestMapping(value = "/quizzes", method = RequestMethod.POST)
+    @Operation(tags = "Admin", description = "Add a new quiz to the system.")
+    public ResponseEntity<Void> getQuizzes(
+            @RequestBody QuizDto quizDto,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        quizGameService.addQuiz(quizDto);
+        return ResponseEntity.ok().build();
+    }
+
     @RequestMapping(value = "/quizzes/{quizId}", method = RequestMethod.GET)
     @Operation(tags = "Admin", description = "Get a quiz from the system.")
     public ResponseEntity<QuizDto> getQuiz(
