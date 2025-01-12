@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface ShakeGameEventRepository extends JpaRepository<ShakeGameEvent, UUID> {
+    ShakeGameEvent findByEventId(UUID eventId);
 }

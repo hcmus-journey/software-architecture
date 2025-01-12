@@ -5,16 +5,15 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Setter
 @Getter
-@AllArgsConstructor
 public class EventDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -51,4 +50,7 @@ public class EventDto {
     @Min(value = 0, message = "Discount percentage must be at least 0")
     @Max(value = 100, message = "Discount percentage must be at most 100")
     private Double discountPercentage;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private List<GameDto> games;
 }

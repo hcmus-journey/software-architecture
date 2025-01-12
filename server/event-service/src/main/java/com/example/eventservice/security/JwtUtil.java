@@ -50,13 +50,26 @@ public class JwtUtil {
         return authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, Strings.EMPTY);
     }
 
-    public  UUID getUserIdFromAuthorizationHeader(String authorizationHeader) {
+    public UUID getUserIdFromAuthorizationHeader(String authorizationHeader) {
         try {
             String token = extractTokenFromAuthorizationHeader(authorizationHeader);
             return UUID.fromString(JWT.require(getAlgorithm(jwtProperties.getAccessTokenSecretKey()))
                     .build()
                     .verify(token)
                     .getSubject());
+        } catch (Exception e) {
+            throw new BadRequestException("Invalid token");
+        }
+    }
+
+    public UserRole getUserRoleFromAuthorizationHeader(String authorizationHeader) {
+        try {
+            String token = extractTokenFromAuthorizationHeader(authorizationHeader);
+            return UserRole.valueOf(JWT.require(getAlgorithm(jwtProperties.getAccessTokenSecretKey()))
+                    .build()
+                    .verify(token)
+                    .getClaim("role")
+                    .asString());
         } catch (Exception e) {
             throw new BadRequestException("Invalid token");
         }

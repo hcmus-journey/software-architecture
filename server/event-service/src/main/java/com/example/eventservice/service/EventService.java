@@ -3,6 +3,7 @@ package com.example.eventservice.service;
 import com.example.eventservice.dto.EventDto;
 import com.example.eventservice.dto.QuizGameEventDto;
 import com.example.eventservice.dto.ShakeGameEventDto;
+import com.example.eventservice.security.UserRole;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +19,7 @@ public interface EventService {
 
     EventDto getEvent(UUID eventId);
 
-    List<EventDto> getEvents(UUID brandId);
+    List<EventDto> getEvents(UserRole userRole, UUID userId);
 
     void addQuizGameEvent(UUID eventId, QuizGameEventDto quizGameEventDto);
 

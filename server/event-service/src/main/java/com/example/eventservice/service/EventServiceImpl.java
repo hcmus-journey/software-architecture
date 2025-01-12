@@ -11,10 +11,12 @@ import com.example.eventservice.mapper.EventMapper;
 import com.example.eventservice.repository.EventRepository;
 import com.example.eventservice.repository.QuizGameEventRepository;
 import com.example.eventservice.repository.ShakeGameEventRepository;
+import com.example.eventservice.security.UserRole;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -136,8 +138,15 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDto> getEvents(UUID brandId) {
-        List<Event> events = eventRepository.findByBrandId(brandId);
+    public List<EventDto> getEvents(UserRole userRole, UUID userId) {
+        List<Event> events;
+        if(userRole == UserRole.PLAYER) {
+            events = eventRepository.findAllByStatus("ACCEPTED");
+        } else if(userRole == UserRole.ADMIN) {
+            events = eventRepository.findAll();
+        } else {
+            events = eventRepository.findByBrandId(userId);
+        }
 
         if (events == null) {
             throw new BadRequestException("Events not found");
@@ -152,6 +161,22 @@ public class EventServiceImpl implements EventService {
             eventDto.setTotalVouchers(eventVoucherDto.getTotalVouchers());
             eventDto.setRedeemedVouchers(eventVoucherDto.getRedeemedVouchers());
             eventDto.setDiscountPercentage(eventVoucherDto.getDiscountPercentage());
+
+            eventDto.setGames(new ArrayList<>());
+
+            ShakeGameEvent shakeGameEvent = shakeGameEventRepository.findByEventId(eventDto.getEventId());
+
+            if(shakeGameEvent != null) {
+                GameDto gameDto = gameClient.getShakeGameInfo();
+                eventDto.getGames().add(gameDto);
+            }
+
+            QuizGameEvent quizGameEvent = quizGameEventRepository.findByEventId(eventDto.getEventId());
+
+            if(quizGameEvent != null) {
+                GameDto gameDto = gameClient.getQuizGameInfo();
+                eventDto.getGames().add(gameDto);
+            }
         }
 
         return eventDtos;

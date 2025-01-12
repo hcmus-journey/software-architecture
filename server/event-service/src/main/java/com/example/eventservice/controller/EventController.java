@@ -4,6 +4,7 @@ import com.example.eventservice.dto.EventDto;
 import com.example.eventservice.dto.QuizGameEventDto;
 import com.example.eventservice.dto.ShakeGameEventDto;
 import com.example.eventservice.security.JwtUtil;
+import com.example.eventservice.security.UserRole;
 import com.example.eventservice.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,15 +42,16 @@ public class EventController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    @Operation(tags = "Brand", summary = "Get all events")
+    @Operation(tags = {"Brand", "Player", "Admin"}, summary = "Get all events")
     public ResponseEntity<List<EventDto>> getAllEvents(
             @RequestHeader("Authorization") String authorizationHeader) {
 
-        // Get the brand ID from the JWT token
-        UUID brandId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
+        UserRole userRole = jwtUtil.getUserRoleFromAuthorizationHeader(authorizationHeader);
 
+        // Get the brand ID from the JWT token
+        UUID userId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
         // Get all events
-        List<EventDto> events = eventService.getEvents(brandId);
+        List<EventDto> events = eventService.getEvents(userRole, userId);
 
         return ResponseEntity.ok(events);
     }
@@ -67,7 +69,7 @@ public class EventController {
     }
 
     @RequestMapping(value = "/{eventId}", method = RequestMethod.GET)
-    @Operation(tags = "Brand", summary = "Get an event")
+    @Operation(tags = {"Brand", "Player", "Admin"}, summary = "Get an event")
     public ResponseEntity<EventDto> getEvent(
             @PathVariable String eventId,
             @RequestHeader("Authorization") String authorizationHeader) {
@@ -114,5 +116,5 @@ public class EventController {
         return ResponseEntity.ok(Map.of("message", "Event status updated successfully"));
     }
 
-    
+
 }
