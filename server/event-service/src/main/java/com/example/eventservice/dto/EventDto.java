@@ -1,12 +1,15 @@
 package com.example.eventservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Setter
@@ -23,27 +26,29 @@ public class EventDto {
     @NotEmpty(message = "Image URL is required")
     private String imageUrl;
 
-    @NotEmpty(message = "Start time is required")
-    private Instant startTime;
+    @NotNull(message = "Start time is required")
+    private LocalDate startTime;
 
-    @NotEmpty(message = "End time is required")
-    private Instant endTime;
+    @NotNull(message = "End time is required")
+    private LocalDate endTime;
 
     @NotEmpty(message = "Description is required")
     private String description;
 
-    @NotEmpty(message = "Total vouchers is required")
+    @NotNull(message = "Total vouchers is required")
     private Integer totalVouchers;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Integer distributedVouchers;
+    private Integer redeemedVouchers;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String status;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Instant createdAt;
+    private LocalDate createdAt;
 
-    @NotEmpty(message = "Discount percentage is required")
+    @NotNull(message = "Discount percentage is required")
+    @Min(value = 0, message = "Discount percentage must be at least 0")
+    @Max(value = 100, message = "Discount percentage must be at most 100")
     private Double discountPercentage;
 }

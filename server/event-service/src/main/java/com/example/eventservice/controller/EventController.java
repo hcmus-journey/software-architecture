@@ -1,14 +1,18 @@
 package com.example.eventservice.controller;
 
 import com.example.eventservice.dto.EventDto;
+import com.example.eventservice.dto.QuizGameEventDto;
+import com.example.eventservice.dto.ShakeGameEventDto;
 import com.example.eventservice.security.JwtUtil;
 import com.example.eventservice.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,8 +35,71 @@ public class EventController {
         UUID brandId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
 
         // Create the event
-        eventService.createEvent(brandId, eventDto);
+        UUID eventId = eventService.createEvent(brandId, eventDto);
 
-        return ResponseEntity.ok(Map.of("message", "Event created successfully"));
+        return ResponseEntity.ok(Map.of("eventId", eventId.toString()));
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    @Operation(tags = "Brand", summary = "Get all events")
+    public ResponseEntity<List<EventDto>> getAllEvents(
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        // Get the brand ID from the JWT token
+        UUID brandId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
+
+        // Get all events
+        List<EventDto> events = eventService.getEvents(brandId);
+
+        return ResponseEntity.ok(events);
+    }
+
+    @RequestMapping(value = "/{eventId}", method = RequestMethod.PUT)
+    @Operation(tags = "Brand", summary = "Update a new event")
+    public ResponseEntity<Void> updateEvent(
+            @Valid @RequestBody EventDto eventDto,
+            @PathVariable String eventId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        eventService.updateEvent(UUID.fromString(eventId), eventDto);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @RequestMapping(value = "{eventId}/quiz-game", method = RequestMethod.POST)
+    @Operation(tags = "Brand", summary = "Add quiz game to event")
+    public ResponseEntity<Map<String, String>> addQuizGameToEvent(
+            @Valid @RequestBody QuizGameEventDto quizGameEventDto,
+            @PathVariable String eventId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        eventService.addQuizGameEvent(UUID.fromString(eventId), quizGameEventDto);
+
+        return ResponseEntity.ok(Map.of("message", "Game added successfully"));
+    }
+
+    @RequestMapping(value = "{eventId}/shake-game", method = RequestMethod.POST)
+    @Operation(tags = "Brand", summary = "Add shake phone game to event")
+    public ResponseEntity<Map<String, String>> addShakeGameToEvent(
+            @Valid @RequestBody ShakeGameEventDto shakeGameEventDto,
+            @PathVariable String eventId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        eventService.addShakeGameEvent(UUID.fromString(eventId), shakeGameEventDto);
+
+        return ResponseEntity.ok(Map.of("message", "Game added successfully"));
+    }
+
+    @RequestMapping(value = "{eventId}/status", method = RequestMethod.PATCH)
+    @Operation(tags = "Admin", summary = "Update event status")
+    public ResponseEntity<Map<String, String>> updateEventStatus(
+            @PathVariable String eventId,
+            @Schema(allowableValues = {"ACCEPTED", "NOT_ACCEPTED"}) @RequestPart String status,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        eventService.updateEventStatus(UUID.fromString(eventId), status);
+
+        return ResponseEntity.ok(Map.of("message", "Event status updated successfully"));
     }
 }

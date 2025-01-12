@@ -54,4 +54,13 @@ public class GameServiceImpl implements GameService {
 
         gameRepository.save(game);
     }
+
+    @Override
+    public GameDto getGameByType(String gameType) {
+        return gameRepository.findByType(gameType)
+                .stream()
+                .findFirst()
+                .map(GameMapper.INSTANCE::convertToGameDto)
+                .orElse(null);
+    }
 }
