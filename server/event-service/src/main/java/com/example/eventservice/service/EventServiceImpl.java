@@ -145,7 +145,7 @@ public class EventServiceImpl implements EventService {
     public List<EventDto> getEvents(UserRole userRole, UUID userId) {
         List<Event> events;
         if(userRole == UserRole.PLAYER) {
-            events = eventRepository.findAllByStatus("ACTIVE");
+            events = eventRepository.findAllByStatus("ACCEPTED");
         } else if(userRole == UserRole.ADMIN) {
             events = eventRepository.findAll();
         } else {
@@ -153,7 +153,7 @@ public class EventServiceImpl implements EventService {
         }
 
         if (events == null) {
-            throw new BadRequestException("Events not found");
+            return new ArrayList<>();
         }
 
         List<EventDto> eventDtos = events.stream()
@@ -219,9 +219,39 @@ public class EventServiceImpl implements EventService {
                 .map(PlayerFavoriteEvent::getEventId)
                 .toList();
         List<Event> events = eventRepository.findByEventIdIn(eventIds);
-        return events.stream()
+
+        if (events == null) {
+            return new ArrayList<>();
+        }
+
+        List<EventDto> eventDtos = events.stream()
                 .map(EventMapper.INSTANCE::convertToDto)
                 .toList();
+
+        for(EventDto eventDto : eventDtos) {
+            EventVoucherDto eventVoucherDto = voucherClient.getEventVoucherDetails(eventDto.getEventId().toString());
+            eventDto.setTotalVouchers(eventVoucherDto.getTotalVouchers());
+            eventDto.setRedeemedVouchers(eventVoucherDto.getRedeemedVouchers());
+            eventDto.setDiscountPercentage(eventVoucherDto.getDiscountPercentage());
+
+            eventDto.setGames(new ArrayList<>());
+
+            ShakeGameEvent shakeGameEvent = shakeGameEventRepository.findByEventId(eventDto.getEventId());
+
+            if(shakeGameEvent != null) {
+                GameDto gameDto = gameClient.getShakeGameInfo();
+                eventDto.getGames().add(gameDto);
+            }
+
+            QuizGameEvent quizGameEvent = quizGameEventRepository.findByEventId(eventDto.getEventId());
+
+            if(quizGameEvent != null) {
+                GameDto gameDto = gameClient.getQuizGameInfo();
+                eventDto.getGames().add(gameDto);
+            }
+        }
+
+        return eventDtos;
     }
 
     @Override
