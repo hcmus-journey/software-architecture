@@ -18,6 +18,6 @@ public class OpenAPIConfig {
                 .info(new Info()
                         .title("Game Service API")
                         .version("1.0")
-                        .description("API documentation for the Account Service"));
+                        .description("API documentation for the Game Service"));
     }
 }

@@ -12,7 +12,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class GameDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID gameId;
 
     private String description;
@@ -21,6 +20,5 @@ public class GameDto {
 
     private String name;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String type;
 }

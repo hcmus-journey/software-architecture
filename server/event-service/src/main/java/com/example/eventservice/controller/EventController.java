@@ -113,4 +113,6 @@ public class EventController {
 
         return ResponseEntity.ok(Map.of("message", "Event status updated successfully"));
     }
+
+    
 }

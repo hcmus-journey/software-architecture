@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
-        servers = {@Server(description = "account")})
+        servers = {@Server(description = "Account")})
 public class OpenAPIConfig {
 
     @Bean
