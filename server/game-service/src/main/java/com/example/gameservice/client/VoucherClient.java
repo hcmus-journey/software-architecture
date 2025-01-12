@@ -25,5 +25,5 @@ public interface VoucherClient {
     EventVoucherDto getEventVoucherDetails(@PathVariable String id);
 
     @PostMapping("/api/vouchers")
-    VoucherDto distributeVoucher(@RequestPart UUID eventId, @RequestPart UUID playerId);
+    VoucherDto distributeVoucher(@RequestParam UUID eventId, @RequestParam UUID playerId);
 }

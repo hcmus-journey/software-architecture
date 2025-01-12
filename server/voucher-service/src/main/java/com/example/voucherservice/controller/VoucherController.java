@@ -63,7 +63,7 @@ public class VoucherController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     @Operation(hidden = true)
-    public ResponseEntity<VoucherDto> distributeVoucher(@RequestPart UUID eventId, @RequestPart UUID playerId) {
+    public ResponseEntity<VoucherDto> distributeVoucher(@RequestParam UUID eventId, @RequestParam UUID playerId) {
         VoucherDto voucherDto = voucherService.distributeVoucher(eventId, playerId);
 
         return ResponseEntity.ok(voucherDto);

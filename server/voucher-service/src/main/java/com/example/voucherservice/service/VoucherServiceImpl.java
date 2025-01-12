@@ -11,7 +11,7 @@ import com.example.voucherservice.repository.VoucherRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,7 +53,7 @@ public class VoucherServiceImpl implements VoucherService{
 
         newVoucher.setStatus(VoucherStatus.AVAILABLE);
 
-        newVoucher.setReceivedAt(LocalDate.now());
+        newVoucher.setReceivedAt(LocalDateTime.now());
 
         newVoucher.setDiscount(eventVoucher.getDiscountPercentage());
 

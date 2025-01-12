@@ -1,6 +1,7 @@
 package com.example.gameservice.controller;
 
 import com.example.gameservice.dto.QuizDto;
+import com.example.gameservice.dto.QuizGameDto;
 import com.example.gameservice.dto.VoucherDto;
 import com.example.gameservice.security.JwtUtil;
 import com.example.gameservice.service.QuizGameService;
@@ -60,24 +61,22 @@ public class QuizGameController {
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     @Operation(tags = "Player", description = "Start a quiz game.")
     public ResponseEntity<List<QuizDto>> startQuizGame(
-            @RequestPart UUID eventId,
+            @RequestParam String eventId,
             @RequestHeader("Authorization") String authorizationHeader) {
 
         UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
-        List<QuizDto> quizDtos = quizGameService.startQuizGame(eventId, playerId);
+        List<QuizDto> quizDtos = quizGameService.startQuizGame(UUID.fromString(eventId), playerId);
         return ResponseEntity.ok(quizDtos);
     }
 
     @RequestMapping(value = "/end", method = RequestMethod.POST)
     @Operation(tags = "Player", description = "End a quiz game.")
     public ResponseEntity<VoucherDto> endQuizGame(
-            @RequestPart UUID eventId,
-            @RequestPart Integer questionCount,
-            @RequestPart Integer correctAnswerCount,
+            @RequestBody QuizGameDto quizGameDto,
             @RequestHeader("Authorization") String authorizationHeader) {
 
         UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
-        VoucherDto voucherDto = quizGameService.endQuizGame(eventId, playerId, questionCount, correctAnswerCount);
+        VoucherDto voucherDto = quizGameService.endQuizGame(playerId, quizGameDto);
         if(voucherDto == null) {
             return ResponseEntity.ok().build();
         }

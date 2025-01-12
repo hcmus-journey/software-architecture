@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -21,7 +22,7 @@ public class VoucherDto {
 
     private VoucherStatus status;
 
-    private LocalDate receivedAt;
+    private LocalDateTime receivedAt;
 
     private Double discount;
 

@@ -3,6 +3,7 @@ package com.example.gameservice.service;
 import com.example.gameservice.client.EventClient;
 import com.example.gameservice.client.VoucherClient;
 import com.example.gameservice.dto.QuizDto;
+import com.example.gameservice.dto.QuizGameDto;
 import com.example.gameservice.dto.QuizGameEventDto;
 import com.example.gameservice.dto.VoucherDto;
 import com.example.gameservice.entity.Quiz;
@@ -81,17 +82,17 @@ public class QuizGameServiceImpl implements QuizGameService {
     }
 
     @Override
-    public VoucherDto endQuizGame(UUID eventId, UUID playerId, Integer questionCount, Integer correctAnswerCount) {
+    public VoucherDto endQuizGame(UUID playerId, QuizGameDto quizGameDto) {
         QuizGameResult quizGameResult = QuizGameResult.builder()
-                .eventId(eventId)
+                .eventId(UUID.fromString(quizGameDto.getEventId()))
                 .id(UUID.randomUUID())
                 .playerId(playerId)
-                .questionCount(questionCount)
-                .correctAnswerCount(correctAnswerCount)
+                .questionCount(quizGameDto.getQuestionCount())
+                .correctAnswerCount(quizGameDto.getCorrectAnswerCount())
                 .build();
         VoucherDto voucherDto = null;
-        if(correctAnswerCount.equals(questionCount)) {
-            voucherDto = voucherClient.distributeVoucher(playerId, eventId);
+        if(quizGameDto.getCorrectAnswerCount().equals(quizGameDto.getQuestionCount())) {
+            voucherDto = voucherClient.distributeVoucher(UUID.fromString(quizGameDto.getEventId()), playerId);
         }
 
         quizGameResultRepository.save(quizGameResult);

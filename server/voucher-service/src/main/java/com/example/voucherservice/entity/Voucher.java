@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -32,7 +33,6 @@ public class Voucher {
     @Column(name = "code", nullable = false)
     private String code;
 
-    @Size(max = 255)
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -40,7 +40,7 @@ public class Voucher {
 
     @NotNull
     @Column(name = "received_at", nullable = false)
-    private LocalDate receivedAt;
+    private LocalDateTime receivedAt;
 
     @NotNull
     @Column(name = "discount")

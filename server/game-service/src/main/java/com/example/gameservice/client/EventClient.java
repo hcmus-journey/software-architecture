@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "event-service")
 public interface EventClient {
-    @GetMapping("/api/events/{eventId}/shake-game-event")
+    @GetMapping("/api/events/{eventId}/quiz-game-event")
     QuizGameEventDto getQuizGameEvents(@PathVariable String eventId);
 
     @GetMapping("/api/events/{eventId}/shake-game-event")

@@ -1,6 +1,7 @@
 package com.example.gameservice.service;
 
 import com.example.gameservice.dto.QuizDto;
+import com.example.gameservice.dto.QuizGameDto;
 import com.example.gameservice.dto.VoucherDto;
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface QuizGameService {
     void updateQuiz(UUID quizId, QuizDto quizDto);
     void addQuiz(QuizDto quizDto);
     List<QuizDto> startQuizGame(UUID eventId, UUID playerId);
-    VoucherDto endQuizGame(UUID eventId, UUID playerId, Integer questionCount, Integer correctAnswerCount);
+    VoucherDto endQuizGame(UUID playerId, QuizGameDto quizGameDto);
 }
