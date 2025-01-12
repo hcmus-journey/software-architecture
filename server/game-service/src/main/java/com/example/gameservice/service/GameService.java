@@ -9,4 +9,5 @@ public interface GameService {
     List<GameDto> getAllGames();
     GameDto getGameById(UUID gameId);
     void updateGame(UUID gameId, GameDto gameDto);
+    GameDto getGameByType(String gameType);
 }

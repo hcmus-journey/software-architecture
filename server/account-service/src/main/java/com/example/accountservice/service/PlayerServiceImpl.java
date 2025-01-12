@@ -46,4 +46,9 @@ public class PlayerServiceImpl implements PlayerService {
 
         playerRepository.save(player);
     }
+
+    @Override
+    public PlayerProfileDto getPlayerProfile(UUID playerId) {
+        return PlayerMapper.INSTANCE.convertToPlayerProfileDto(playerRepository.findByPlayerId(playerId));
+    }
 }

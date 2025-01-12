@@ -48,4 +48,9 @@ public class BrandServiceImpl implements BrandService {
 
         userRepository.save(user);
     }
+
+    @Override
+    public BrandProfileDto getBrandProfile(UUID playerId) {
+        return BrandMapper.INSTANCE.convertToBrandProfileDto(brandRepository.findByBrandId(playerId));
+    }
 }

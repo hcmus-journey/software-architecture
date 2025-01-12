@@ -2,7 +2,7 @@
 <project version="4">
   <component name="JpaBuddyIdeaProjectConfig" migrateDefaultValues="false">
     <option name="migrateDefaultValues" value="false" />
-    <option name="reLastEntityCreationPackage" value="game-service/src/main/java/com/example/gameservice/entity" />
-    <option name="reverseEngineeringLastDbConnectionId" value="c11a7043-5a8d-4af5-9c51-beb75defda50" />
+    <option name="reLastEntityCreationPackage" value="event-service/src/main/java/com/example/eventservice/entity" />
+    <option name="reverseEngineeringLastDbConnectionId" value="cecdc175-8793-471d-a478-2a2b25248c3d" />
   </component>
 </project>

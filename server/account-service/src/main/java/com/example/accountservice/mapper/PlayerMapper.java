@@ -11,4 +11,6 @@ public interface PlayerMapper {
     PlayerMapper INSTANCE = Mappers.getMapper(PlayerMapper.class);
 
     Player convertToPlayer(PlayerProfileDto playerProfileDto);
+
+    PlayerProfileDto convertToPlayerProfileDto(Player player);
 }

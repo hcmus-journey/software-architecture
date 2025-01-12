@@ -50,4 +50,18 @@ public class PlayerController {
 
         return ResponseEntity.ok(Map.of("message", "Player activated successfully"));
     }
+
+    @RequestMapping(path = "/profile", method = RequestMethod.GET)
+    @Operation(tags = "Player", description = "Get player profile")
+    public ResponseEntity<PlayerProfileDto> getProfile(
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        // Extract player id from authorization header.
+        // Player id is user id in this case.
+        UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
+
+        PlayerProfileDto playerProfileDto = playerService.getPlayerProfile(playerId);
+
+        return ResponseEntity.ok(playerProfileDto);
+    }
 }

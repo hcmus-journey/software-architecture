@@ -21,16 +21,39 @@ public class VoucherController {
 
     final private JwtUtil jwtUtil;
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Map<String, String>> createEventVoucher(
-            @Valid @RequestBody EventVoucherDto eventVoucherDto,
-            @RequestHeader("Authorization") String authorizationHeader) {
+    @RequestMapping(value = "/event-voucher-detail", method = RequestMethod.POST)
+    @Operation(hidden = true)
+    public ResponseEntity<Map<String, String>> createEventVoucherDetails(
+            @Valid @RequestBody EventVoucherDto eventVoucherDto) {
 
-        // Get the brand ID from the JWT token
-        UUID brandId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
+        eventVoucherService.createEventVoucher(eventVoucherDto);
 
-       // eventService.createEvent(brandId, eventDto);
+        return ResponseEntity.ok(Map.of("message", "Event voucher created successfully"));
+    }
 
-        return ResponseEntity.ok(Map.of("message", "Event created successfully"));
+    @RequestMapping(value = "/event-voucher-detail/{id}", method = RequestMethod.DELETE)
+    @Operation(hidden = true)
+    public ResponseEntity<Void> deleteEventVoucherDetails(
+            @PathVariable String id) {
+        eventVoucherService.deleteEventVoucher(UUID.fromString(id));
+
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/event-voucher-detail", method = RequestMethod.PUT)
+    @Operation(hidden = true)
+    public ResponseEntity<Void> deleteEventVoucherDetails(
+            @Valid @RequestBody EventVoucherDto eventVoucherDto) {
+        eventVoucherService.updateEventVoucher(eventVoucherDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/event-voucher-detail/{id}", method = RequestMethod.GET)
+    @Operation(hidden = true)
+    public ResponseEntity<EventVoucherDto> getEventVoucherDetails(
+            @PathVariable String id) {
+        EventVoucherDto eventVoucherDto = eventVoucherService.getEventVoucher(UUID.fromString(id));
+
+        return ResponseEntity.ok(eventVoucherDto);
     }
 }

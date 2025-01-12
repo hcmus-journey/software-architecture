@@ -7,6 +7,8 @@ import com.example.voucherservice.repository.EventVoucherRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 public class EventVoucherServiceImpl implements EventVoucherService {
@@ -16,6 +18,24 @@ public class EventVoucherServiceImpl implements EventVoucherService {
     @Override
     public void createEventVoucher(EventVoucherDto eventVoucherDto) {
         EventVoucher eventVoucher = EventVoucherMapper.INSTANCE.convertToEventVoucher(eventVoucherDto);
-
+        eventVoucherRepository.save(eventVoucher);
     }
+
+    @Override
+    public void deleteEventVoucher(UUID eventId) {
+        eventVoucherRepository.deleteById(eventId);
+    }
+
+    @Override
+    public void updateEventVoucher(EventVoucherDto eventVoucherDto) {
+        EventVoucher eventVoucher = EventVoucherMapper.INSTANCE.convertToEventVoucher(eventVoucherDto);
+        eventVoucherRepository.save(eventVoucher);
+    }
+
+    @Override
+    public EventVoucherDto getEventVoucher(UUID eventId) {
+        return EventVoucherMapper.INSTANCE.convertToEventVoucherDto(eventVoucherRepository.findByEventId(eventId));
+    }
+
+
 }

@@ -43,4 +43,18 @@ public class GameController {
         gameService.updateGame(UUID.fromString(gameId), gameDto);
         return ResponseEntity.ok(Map.of("message", "Game updated successfully"));
     }
+
+    @Operation(hidden = true)
+    @RequestMapping(value = "/quiz-game-info", method = RequestMethod.GET)
+    public ResponseEntity<GameDto> getQuizGameInfo() {
+        GameDto game = gameService.getGameByType("QUIZ");
+        return ResponseEntity.ok(game);
+    }
+
+    @Operation(hidden = true)
+    @RequestMapping(value = "/shake-game-info", method = RequestMethod.GET)
+    public ResponseEntity<GameDto> getShakeGameInfo() {
+        GameDto game = gameService.getGameByType("SHAKE_PHONE");
+        return ResponseEntity.ok(game);
+    }
 }

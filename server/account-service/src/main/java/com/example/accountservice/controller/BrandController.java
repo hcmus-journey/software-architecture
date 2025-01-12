@@ -27,8 +27,6 @@ public class BrandController {
             @Valid @RequestBody BrandProfileDto brandProfileDto,
             @RequestHeader("Authorization") String authorizationHeader) {
 
-        // Extract player id from authorization header.
-        // Player id is user id in this case.
         UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
 
         brandService.updateProfile(playerId, brandProfileDto);
@@ -42,12 +40,22 @@ public class BrandController {
             @Valid @RequestBody BrandProfileDto brandProfileDto,
             @RequestHeader("Authorization") String authorizationHeader) {
 
-        // Extract player id from authorization header.
-        // Player id is user id in this case.
         UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
 
         brandService.activeBrand(playerId, brandProfileDto);
 
         return ResponseEntity.ok(Map.of("message", "Brand activated successfully"));
+    }
+
+    @RequestMapping(path = "/profile", method = RequestMethod.GET)
+    @Operation(tags = "Brand", description = "Get brand profile")
+    public ResponseEntity<BrandProfileDto> activeBrandRequest(
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
+
+        BrandProfileDto brandProfileDto = brandService.getBrandProfile(playerId);
+
+        return ResponseEntity.ok(brandProfileDto);
     }
 }

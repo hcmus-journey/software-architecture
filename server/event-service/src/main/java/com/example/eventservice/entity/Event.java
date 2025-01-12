@@ -1,9 +1,6 @@
 package com.example.eventservice.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -11,8 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GeneratedColumn;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -43,11 +42,11 @@ public class Event {
 
     @NotNull
     @Column(name = "start_time", nullable = false)
-    private Instant startTime;
+    private LocalDate startTime;
 
     @NotNull
     @Column(name = "end_time", nullable = false)
-    private Instant endTime;
+    private LocalDate endTime;
 
     @NotNull
     @Column(name = "description", nullable = false, length = Integer.MAX_VALUE)
@@ -61,5 +60,5 @@ public class Event {
 
     @NotNull
     @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
+    private LocalDate createdAt;
 }
