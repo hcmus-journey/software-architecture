@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:voumarketinggame/pages/inventory_screen.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -16,7 +17,7 @@ class _MenuScreenState extends State<MenuScreen> {
       body: Column(
         children: [
           Container(
-            color: Colors.yellow.shade200, 
+            color: Colors.yellow.shade200,
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
@@ -37,7 +38,8 @@ class _MenuScreenState extends State<MenuScreen> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 4),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.green,
                         borderRadius: BorderRadius.circular(8),
@@ -55,7 +57,6 @@ class _MenuScreenState extends State<MenuScreen> {
               ],
             ),
           ),
-
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -82,15 +83,16 @@ class _MenuScreenState extends State<MenuScreen> {
                       SizedBox(width: 8),
                       Text(
                         'Trang cá nhân',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  height: 30, 
-                  width: 1, 
-                  color: Colors.grey.shade400, 
+                  height: 30,
+                  width: 1,
+                  color: Colors.grey.shade400,
                 ),
                 const Expanded(
                   child: Row(
@@ -100,7 +102,8 @@ class _MenuScreenState extends State<MenuScreen> {
                       SizedBox(width: 8),
                       Text(
                         'Giới thiệu App',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
@@ -108,9 +111,7 @@ class _MenuScreenState extends State<MenuScreen> {
               ],
             ),
           ),
-
           const SizedBox(height: 16),
-
           Expanded(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -130,12 +131,39 @@ class _MenuScreenState extends State<MenuScreen> {
                 children: [
                   Expanded(
                     child: ListView(
-                      children: const [
-                        MenuItem(icon: CupertinoIcons.question_circle, title: 'Trung tâm trợ giúp', isNew: true),
-                        MenuItem(icon: CupertinoIcons.gear_big, title: 'Quản lý tài khoản'),
-                        MenuItem(icon: CupertinoIcons.exclamationmark_circle, title: 'Thông tin chung'),
-                        MenuItem(icon: Icons.palette_outlined, title: 'Thay đổi chủ đề màu'),
-                        MenuItem(icon: CupertinoIcons.globe, title: 'Ngôn ngữ'),
+                      children: [
+                        MenuItem(
+                          icon: CupertinoIcons.gift,
+                          title: 'Kho đồ',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => InventoryPage()),
+                            );
+                          },
+                        ),
+                        const MenuItem(
+                          icon: CupertinoIcons.question_circle,
+                          title: 'Trung tâm trợ giúp',
+                          isNew: true,
+                        ),
+                        const MenuItem(
+                          icon: CupertinoIcons.gear_big,
+                          title: 'Quản lý tài khoản',
+                        ),
+                        const MenuItem(
+                          icon: CupertinoIcons.exclamationmark_circle,
+                          title: 'Thông tin chung',
+                        ),
+                        const MenuItem(
+                          icon: Icons.palette_outlined,
+                          title: 'Thay đổi chủ đề màu',
+                        ),
+                        const MenuItem(
+                          icon: CupertinoIcons.globe,
+                          title: 'Ngôn ngữ',
+                        ),
                       ],
                     ),
                   ),
@@ -147,7 +175,8 @@ class _MenuScreenState extends State<MenuScreen> {
                           onPressed: () {},
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.red[100],
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -169,7 +198,8 @@ class _MenuScreenState extends State<MenuScreen> {
                           onPressed: () {},
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.blue[100],
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -197,56 +227,64 @@ class MenuItem extends StatelessWidget {
   final IconData icon;
   final String title;
   final bool isNew;
+  final VoidCallback? onTap;
 
   const MenuItem({
     super.key,
     required this.icon,
     required this.title,
     this.isNew = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 28, color: Colors.grey[700]),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
             ),
-          ),
-          if (isNew)
-            
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Text(
-                'Mới',
-                style: TextStyle(color: Colors.white, fontSize: 12),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 28, color: Colors.grey[700]),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          const SizedBox(width: 7),
-          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-        ],
+            if (isNew)
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  'Mới',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+            const SizedBox(width: 7),
+            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+          ],
+        ),
       ),
     );
   }
