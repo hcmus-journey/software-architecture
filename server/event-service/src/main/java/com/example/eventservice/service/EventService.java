@@ -21,6 +21,12 @@ public interface EventService {
 
     List<EventDto> getEvents(UserRole userRole, UUID userId);
 
+    List<EventDto> getFavoriteEvents(UUID playerId);
+
+    void addFavoriteEvent(UUID playerId, UUID eventId);
+
+    void removeFavoriteEvent(UUID playerId, UUID eventId);
+
     void addQuizGameEvent(UUID eventId, QuizGameEventDto quizGameEventDto);
 
     void addShakeGameEvent(UUID eventId, ShakeGameEventDto shakeGameEventDto);

@@ -4,11 +4,13 @@ import com.example.eventservice.client.GameClient;
 import com.example.eventservice.client.VoucherClient;
 import com.example.eventservice.dto.*;
 import com.example.eventservice.entity.Event;
+import com.example.eventservice.entity.PlayerFavoriteEvent;
 import com.example.eventservice.entity.QuizGameEvent;
 import com.example.eventservice.entity.ShakeGameEvent;
 import com.example.eventservice.exception.BadRequestException;
 import com.example.eventservice.mapper.EventMapper;
 import com.example.eventservice.repository.EventRepository;
+import com.example.eventservice.repository.PlayerFavoriteEventRepository;
 import com.example.eventservice.repository.QuizGameEventRepository;
 import com.example.eventservice.repository.ShakeGameEventRepository;
 import com.example.eventservice.security.UserRole;
@@ -29,6 +31,8 @@ public class EventServiceImpl implements EventService {
     final private GameClient gameClient;
 
     final private EventRepository eventRepository;
+
+    final private PlayerFavoriteEventRepository playerFavoriteEventRepository;
 
     final private QuizGameEventRepository quizGameEventRepository;
 
@@ -141,7 +145,7 @@ public class EventServiceImpl implements EventService {
     public List<EventDto> getEvents(UserRole userRole, UUID userId) {
         List<Event> events;
         if(userRole == UserRole.PLAYER) {
-            events = eventRepository.findAllByStatus("ACCEPTED");
+            events = eventRepository.findAllByStatus("ACTIVE");
         } else if(userRole == UserRole.ADMIN) {
             events = eventRepository.findAll();
         } else {
@@ -206,5 +210,31 @@ public class EventServiceImpl implements EventService {
         shakeGameEvent.setGameId(gameDto.getGameId());
 
         shakeGameEventRepository.save(shakeGameEvent);
+    }
+
+    @Override
+    public List<EventDto> getFavoriteEvents(UUID playerId) {
+        List<PlayerFavoriteEvent> playerFavoriteEvents = playerFavoriteEventRepository.findByPlayerId(playerId);
+        List<UUID> eventIds = playerFavoriteEvents.stream()
+                .map(PlayerFavoriteEvent::getEventId)
+                .toList();
+        List<Event> events = eventRepository.findByEventIdIn(eventIds);
+        return events.stream()
+                .map(EventMapper.INSTANCE::convertToDto)
+                .toList();
+    }
+
+    @Override
+    public void addFavoriteEvent(UUID playerId, UUID eventId) {
+        PlayerFavoriteEvent playerFavoriteEvent = new PlayerFavoriteEvent();
+        playerFavoriteEvent.setPlayerId(playerId);
+        playerFavoriteEvent.setEventId(eventId);
+        playerFavoriteEventRepository.save(playerFavoriteEvent);
+    }
+
+    @Override
+    public void removeFavoriteEvent(UUID playerId, UUID eventId) {
+        PlayerFavoriteEvent playerFavoriteEvent = playerFavoriteEventRepository.findByPlayerIdAndEventId(playerId, eventId);
+        playerFavoriteEventRepository.delete(playerFavoriteEvent);
     }
 }

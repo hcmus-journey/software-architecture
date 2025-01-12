@@ -116,5 +116,41 @@ public class EventController {
         return ResponseEntity.ok(Map.of("message", "Event status updated successfully"));
     }
 
+    @RequestMapping(value ="/favorite", method = RequestMethod.GET)
+    @Operation(tags = "Player", summary = "Get all favorite events")
+    public ResponseEntity<List<EventDto>> getFavoriteEvents(
+            @RequestHeader("Authorization") String authorizationHeader) {
 
+        UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
+
+        List<EventDto> events = eventService.getFavoriteEvents(playerId);
+
+        return ResponseEntity.ok(events);
+    }
+
+    @RequestMapping(value ="{eventId}/favorite", method = RequestMethod.POST)
+    @Operation(tags = "Player", summary = "Add event to favorite")
+    public ResponseEntity<Void> addFavoriteEvent(
+            @PathVariable String eventId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
+
+        eventService.addFavoriteEvent(playerId, UUID.fromString(eventId));
+
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value ="{eventId}/favorite", method = RequestMethod.DELETE)
+    @Operation(tags = "Player", summary = "Remove event from favorite")
+    public ResponseEntity<Void> deleteFavoriteEvent(
+            @PathVariable String eventId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
+
+        eventService.removeFavoriteEvent(playerId, UUID.fromString(eventId));
+
+        return ResponseEntity.ok().build();
+    }
 }
