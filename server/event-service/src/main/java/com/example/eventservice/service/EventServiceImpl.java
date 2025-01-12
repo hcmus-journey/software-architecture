@@ -127,7 +127,12 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDto getEvent(UUID eventId) {
-        return null;
+        EventDto eventDto = EventMapper.INSTANCE.convertToDto(eventRepository.findByEventId(eventId));
+        EventVoucherDto eventVoucherDto = voucherClient.getEventVoucherDetails(eventId.toString());
+        eventDto.setTotalVouchers(eventVoucherDto.getTotalVouchers());
+        eventDto.setRedeemedVouchers(eventVoucherDto.getRedeemedVouchers());
+        eventDto.setDiscountPercentage(eventVoucherDto.getDiscountPercentage());
+        return eventDto;
     }
 
     @Override

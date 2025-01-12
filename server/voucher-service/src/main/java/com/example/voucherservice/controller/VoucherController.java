@@ -50,10 +50,10 @@ public class VoucherController {
 
     @RequestMapping(value = "/event-voucher-detail/{id}", method = RequestMethod.GET)
     @Operation(hidden = true)
-    public ResponseEntity<Void> getEventVoucherDetails(
+    public ResponseEntity<EventVoucherDto> getEventVoucherDetails(
             @PathVariable String id) {
-        eventVoucherService.getEventVoucher(UUID.fromString(id));
+        EventVoucherDto eventVoucherDto = eventVoucherService.getEventVoucher(UUID.fromString(id));
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(eventVoucherDto);
     }
 }

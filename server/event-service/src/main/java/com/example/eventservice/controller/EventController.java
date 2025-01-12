@@ -26,7 +26,7 @@ public class EventController {
     final private JwtUtil jwtUtil;
 
     @RequestMapping(method = RequestMethod.POST)
-    @Operation(tags = "Brand", summary = "Create a new event")
+    @Operation(tags = "Brand", summary = "Create an new event")
     public ResponseEntity<Map<String, String>> createEvent(
             @Valid @RequestBody EventDto eventDto,
             @RequestHeader("Authorization") String authorizationHeader) {
@@ -55,7 +55,7 @@ public class EventController {
     }
 
     @RequestMapping(value = "/{eventId}", method = RequestMethod.PUT)
-    @Operation(tags = "Brand", summary = "Update a new event")
+    @Operation(tags = "Brand", summary = "Update an event")
     public ResponseEntity<Void> updateEvent(
             @Valid @RequestBody EventDto eventDto,
             @PathVariable String eventId,
@@ -64,6 +64,17 @@ public class EventController {
         eventService.updateEvent(UUID.fromString(eventId), eventDto);
 
         return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/{eventId}", method = RequestMethod.GET)
+    @Operation(tags = "Brand", summary = "Get an event")
+    public ResponseEntity<EventDto> getEvent(
+            @PathVariable String eventId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        EventDto eventDto = eventService.getEvent(UUID.fromString(eventId));
+
+        return ResponseEntity.ok(eventDto);
     }
 
 
