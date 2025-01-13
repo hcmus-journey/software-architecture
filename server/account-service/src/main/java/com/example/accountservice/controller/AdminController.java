@@ -44,4 +44,11 @@ public class AdminController {
 
         return ResponseEntity.ok(Map.of("message", "User role has been set"));
     }
+
+    @GetMapping("/users/total-players-brands")
+    @Operation(hidden = true)
+    public ResponseEntity<List<Long>> getTotalPlayersAndBrands() {
+
+        return ResponseEntity.ok(adminService.getTotalPlayersAndBrands());
+    }
 }

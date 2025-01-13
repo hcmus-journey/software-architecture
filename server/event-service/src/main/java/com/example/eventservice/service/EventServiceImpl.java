@@ -277,4 +277,12 @@ public class EventServiceImpl implements EventService {
     public ShakeGameEventDto getShakeGameEvent(UUID eventId) {
         return EventMapper.INSTANCE.convertToDto(shakeGameEventRepository.findByEventId(eventId));
     }
+
+    @Override
+    public List<Long> getTotalQuizAndShakeEvents() {
+        List<Long> totalQuizAndShakeEvents = new ArrayList<>();
+        totalQuizAndShakeEvents.add(quizGameEventRepository.count());
+        totalQuizAndShakeEvents.add(shakeGameEventRepository.count());
+        return totalQuizAndShakeEvents;
+    }
 }

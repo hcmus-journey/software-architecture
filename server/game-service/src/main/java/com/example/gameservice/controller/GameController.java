@@ -57,4 +57,11 @@ public class GameController {
         GameDto game = gameService.getGameByType("SHAKE_PHONE");
         return ResponseEntity.ok(game);
     }
+
+    @Operation(hidden = true)
+    @RequestMapping(value = "/total-attempts", method = RequestMethod.GET)
+    public ResponseEntity<List<Long>> getTotalQuizAndShakeGameAttempts() {
+
+        return ResponseEntity.ok(gameService.getTotalQuizAndShakeGameAttempts());
+    }
 }

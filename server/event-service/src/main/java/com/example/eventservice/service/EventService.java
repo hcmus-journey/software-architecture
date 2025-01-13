@@ -34,4 +34,6 @@ public interface EventService {
     QuizGameEventDto getQuizGameEvent(UUID eventId);
 
     ShakeGameEventDto getShakeGameEvent(UUID eventId);
+
+    List<Long> getTotalQuizAndShakeEvents();
 }

@@ -13,6 +13,7 @@
         <module name="event-service" />
         <module name="api-gateway" />
         <module name="account-service" />
+        <module name="statistic-service" />
         <module name="service-registry" />
       </profile>
       <profile name="Annotation profile for vou-system" enabled="true">
@@ -22,7 +23,6 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
-        <module name="statistic-service" />
         <module name="notification-service" />
       </profile>
     </annotationProcessing>
