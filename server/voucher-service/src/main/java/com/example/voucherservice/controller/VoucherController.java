@@ -77,4 +77,12 @@ public class VoucherController {
         UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
         return ResponseEntity.ok(voucherService.getVouchers(playerId));
     }
+
+    @RequestMapping(value = "/{voucherId}", method = RequestMethod.GET)
+    public ResponseEntity<VoucherDto> getVoucher(
+            @PathVariable String voucherId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        return ResponseEntity.ok(voucherService.getVoucher(UUID.fromString(voucherId)));
+    }
 }

@@ -90,8 +90,9 @@ public class VoucherServiceImpl implements VoucherService{
     }
 
     @Override
-    public EventVoucher getVoucher(UUID eventId) {
-        return null;
+    public VoucherDto getVoucher(UUID voucherId) {
+        return VoucherMapper.INSTANCE
+                .convertToVoucherDto(voucherRepository.findByVoucherId(voucherId));
     }
 
     @Override
