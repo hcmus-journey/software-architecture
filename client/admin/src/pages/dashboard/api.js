@@ -225,7 +225,7 @@ export const fetchAccountsStat = async (accountType) => {
         }
       });
 
-      return stats;
+      return stats.reverse();
     } else {
       return [];
     }
@@ -302,14 +302,12 @@ export const fetchLastestEvents = async (number) => {
 
       const formattedEvents = latestEvents.map((event) => ({
         name: event.name,
-        brand: event.totalVouchers + "total vouchers",
-        datetime: new Date(event.createdAt).toLocaleString("en-US", {
+        brand: event.totalVouchers + " vouchers",
+        datetime: new Date(event.createdAt).toLocaleString("vi-VN", {
           weekday: "short",
           day: "numeric",
           month: "short",
           year: "numeric",
-          hour: "numeric",
-          minute: "numeric",
         }),
       }));
 

@@ -112,7 +112,6 @@ function QuizFormModal({ updateQuiz }) {
   };
 
   useEffect(() => {
-    console.log(cloneQuiz);
     setSelectedValue(
       cloneQuiz === null
         ? "0"

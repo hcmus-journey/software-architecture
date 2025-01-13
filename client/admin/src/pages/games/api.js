@@ -27,7 +27,7 @@ export const fetchAllGames = async () => {
     if (response.status === 200) {
       return {
         message: "Get games successful!",
-        total: length(response.data),
+        total: response.data.length,
         data: response.data,
       };
     }

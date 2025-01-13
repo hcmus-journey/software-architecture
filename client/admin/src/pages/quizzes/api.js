@@ -6,7 +6,7 @@ export const fetchAllQuizzes = async () => {
     if (response.status === 200) {
       return {
         message: "Get quizzes successful!",
-        total: length(response.data),
+        total: response.data.length,
         data: response.data,
       };
     }
@@ -28,7 +28,7 @@ export const addNewQuiz = async (quiz) => {
   try {
     const response = await api.post(`/api/quiz-games/quizzes`, quiz);
     if (response.status === 200) {
-      return response.data.id;
+      return response.data.quizId;
     }
   } catch (error) {
     if (error.response) {

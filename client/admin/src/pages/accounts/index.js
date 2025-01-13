@@ -37,7 +37,7 @@ function Accounts() {
   const updateAccount = (account) => {
     setAccounts((prev) => {
       const updatedAccounts = [...prev];
-      const index = updatedAccounts.findIndex((acc) => acc.id === account.id);
+      const index = updatedAccounts.findIndex((acc) => acc.userId === account.userId);
       if (index !== -1) {
         updatedAccounts[index] = { ...updatedAccounts[index], ...account };
       }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { fetchAccountsStat } from "../api";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
@@ -63,6 +63,20 @@ function AccountsStatistic() {
     fetchData();
   }, [accountTypeTab]);
 
+  const chartData = useMemo(
+    () => ({
+      labels: getLast12Months(),
+      datasets: [
+        {
+          label: "Number of accounts",
+          color: "primary",
+          data: accountsStat,
+        },
+      ],
+    }),
+    [accountsStat]
+  );
+
   return (
     <Card sx={{ height: "100%", minHeight: "440px" }}>
       <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">
@@ -115,18 +129,7 @@ function AccountsStatistic() {
         <MDBox p={2}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <VerticalBarChart
-                chart={{
-                  labels: getLast12Months(),
-                  datasets: [
-                    {
-                      label: "Number of accounts",
-                      color: "primary",
-                      data: accountsStat,
-                    },
-                  ],
-                }}
-              />
+              <VerticalBarChart chart={chartData} />
             </Grid>
           </Grid>
         </MDBox>

@@ -23,7 +23,7 @@ function AccountsTable() {
   const updateGames = (game) => {
     setGames((prev) => {
       const updatedGames = [...prev];
-      const index = updatedGames.findIndex((g) => g.id === game.id);
+      const index = updatedGames.findIndex((g) => g.gameId === game.gameId);
       if (index !== -1) {
         updatedGames[index] = { ...updatedGames[index], ...game };
       }

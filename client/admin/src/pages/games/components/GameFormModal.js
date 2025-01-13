@@ -60,7 +60,7 @@ function AccountFormModal({ updateGames }) {
       return;
     }
     try {
-      const isSuccess = await editGame(cloneAccount);
+      const isSuccess = await editGame(cloneGame);
       if (isSuccess) {
         const updatedGame = { ...cloneGame };
         updateGames(updatedGame);

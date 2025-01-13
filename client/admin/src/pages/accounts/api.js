@@ -9,7 +9,7 @@ export const fetchAllAccounts = async () => {
     if (response.status === 200) {
       return {
         message: "Get accounts successful!",
-        total: length(response.data),
+        total: response.data.length,
         data: response.data,
       };
     }
@@ -19,20 +19,20 @@ export const fetchAllAccounts = async () => {
     } else {
       console.log("Cannot get response from server!", error.request);
     }
+    return {
+      message: "Fail to get accounts!",
+      total: 0,
+      data: [],
+    };
   }
-  return {
-    message: "Fail to get accounts!",
-    total: 0,
-    data: [],
-  };
 };
 
 export const editAccount = async (account) => {
   try {
     const statusRes = await api.post(
-      `/api/admin/users/${account.id}/status?status=${account.status}`
+      `/api/admin/users/${account.userId}/status?status=${account.status}`
     );
-    const roleRes = await api.post(`/api/admin/users/${account.id}/role?role=${account.role}`);
+    const roleRes = await api.post(`/api/admin/users/${account.userId}/role?role=${account.role}`);
     if (statusRes.status === 200 && roleRes.status === 200) {
       return true;
     }

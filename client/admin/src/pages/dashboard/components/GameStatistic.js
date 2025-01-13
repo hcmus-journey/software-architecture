@@ -95,7 +95,7 @@ function GameStatistic() {
                 slotProps={{
                   legend: {
                     labelStyle: {
-                      fontSize: 18,
+                      fontSize: 12,
                       fill: "gray",
                     },
                     itemMarkWidth: 18,

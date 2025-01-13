@@ -19,7 +19,7 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 
 function AccountFilterModal({ filters, changeFilters }) {
-  const sortFields = ["id", "username", "role", "status"];
+  const sortFields = ["userId", "username", "role", "status"];
   const [controller, dispatch] = useMaterialUIController();
   const { darkMode } = controller;
   const [status, setStatus] = useState([]);
