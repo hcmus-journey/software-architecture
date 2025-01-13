@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:voumarketinggame/pages/dashboard_page.dart';
 import 'package:voumarketinggame/pages/forgotpassword_page.dart';
 import 'package:voumarketinggame/pages/signup_page.dart';
+import 'package:voumarketinggame/providers/auth_provider.dart';
 import 'package:voumarketinggame/widgets/scaffold_widget.dart';
 import '../theme/theme.dart';
 
@@ -13,8 +15,13 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+
   final _formSignInKey = GlobalKey<FormState>();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   bool rememberPassword = true;
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -55,6 +62,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         height: 40.0,
                       ),
                       TextFormField(
+                        controller: _usernameController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Username';
@@ -85,6 +93,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         height: 25.0,
                       ),
                       TextFormField(
+                        controller: _passwordController,
                         obscureText: true,
                         obscuringCharacter: '*',
                         validator: (value) {
@@ -161,16 +170,28 @@ class _SignInScreenState extends State<SignInScreen> {
                         height: 25.0,
                       ),
                       SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formSignInKey.currentState!.validate() &&
-                                rememberPassword) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Processing Data'),
-                                ),
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (_formSignInKey.currentState!.validate() && rememberPassword) {
+                            final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                            final username = _usernameController.text.trim();
+                            final password = _passwordController.text.trim();
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Processing Data...'),
+                              ),
+                            );
+
+                            try {
+                              // Gọi API login qua AuthProvider
+                              await authProvider.login(
+                                username: username,
+                                password: password, 
                               );
+
+                              // Nếu thành công, chuyển hướng đến DashboardScreen
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
@@ -178,19 +199,35 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                                 (route) => false,
                               );
-                              // Logic to sign in user
 
-                            } else if (!rememberPassword) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                    content: Text(
-                                        'Please agree to the processing of personal data')),
+                                  content: Text('Login successful!'),
+                                ),
+                              );
+                            } catch (e) {
+                              // Nếu đăng nhập thất bại, hiển thị lỗi
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Login failed: $e'),
+                                ),
                               );
                             }
-                          },
-                          child: const Text('Sign In', style: TextStyle(fontSize: 17),),
+                          } else if (!rememberPassword) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please agree to the processing of personal data'),
+                              ),
+                            );
+                          }
+                        },
+                        child: const Text(
+                          'Sign In',
+                          style: TextStyle(fontSize: 17),
                         ),
                       ),
+                    ),
+
                       const SizedBox(
                         height: 25.0,
                       ),

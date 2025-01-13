@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voumarketinggame/pages/slash_page.dart';
+import 'package:voumarketinggame/providers/auth_provider.dart';
 import 'package:voumarketinggame/providers/bottom_navigation_provider.dart';
 import 'package:voumarketinggame/providers/event_provider.dart';
+import 'package:voumarketinggame/providers/user_provider.dart';
 import 'package:voumarketinggame/providers/voucher_provider.dart';
 import 'package:voumarketinggame/theme/theme.dart';
 
@@ -14,6 +16,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => EventProvider()),
         ChangeNotifierProvider(create: (_) => BottomNavigationProvider()),
         ChangeNotifierProvider(create: (_) => VoucherProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: const MyApp(),
     ),

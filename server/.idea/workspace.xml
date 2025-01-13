@@ -36,6 +36,8 @@
     "Spring Boot.InventoryServiceApplication.executor": "Run",
     "Spring Boot.NotificationServiceApplication.executor": "Run",
     "Spring Boot.ServiceRegistryApplication.executor": "Run",
+    "Spring Boot.StatisticServiceApplication.executor": "Run",
+    "Spring Boot.VoucherServiceApplication.executor": "Run",
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "server",
     "ignore.virus.scanning.warn.message": "true",
@@ -64,7 +66,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736707052415</updated>
-      <workItem from="1736707054127" duration="1422000" />
+      <workItem from="1736707054127" duration="2823000" />
     </task>
     <servers />
   </component>

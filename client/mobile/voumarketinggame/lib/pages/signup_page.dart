@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:voumarketinggame/pages/signin_page.dart';
-import 'package:voumarketinggame/pages/verifyotp_page.dart';
+import 'package:voumarketinggame/pages/signup_infor_page.dart';
+import 'package:voumarketinggame/providers/auth_provider.dart';
 import 'package:voumarketinggame/theme/theme.dart';
 import 'package:voumarketinggame/widgets/scaffold_widget.dart';
 
@@ -13,8 +15,23 @@ class SignUpScreen extends StatefulWidget {
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
+
+
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formSignupKey = GlobalKey<FormState>();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _phoneNumberController.dispose();
+    super.dispose();
+  }
+
+
   bool agreePersonalData = true;
   @override
   Widget build(BuildContext context) {
@@ -59,6 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       // Username
                       TextFormField(
+                        controller: _usernameController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Username';
@@ -91,6 +109,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                       // Password
                       TextFormField(
+                        controller: _passwordController,
                         obscureText: true,
                         obscuringCharacter: '*',
                         validator: (value) {
@@ -125,6 +144,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                       // Phone Number
                       TextFormField(
+                        controller: _phoneNumberController,
                         keyboardType: TextInputType.number, 
                         inputFormatters: [FilteringTextInputFormatter.digitsOnly], 
                         validator: (value) {
@@ -189,40 +209,68 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       // signup button
                       SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formSignupKey.currentState!.validate() &&
-                                agreePersonalData) {
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (_formSignupKey.currentState!.validate() && agreePersonalData) {
+                            final username = _usernameController.text.trim();
+                            final password = _passwordController.text.trim();
 
-                              Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const OtpVerificationScreen(),
-                              ),
-                            );    
+                            final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+                      
+                            final isSignUpSuccess = await authProvider.signUp(
+                              username: username,
+                              password: password,
+                            );
+
+                            if (isSignUpSuccess) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Continue to verify Phone number'),
+                                  content: Text('Sign up successful. Logging in...'),
                                 ),
-                                
                               );
-                            
-                            } else if (!agreePersonalData) {
+
+                             
+                              try {
+                                await authProvider.login(username: username, password: password);
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Login successful. Proceed to enter user info.'),
+                                  ),
+                                );
+
+                       
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const UserInfoScreen(),
+                                  ),
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Login failed: $e')),
+                                );
+                              }
+                            } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'Please agree with identification by Phone Number')),
+                                SnackBar(
+                                  content: Text(authProvider.errorMessage ?? 'Sign up failed'),
+                                ),
                               );
                             }
-                            
-                          },
-                          child: const Text('Sign up', style: TextStyle(fontSize: 17),),
-                        ),
+                          } else if (!agreePersonalData) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Please agree with identification by Phone Number')),
+                            );
+                          }
+                        },
+                        child: const Text('Sign up', style: TextStyle(fontSize: 17)),
                       ),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
+                    ),
+
                       
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

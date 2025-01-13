@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voumarketinggame/pages/welcome_page.dart';
+import 'package:voumarketinggame/pages/signup_infor_page.dart';
 import 'package:voumarketinggame/theme/theme.dart';
 
 
@@ -181,12 +181,11 @@ void _checkOtpComplete() {
                             ? () {
                                 // ignore: unused_local_variable
                                 String otpCode = _controllers.map((c) => c.text).join();
-                                Navigator.pushAndRemoveUntil(
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (e) => const WelcomeScreen(),
+                                    builder: (e) => const UserInfoScreen(),
                                   ),
-                                  (route) => false,
                                 );
                               }
                             : null, 
