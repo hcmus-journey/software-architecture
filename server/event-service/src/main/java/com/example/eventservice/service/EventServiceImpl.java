@@ -138,6 +138,21 @@ public class EventServiceImpl implements EventService {
         eventDto.setTotalVouchers(eventVoucherDto.getTotalVouchers());
         eventDto.setRedeemedVouchers(eventVoucherDto.getRedeemedVouchers());
         eventDto.setDiscountPercentage(eventVoucherDto.getDiscountPercentage());
+        eventDto.setGames(new ArrayList<>());
+
+        ShakeGameEvent shakeGameEvent = shakeGameEventRepository.findByEventId(eventDto.getEventId());
+
+        if (shakeGameEvent != null) {
+            GameDto gameDto = gameClient.getShakeGameInfo();
+            eventDto.getGames().add(gameDto);
+        }
+
+        QuizGameEvent quizGameEvent = quizGameEventRepository.findByEventId(eventDto.getEventId());
+
+        if (quizGameEvent != null) {
+            GameDto gameDto = gameClient.getQuizGameInfo();
+            eventDto.getGames().add(gameDto);
+        }
         return eventDto;
     }
 
