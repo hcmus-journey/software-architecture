@@ -46,7 +46,7 @@ public class EventServiceImpl implements EventService {
 
         newEvent.setCreatedAt(LocalDate.now());
 
-        newEvent.setStatus("PENDING");
+        newEvent.setStatus("ACCEPTED");
 
         UUID eventId = UUID.randomUUID();
 
@@ -89,7 +89,7 @@ public class EventServiceImpl implements EventService {
 
         event.setDescription(eventDto.getDescription());
 
-        event.setStatus("PENDING");
+        event.setStatus("ACCEPTED");
 
         eventRepository.save(event);
 
