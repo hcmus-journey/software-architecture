@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -67,5 +68,13 @@ public class VoucherController {
         VoucherDto voucherDto = voucherService.distributeVoucher(eventId, playerId);
 
         return ResponseEntity.ok(voucherDto);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<List<VoucherDto>> getVouchers(
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
+        return ResponseEntity.ok(voucherService.getVouchers(playerId));
     }
 }

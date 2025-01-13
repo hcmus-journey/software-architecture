@@ -24,6 +24,8 @@ public class VoucherDto {
 
     private LocalDateTime receivedAt;
 
+    private LocalDateTime expiredAt;
+
     private Double discount;
 
 }

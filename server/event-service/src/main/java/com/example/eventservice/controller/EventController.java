@@ -8,7 +8,6 @@ import com.example.eventservice.security.JwtUtil;
 import com.example.eventservice.security.UserRole;
 import com.example.eventservice.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -72,8 +71,7 @@ public class EventController {
     @RequestMapping(value = "/{eventId}", method = RequestMethod.GET)
     @Operation(tags = {"Brand", "Player", "Admin"}, summary = "Get an event")
     public ResponseEntity<EventDto> getEvent(
-            @PathVariable String eventId,
-            @RequestHeader("Authorization") String authorizationHeader) {
+            @PathVariable String eventId) {
 
         EventDto eventDto = eventService.getEvent(UUID.fromString(eventId));
 

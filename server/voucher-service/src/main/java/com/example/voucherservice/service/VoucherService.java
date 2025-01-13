@@ -12,5 +12,5 @@ public interface VoucherService {
     void useVoucher(UUID voucherId);
     void deleteVoucher(UUID eventId);
     EventVoucher getVoucher(UUID eventId);
-    List<EventVoucher> getVouchers();
+    List<VoucherDto> getVouchers(UUID playerId);
 }

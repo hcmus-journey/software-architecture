@@ -1,5 +1,7 @@
 package com.example.voucherservice.service;
 
+import com.example.voucherservice.client.EventClient;
+import com.example.voucherservice.dto.EventDto;
 import com.example.voucherservice.dto.VoucherDto;
 import com.example.voucherservice.entity.EventVoucher;
 import com.example.voucherservice.entity.Voucher;
@@ -22,6 +24,8 @@ public class VoucherServiceImpl implements VoucherService{
     final private EventVoucherRepository eventVoucherRepository;
 
     final private VoucherRepository voucherRepository;
+
+    final private EventClient eventClient;
 
     @Override
     public String generateVoucherCode() {
@@ -57,6 +61,12 @@ public class VoucherServiceImpl implements VoucherService{
 
         newVoucher.setDiscount(eventVoucher.getDiscountPercentage());
 
+        EventDto eventDto = eventClient.getEvent(eventId.toString());
+
+        System.out.println(eventDto.getEndTime().atStartOfDay());
+
+        newVoucher.setExpiredAt(eventDto.getEndTime().atStartOfDay());
+
         voucherRepository.save(newVoucher);
 
         return VoucherMapper.INSTANCE.convertToVoucherDto(newVoucher);
@@ -85,7 +95,10 @@ public class VoucherServiceImpl implements VoucherService{
     }
 
     @Override
-    public List<EventVoucher> getVouchers() {
-        return List.of();
+    public List<VoucherDto> getVouchers(UUID playerId) {
+        return voucherRepository.findByPlayerId(playerId)
+                .stream()
+                .map(VoucherMapper.INSTANCE::convertToVoucherDto)
+                .toList();
     }
 }

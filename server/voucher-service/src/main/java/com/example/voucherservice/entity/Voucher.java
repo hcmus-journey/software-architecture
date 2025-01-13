@@ -43,6 +43,10 @@ public class Voucher {
     private LocalDateTime receivedAt;
 
     @NotNull
+    @Column(name = "expired_at", nullable = false)
+    private LocalDateTime expiredAt;
+
+    @NotNull
     @Column(name = "discount")
     private Double discount;
 
