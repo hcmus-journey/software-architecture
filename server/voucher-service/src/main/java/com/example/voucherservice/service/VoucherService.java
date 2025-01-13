@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface VoucherService {
     String generateVoucherCode();
     VoucherDto distributeVoucher(UUID eventId, UUID playerId);
-    void useVoucher(UUID voucherId);
+    VoucherDto useVoucher(UUID eventId, String voucherCode);
     void deleteVoucher(UUID eventId);
     VoucherDto getVoucher(UUID voucherId);
     List<VoucherDto> getVouchers(UUID playerId);
