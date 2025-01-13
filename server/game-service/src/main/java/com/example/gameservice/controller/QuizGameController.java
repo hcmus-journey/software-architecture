@@ -58,6 +58,15 @@ public class QuizGameController {
         return ResponseEntity.ok(Map.of("message", "Quiz updated successfully"));
     }
 
+    @RequestMapping(value = "/quizzes/{quizId}", method = RequestMethod.DELETE)
+    @Operation(tags = "Admin", description = "Delete a quiz in the system.")
+    public ResponseEntity<Map<String, String>> deleteQuiz(
+            @PathVariable String quizId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        quizGameService.deleteQuiz(UUID.fromString(quizId));
+        return ResponseEntity.ok(Map.of("message", "Quiz deleted successfully"));
+    }
+
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     @Operation(tags = "Player", description = "Start a quiz game.")
     public ResponseEntity<List<QuizDto>> startQuizGame(

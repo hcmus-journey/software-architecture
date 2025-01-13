@@ -69,6 +69,8 @@ public class QuizGameServiceImpl implements QuizGameService {
         quizRepository.save(quiz);
     }
 
+
+
     @Override
     public List<QuizDto> startQuizGame(UUID eventId, UUID playerId) {
         QuizGameEventDto quizGameEventDto = eventClient.getQuizGameEvents(eventId.toString());
@@ -98,4 +100,11 @@ public class QuizGameServiceImpl implements QuizGameService {
         quizGameResultRepository.save(quizGameResult);
         return voucherDto;
     }
+
+    @Override
+    public void deleteQuiz(UUID quizId) {
+        quizRepository.deleteById(quizId);
+    }
+
+
 }

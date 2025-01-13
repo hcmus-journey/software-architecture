@@ -14,4 +14,5 @@ public interface QuizGameService {
     void addQuiz(QuizDto quizDto);
     List<QuizDto> startQuizGame(UUID eventId, UUID playerId);
     VoucherDto endQuizGame(UUID playerId, QuizGameDto quizGameDto);
+    void deleteQuiz(UUID quizId);
 }
