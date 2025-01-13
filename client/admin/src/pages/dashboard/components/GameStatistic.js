@@ -49,7 +49,7 @@ function GameStatistic() {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>Total campaigns</strong> added to each game
+              &nbsp;<strong>Total events</strong> added to each game
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -83,7 +83,7 @@ function GameStatistic() {
                     })),
                     highlightScope: { fade: "global", highlight: "item" },
                     faded: { color: "gray" },
-                    valueFormatter: (item) => `${item.value} campaigns`,
+                    valueFormatter: (item) => `${item.value} events`,
                   },
                 ]}
                 sx={{

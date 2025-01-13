@@ -1,22 +1,22 @@
 import { useState, useEffect, useMemo } from "react";
-import { fetchLastestCampaigns } from "../api";
+import { fetchLastestEvents } from "../api";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import TimelineItem from "examples/Timeline/TimelineItem";
 
-function CampaignsOverview() {
+function EventsOverview() {
   const colorPalette = ["success", "error", "info", "warning", "primary"];
   const [loading, setLoading] = useState(true);
-  const [campaignsOverview, setCampaignsOverview] = useState([]);
+  const [eventsOverview, setEventsOverview] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [campaigns] = await Promise.all([fetchLastestCampaigns(5)]);
-        setCampaignsOverview(campaigns);
+        const [events] = await Promise.all([fetchLastestEvents(5)]);
+        setEventsOverview(events);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -31,7 +31,7 @@ function CampaignsOverview() {
       <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">
         <MDBox>
           <MDTypography variant="h6" fontWeight="medium">
-            Campaigns Overview
+            Events Overview
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
             <Icon
@@ -44,7 +44,7 @@ function CampaignsOverview() {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>Latest 5 campaigns</strong> created
+              &nbsp;<strong>Latest 5 events</strong> created
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -62,11 +62,11 @@ function CampaignsOverview() {
         </MDBox>
       ) : (
         <MDBox px={3} pt={2} pb={0}>
-          {campaignsOverview.map((item, index) => (
+          {eventsOverview.map((item, index) => (
             <TimelineItem
               key={index}
               color={colorPalette[index % 5]}
-              icon="campaign"
+              icon="event"
               title={item.name + " - " + item.brand}
               dateTime={item.datetime}
             />
@@ -77,4 +77,4 @@ function CampaignsOverview() {
   );
 }
 
-export default CampaignsOverview;
+export default EventsOverview;

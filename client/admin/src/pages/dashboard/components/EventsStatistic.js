@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { fetchCampaignsStat } from "../api";
+import { fetchEventsStat } from "../api";
 import { useMaterialUIController } from "context";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
@@ -10,10 +10,10 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
-function CampaignsStatistic() {
+function EventsStatistic() {
   const [controller, dispatch] = useMaterialUIController();
   const { darkMode } = controller;
-  const [campaignsStat, setCampaignsStat] = useState({ dates: [], data: [] });
+  const [eventsStat, setEventsStat] = useState({ dates: [], data: [] });
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState("2023-11-20");
   const [endDate, setEndDate] = useState("2024-11-24");
@@ -27,8 +27,8 @@ function CampaignsStatistic() {
   const handleApply = async () => {
     setLoading(true);
     try {
-      const [campaigns] = await Promise.all([fetchCampaignsStat(startDate, endDate)]);
-      setCampaignsStat(campaigns);
+      const [events] = await Promise.all([fetchEventsStat(startDate, endDate)]);
+      setEventsStat(events);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -37,16 +37,16 @@ function CampaignsStatistic() {
   };
   const chartData = useMemo(
     () => ({
-      labels: campaignsStat.dates,
+      labels: eventsStat.dates,
       datasets: [
         {
-          label: "Number of campaigns",
+          label: "Number of events",
           color: "primary",
-          data: campaignsStat.data,
+          data: eventsStat.data,
         },
       ],
     }),
-    [campaignsStat]
+    [eventsStat]
   );
   useEffect(() => {
     handleApply();
@@ -57,7 +57,7 @@ function CampaignsStatistic() {
       <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">
         <MDBox>
           <MDTypography variant="h6" fontWeight="medium">
-            Campaigns Statistic
+            Events Statistic
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
             <Icon
@@ -70,7 +70,7 @@ function CampaignsStatistic() {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>Number of campaigns</strong> created
+              &nbsp;<strong>Number of events</strong> created
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -113,4 +113,4 @@ function CampaignsStatistic() {
   );
 }
 
-export default CampaignsStatistic;
+export default EventsStatistic;

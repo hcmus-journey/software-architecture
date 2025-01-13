@@ -38,7 +38,7 @@ function getLast12Months() {
 
 function AccountsStatistic() {
   const accountTypes = [
-    { type: "Counterpart", icon: "business" },
+    { type: "Brand", icon: "business" },
     { type: "Player", icon: "person" },
   ];
   const [accountsStat, setAccountsStat] = useState([]);

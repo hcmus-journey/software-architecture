@@ -15,6 +15,7 @@ Coded by www.creative-tim.com
 import { useState, useEffect } from "react";
 import { fetchAllQuizzes } from "./api";
 import { ModalProvider } from "./context";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
@@ -30,6 +31,7 @@ import AddNewButton from "./components/AddNewButton";
 function Quizzes() {
   const [loading, setLoading] = useState(false);
   const [quizzes, setQuizzes] = useState([]);
+  const navigate = useNavigate();
 
   const updateQuiz = (quiz) => {
     setQuizzes((prev) => {
@@ -61,6 +63,10 @@ function Quizzes() {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/login");
+    }
     fetchData();
   }, []);
 

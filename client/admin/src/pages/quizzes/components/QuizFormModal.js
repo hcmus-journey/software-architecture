@@ -88,7 +88,7 @@ function QuizFormModal({ updateQuiz }) {
     try {
       if (isAdding) {
         const id = await addNewQuiz(updatedQuiz);
-        if (id != null) {
+        if (id != null && id != "") {
           updatedQuiz.quizId = id;
           updateQuiz(updatedQuiz);
           handleSuccess(successMessage);

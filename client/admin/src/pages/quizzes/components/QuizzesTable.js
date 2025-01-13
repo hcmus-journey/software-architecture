@@ -33,8 +33,8 @@ function QuizzesTable({ quizzes, deleteQuiz }) {
       toggleModal(true);
     }
   };
-  const handleDelete = (id) => {
-    const isSuccess = delQuiz(id);
+  const handleDelete = async (id) => {
+    const isSuccess = await delQuiz(id);
     if (isSuccess) {
       deleteQuiz(id);
       handleSuccess("Delete the quiz successful!");

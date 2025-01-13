@@ -3,21 +3,6 @@ import api from "api/index.js";
 const status = ["BANNED", "ACTIVE", "INACTIVE"];
 const roles = ["ADMIN", "PLAYER", "BRAND"];
 
-// let dbAccounts = [
-//   {
-//     id: crypto.randomUUID(),
-//     username: "kiet_tran",
-//     role: "ADMIN",
-//     status: "ACTIVE",
-//   },
-//   {
-//     id: crypto.randomUUID(),
-//     username: "lan_nguyen",
-//     role: "PLAYER",
-//     status: "INACTIVE",
-//   },
-// ];
-
 export const fetchAllAccounts = async () => {
   try {
     const response = await api.get("/api/admin/users");

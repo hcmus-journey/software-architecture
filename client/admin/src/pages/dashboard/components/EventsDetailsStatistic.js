@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { fetchAllCampaigns, fetchCampaignsDetailsStat } from "../api";
+import { fetchAllEvents, fetchEventsDetailsStat } from "../api";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { useMaterialUIController } from "context";
 import { lineElementClasses, markElementClasses } from "@mui/x-charts/LineChart";
@@ -18,28 +18,28 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 
-function CampaignsDetailsStatistic() {
+function EventsDetailsStatistic() {
   const darkColors = ["#90caf9", "#f48fb1", "#a5d6a7"];
   const lightColors = ["#1976d2", "#d32f2f", "#388e3c"];
   const [controller, dispatch] = useMaterialUIController();
   const { darkMode } = controller;
-  const campaignTypes = [
-    { type: "All Campaigns", icon: "bookmarks" },
-    { type: "One Campaign", icon: "bookmark" },
+  const eventTypes = [
+    { type: "All Events", icon: "bookmarks" },
+    { type: "One Event", icon: "bookmark" },
   ];
   const [loading, setLoading] = useState(true);
-  const [campaignTypeTab, setCampaignTypeTab] = useState(0);
-  const [campaigns, setCampaigns] = useState([]);
-  const [chosenCampaign, setChosenCampaign] = useState(null);
-  const [campaignsDetails, setCampaignsDetails] = useState({ users: [], vouchers: [], dates: [] });
+  const [eventTypeTab, setEventTypeTab] = useState(0);
+  const [events, setEvents] = useState([]);
+  const [chosenEvent, setChosenEvent] = useState(null);
+  const [eventsDetails, setEventsDetails] = useState({ users: [], vouchers: [], dates: [] });
   const [startDate, setStartDate] = useState("2023-11-20");
   const [endDate, setEndDate] = useState("2024-11-24");
 
-  const handleSetCampaignTypeTab = (event, newValue) => {
-    setCampaignTypeTab(newValue);
+  const handleSetEventTypeTab = (event, newValue) => {
+    setEventTypeTab(newValue);
   };
-  const handleChosenCampaignChange = (event) => {
-    setChosenCampaign(event.target.value);
+  const handleChosenEventChange = (event) => {
+    setChosenEvent(event.target.value);
   };
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
@@ -51,13 +51,9 @@ function CampaignsDetailsStatistic() {
     setLoading(true);
     try {
       const [details] = await Promise.all([
-        fetchCampaignsDetailsStat(
-          campaignTypeTab === 0 ? null : chosenCampaign,
-          startDate,
-          endDate
-        ),
+        fetchEventsDetailsStat(eventTypeTab === 0 ? null : chosenEvent, startDate, endDate),
       ]);
-      setCampaignsDetails(details);
+      setEventsDetails(details);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -68,46 +64,46 @@ function CampaignsDetailsStatistic() {
     () => ({
       series: [
         {
-          data: campaignsDetails.users,
+          data: eventsDetails.users,
           label: "users",
           color: "#cc527a",
         },
         {
-          data: campaignsDetails.vouchers,
+          data: eventsDetails.vouchers,
           label: "vouchers",
           color: "#778aab",
         },
       ],
       xAxis: {
         scaleType: "point",
-        data: campaignsDetails.dates,
+        data: eventsDetails.dates,
       },
     }),
-    [campaignsDetails]
+    [eventsDetails]
   );
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [allCampaigns] = await Promise.all([fetchAllCampaigns()]);
-        setCampaigns(allCampaigns);
-        setChosenCampaign(allCampaigns?.length > 0 ? allCampaigns[0] : null);
+        const [allEvents] = await Promise.all([fetchAllEvents()]);
+        setEvents(allEvents);
+        setChosenEvent(allEvents?.length > 0 ? allEvents[0] : null);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     const fetchData = async () => {
-      campaigns.length > 0 ? "" : await fetchAll();
+      events.length > 0 ? "" : await fetchAll();
       handleApply();
     };
     fetchData();
-  }, [chosenCampaign, campaignTypeTab]);
+  }, [chosenEvent, eventTypeTab]);
 
   return (
     <Card sx={{ height: "100%", minHeight: "595px" }}>
       <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">
         <MDBox>
           <MDTypography variant="h6" fontWeight="medium">
-            Campaigns Details Statistic
+            Events Details Statistic
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
             <Icon
@@ -121,12 +117,12 @@ function CampaignsDetailsStatistic() {
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
               &nbsp;<strong>Number of vouchers released and players playing </strong>
-              in campaign(s)
+              in event(s)
             </MDTypography>
           </MDBox>
         </MDBox>
         <MDBox>
-          {campaignTypeTab === 0 && (
+          {eventTypeTab === 0 && (
             <>
               <MDInput
                 type="date"
@@ -151,19 +147,19 @@ function CampaignsDetailsStatistic() {
               </MDButton>
             </>
           )}
-          {campaignTypeTab === 1 && (
+          {eventTypeTab === 1 && (
             <Box sx={{ minWidth: 250 }}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Chosen Campaign</InputLabel>
+                <InputLabel id="demo-simple-select-label">Chosen Event</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={chosenCampaign}
-                  label="Chosen campaign"
-                  onChange={handleChosenCampaignChange}
+                  value={chosenEvent}
+                  label="Chosen event"
+                  onChange={handleChosenEventChange}
                   sx={{ padding: "12px 2px" }}
                 >
-                  {campaigns.map((item, index) => (
+                  {events.map((item, index) => (
                     <MenuItem key={index} value={item}>
                       {item}
                     </MenuItem>
@@ -173,8 +169,8 @@ function CampaignsDetailsStatistic() {
             </Box>
           )}
         </MDBox>
-        <Tabs orientation="horizontal" value={campaignTypeTab} onChange={handleSetCampaignTypeTab}>
-          {campaignTypes.map((item, index) => (
+        <Tabs orientation="horizontal" value={eventTypeTab} onChange={handleSetEventTypeTab}>
+          {eventTypes.map((item, index) => (
             <Tab
               key={index}
               label={item.type}
@@ -258,4 +254,4 @@ function CampaignsDetailsStatistic() {
   );
 }
 
-export default CampaignsDetailsStatistic;
+export default EventsDetailsStatistic;

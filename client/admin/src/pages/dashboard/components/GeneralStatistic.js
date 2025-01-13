@@ -1,35 +1,35 @@
 import { useState, useEffect } from "react";
 import {
-  fetchGeneralCampaignsStat,
+  fetchGeneralEventsStat,
   fetchGeneralPlayersStat,
-  fetchGeneralCounterpartsStat,
-  fetchGeneralIncomesStat,
+  fetchGeneralBrandsStat,
+  fetchGeneralTotalEventsStat,
 } from "../api";
 import Grid from "@mui/material/Grid";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import MDBox from "components/MDBox";
 
 function GeneralStatistic() {
-  const [campaignsStat, setCampaignsStat] = useState(null);
+  const [eventsStat, setEventsStat] = useState(null);
   const [playersStat, setPlayersStat] = useState(null);
-  const [counterpartsStat, setCounterpartsStat] = useState(null);
-  const [incomesStat, setIncomesStat] = useState(null);
+  const [brandsStat, setBrandsStat] = useState(null);
+  const [totalEventsStat, setTotalEventsStat] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [campaigns, players, counterparts, incomes] = await Promise.all([
-          fetchGeneralCampaignsStat(),
+        const [events, players, brands, totalEvents] = await Promise.all([
+          fetchGeneralEventsStat(),
           fetchGeneralPlayersStat(),
-          fetchGeneralCounterpartsStat(),
-          fetchGeneralIncomesStat(),
+          fetchGeneralBrandsStat(),
+          fetchGeneralTotalEventsStat(),
         ]);
-        setCampaignsStat(campaigns);
+        setEventsStat(events);
         setPlayersStat(players);
-        setCounterpartsStat(counterparts);
-        setIncomesStat(incomes);
+        setBrandsStat(brands);
+        setTotalEventsStat(totalEvents);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -59,11 +59,11 @@ function GeneralStatistic() {
               <ComplexStatisticsCard
                 color="error"
                 icon="bookmark"
-                title="Campaigns This Month"
-                count={campaignsStat.total}
+                title="Events This Month"
+                count={eventsStat.total}
                 percentage={{
-                  color: campaignsStat.percentage >= 0 ? "success" : "error",
-                  amount: `${campaignsStat.percentage >= 0 ? "+" : ""}${campaignsStat.percentage}%`,
+                  color: eventsStat.percentage >= 0 ? "success" : "error",
+                  amount: `${eventsStat.percentage >= 0 ? "+" : ""}${eventsStat.percentage}%`,
                   label: "than last month",
                 }}
               />
@@ -74,7 +74,7 @@ function GeneralStatistic() {
               <ComplexStatisticsCard
                 color="info"
                 icon="person"
-                title="Players Playing Today"
+                title="Players This Month"
                 count={playersStat.total}
                 percentage={{
                   color: playersStat.percentage >= 0 ? "success" : "error",
@@ -89,13 +89,11 @@ function GeneralStatistic() {
               <ComplexStatisticsCard
                 color="success"
                 icon="handshake"
-                title="Counterparts This Month"
-                count={counterpartsStat.total}
+                title="Brands This Month"
+                count={brandsStat.total}
                 percentage={{
-                  color: counterpartsStat.percentage >= 0 ? "success" : "error",
-                  amount: `${counterpartsStat.percentage >= 0 ? "+" : ""}${
-                    counterpartsStat.percentage
-                  }%`,
+                  color: brandsStat.percentage >= 0 ? "success" : "error",
+                  amount: `${brandsStat.percentage >= 0 ? "+" : ""}${brandsStat.percentage}%`,
                   label: "than last month",
                 }}
               />
@@ -105,13 +103,13 @@ function GeneralStatistic() {
             <MDBox>
               <ComplexStatisticsCard
                 color="warning"
-                icon="attach_money"
-                title="Incomes"
-                count={incomesStat.total + "$"}
+                icon="campaign"
+                title="Total Events"
+                count={totalEventsStat.total}
                 percentage={{
                   color: "success",
                   amount: "",
-                  label: `Updated ${incomesStat.lastUpdateDays} days ago`,
+                  label: `Updated latest`,
                 }}
               />
             </MDBox>
