@@ -7,6 +7,6 @@ import java.util.List;
 
 @FeignClient(name = "account-service")
 public interface AccountClient {
-    @GetMapping("/api/users/total-players-brands")
+    @GetMapping("/api/admin/users/total-players-brands")
     List<Long> getTotalPlayersAndBrands();
 }
