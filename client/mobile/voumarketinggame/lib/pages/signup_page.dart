@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:voumarketinggame/pages/signin_page.dart';
 import 'package:voumarketinggame/pages/signup_infor_page.dart';
-import 'package:voumarketinggame/providers/auth_provider.dart';
 import 'package:voumarketinggame/theme/theme.dart';
 import 'package:voumarketinggame/widgets/scaffold_widget.dart';
 
@@ -21,13 +19,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formSignupKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
 
   @override
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
-    _phoneNumberController.dispose();
     super.dispose();
   }
 
@@ -138,41 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-
-                      // Phone Number
-                      TextFormField(
-                        controller: _phoneNumberController,
-                        keyboardType: TextInputType.number, 
-                        inputFormatters: [FilteringTextInputFormatter.digitsOnly], 
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Phone Number';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          label: const Text('Phone Number'),
-                          hintText: 'Enter Phone Number',
-                          hintStyle: const TextStyle(
-                            color: Colors.black26,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, 
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, 
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
+                      
 
                       const SizedBox(
                         height: 25.0,
@@ -207,71 +169,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 25.0,
                       ),
+
                       // signup button
                       SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () async {
-                          if (_formSignupKey.currentState!.validate() && agreePersonalData) {
-                            final username = _usernameController.text.trim();
-                            final password = _passwordController.text.trim();
-
-                            final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-                      
-                            final isSignUpSuccess = await authProvider.signUp(
-                              username: username,
-                              password: password,
-                            );
-
-                            if (isSignUpSuccess) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Sign up successful. Logging in...'),
+                        onPressed: () {
+                            if (_formSignupKey.currentState!.validate() &&
+                                agreePersonalData) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => UserInfoScreen(
+                                    username: _usernameController.text.trim(),
+                                    password: _passwordController.text.trim(),
+                                  ),
                                 ),
                               );
-
-                             
-                              try {
-                                await authProvider.login(username: username, password: password);
-
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Login successful. Proceed to enter user info.'),
-                                  ),
-                                );
-
-                       
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const UserInfoScreen(),
-                                  ),
-                                );
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Login failed: $e')),
-                                );
-                              }
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(authProvider.errorMessage ?? 'Sign up failed'),
-                                ),
-                              );
-                            }
                           } else if (!agreePersonalData) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                  content: Text('Please agree with identification by Phone Number')),
-                            );
-                          }
-                        },
-                        child: const Text('Sign up', style: TextStyle(fontSize: 17)),
+                                content: Text('Please agree with identification by Phone Number')),
+                              );
+                            }
+                          },
+                          child: const Text('Continue to Register', style: TextStyle(fontSize: 17)),
+                        ),
                       ),
-                    ),
 
-                      
+                      const SizedBox(
+                        height: 15.0,
+                      ),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

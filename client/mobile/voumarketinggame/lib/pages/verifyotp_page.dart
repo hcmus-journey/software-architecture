@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voumarketinggame/pages/signup_infor_page.dart';
+import 'package:voumarketinggame/pages/welcome_page.dart';
 import 'package:voumarketinggame/theme/theme.dart';
 
 
@@ -184,7 +184,7 @@ void _checkOtpComplete() {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (e) => const UserInfoScreen(),
+                                    builder: (e) => const WelcomeScreen(),
                                   ),
                                 );
                               }

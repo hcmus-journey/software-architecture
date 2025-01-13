@@ -44,6 +44,10 @@ dependencies:
   circular_countdown_timer: ^0.2.4
   fl_chart: ^0.69.2
   shared_preferences: ^2.3.5
+  image_picker: ^1.1.2
+  flutter_image_compress: ^2.4.0
+  cached_network_image: ^3.4.1
+  http_parser: ^4.0.2
 
 dev_dependencies:
   flutter_test:

@@ -2,10 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart'; 
 import 'package:voumarketinggame/pages/welcome_page.dart';
+import 'package:voumarketinggame/providers/auth_provider.dart';
 import 'package:voumarketinggame/providers/user_provider.dart';
 
 class UserInfoScreen extends StatefulWidget {
-  const UserInfoScreen({super.key});
+  final String username;
+  final String password;
+
+  const UserInfoScreen({
+    required this.username,
+    required this.password,
+    super.key,
+  });
 
   @override
   State<UserInfoScreen> createState() => _UserInfoScreenState();
@@ -17,7 +25,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _birthdayController = TextEditingController();
-  final TextEditingController _genderController = TextEditingController();
+
+  String? _selectedGender;
 
   @override
   void dispose() {
@@ -25,7 +34,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     _emailController.dispose();
     _phoneController.dispose();
     _birthdayController.dispose();
-    _genderController.dispose();
     super.dispose();
   }
 
@@ -46,11 +54,12 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('User Information'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.pinkAccent,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -100,16 +109,34 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       controller: _birthdayController,
                       label: 'Birthday',
                       hint: 'Select your birthday (YYYY-MM-DD)',
+                      suffixIcon: const Icon(Icons.calendar_today, color: Colors.grey),
                       validator: (value) => value!.isEmpty ? 'Please select your birthday' : null,
                     ),
                   ),
                 ),
                 const SizedBox(height: 15),
-                _buildInputField(
-                  controller: _genderController,
-                  label: 'Gender',
-                  hint: 'Enter your gender',
-                  validator: (value) => value!.isEmpty ? 'Please enter your gender' : null,
+                DropdownButtonFormField<String>(
+                  value: _selectedGender,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedGender = value?.toUpperCase();
+                    });
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Gender',
+                    hintText: 'Select your gender',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  items: ['MALE', 'FEMALE', 'OTHER']
+                      .map((gender) => DropdownMenuItem(
+                            value: gender,
+                            child: Text(gender),
+                          ))
+                      .toList(),
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Please select your gender' : null,
                 ),
                 const SizedBox(height: 25),
                 ElevatedButton(
@@ -119,39 +146,52 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         'name': _nameController.text.trim(),
                         'email': _emailController.text.trim(),
                         'phoneNumber': _phoneController.text.trim(),
-                        'avatarUrl': "", // Avatar không được cập nhật
+                        'avatarUrl': "",
                         'birthday': _birthdayController.text.trim(),
-                        'gender': _genderController.text.trim(),
+                        'gender': _selectedGender ?? "",
                       };
 
-                      final isSuccess = await userProvider.updateUser(
-                        userInfo: userInfo,
-                        context: context,
+                      final isSignUpSuccess = await authProvider.signUp(
+                        username: widget.username,
+                        password: widget.password,
                       );
 
-                      if (isSuccess) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('User information updated successfully!')),
+                      if (isSignUpSuccess) {
+                        final isUpdateSuccess = await userProvider.updateUserActive(
+                          userInfo: userInfo,
+                          context: context,
                         );
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (e) => const WelcomeScreen()),
-                          (route) => false,
-                        );
+
+                        if (isUpdateSuccess) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content:
+                                    Text('User information updated successfully!')),
+                          );
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (e) => const WelcomeScreen(),
+                            ),
+                            (route) => false,
+                          );
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(userProvider.errorMessage ?? 'Failed to update user info')),
+                          const SnackBar(content: Text('Sign up failed')),
                         );
                       }
                     }
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   child: userProvider.isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Submit', style: TextStyle(fontSize: 18)),
+                      : const Text('Sign Up', style: TextStyle(fontSize: 18)),
                 ),
               ],
             ),
@@ -167,6 +207,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     required String hint,
     TextInputType keyboardType = TextInputType.text,
     String? Function(String?)? validator,
+    Widget? suffixIcon,
   }) {
     return TextFormField(
       controller: controller,
@@ -175,9 +216,14 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
+        suffixIcon: suffixIcon,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.grey),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
           borderRadius: BorderRadius.circular(10),
         ),
       ),

@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:voumarketinggame/pages/inventory_screen.dart';
+import 'package:voumarketinggame/pages/profile_user_page.dart';
+import 'package:voumarketinggame/providers/user_provider.dart';
+import 'package:voumarketinggame/widgets/item_menu_widget.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -10,52 +14,134 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
+
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      setState(() {
+        _isLoading = true;
+      });
+      await _fetchUserInfo();
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+
+  Future<void> _fetchUserInfo() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.fetchUserProfile(context);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
+
+    if (_isLoading) {
+      return const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (userProvider.errorMessage != null) {
+      return Scaffold(
+        backgroundColor: Colors.yellow.shade200,
+        body: Center(
+          child: Text(
+            userProvider.errorMessage!,
+            style: const TextStyle(color: Colors.red, fontSize: 16),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: Column(
         children: [
-          Container(
-            color: Colors.yellow.shade200,
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                const CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage('assets/images/toco.png'),
-                ),
-                const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Nguyễn Xuân Hoà',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+          Consumer<UserProvider>(
+            builder: (context, userProvider, child) {
+
+              if (userProvider.isLoading) {
+                return Container(
+                  color: Colors.yellow.shade200,
+                  padding: const EdgeInsets.all(16),
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+
+              if (userProvider.errorMessage != null) {
+                return Container(
+                  color: Colors.yellow.shade200,
+                  padding: const EdgeInsets.all(16),
+                  child: Center(
+                    child: Text(
+                      userProvider.errorMessage!,
+                      style: const TextStyle(color: Colors.red),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 4),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Text(
-                        '0336999***',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
+                  ),
+                );
+              }
+
+              return Container(
+                color: Colors.yellow.shade200,
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                    radius: 30,
+                    backgroundImage: user?.avatarUrl != null && user!.avatarUrl.isNotEmpty
+                        ? NetworkImage(user.avatarUrl)
+                        : const AssetImage('assets/images/logo.png') as ImageProvider,
+                    onBackgroundImageError: (_, __) {
+                      print('Failed to load image from URL.');
+                    },
+                  ),
+
+
+                    const SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user?.name ?? 'Loading...',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            user?.phoneNumber ?? 'Loading...',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
           Container(
             decoration: BoxDecoration(
@@ -75,18 +161,29 @@ class _MenuScreenState extends State<MenuScreen> {
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Row(
               children: [
-                const Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(CupertinoIcons.qrcode, color: Colors.pink),
-                      SizedBox(width: 8),
-                      Text(
-                        'Trang cá nhân',
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w600),
-                      ),
-                    ],
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const UserProfileScreen(), // Tab trang cá nhân
+                        ),
+                      );
+                    },
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(CupertinoIcons.qrcode, color: Colors.pink),
+                        SizedBox(width: 8),
+                        Text(
+                          'Trang cá nhân',
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Container(
@@ -157,10 +254,6 @@ class _MenuScreenState extends State<MenuScreen> {
                           title: 'Thông tin chung',
                         ),
                         const MenuItem(
-                          icon: Icons.palette_outlined,
-                          title: 'Thay đổi chủ đề màu',
-                        ),
-                        const MenuItem(
                           icon: CupertinoIcons.globe,
                           title: 'Ngôn ngữ',
                         ),
@@ -223,69 +316,3 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 }
 
-class MenuItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final bool isNew;
-  final VoidCallback? onTap;
-
-  const MenuItem({
-    super.key,
-    required this.icon,
-    required this.title,
-    this.isNew = false,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 28, color: Colors.grey[700]),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            if (isNew)
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Text(
-                  'Mới',
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                ),
-              ),
-            const SizedBox(width: 7),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-          ],
-        ),
-      ),
-    );
-  }
-}
