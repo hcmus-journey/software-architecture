@@ -63,10 +63,11 @@ public class QuizGameServiceImpl implements QuizGameService {
     }
 
     @Override
-    public void addQuiz(QuizDto quizDto) {
+    public QuizDto addQuiz(QuizDto quizDto) {
         Quiz quiz = QuizMapper.INSTANCE.convertToQuiz(quizDto);
         quiz.setQuizId(UUID.randomUUID());
         quizRepository.save(quiz);
+        return QuizMapper.INSTANCE.convertToQuizDto(quiz);
     }
 
 
