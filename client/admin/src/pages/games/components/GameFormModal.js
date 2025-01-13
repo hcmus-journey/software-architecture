@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { loadAllTypes, editGame } from "../api";
+import { editGame } from "../api";
 import { useNotification } from "context/NotificationContext";
 import { useModalContext } from "../context";
 import { styled } from "@mui/material/styles";
@@ -46,7 +46,6 @@ const style = {
 function AccountFormModal({ updateGames }) {
   const { modal, toggleModal, cloneGame, handleChange } = useModalContext();
   const [_, dispatch] = useNotification();
-  const [types, setTypes] = useState([]);
 
   const handleSuccess = (msg) => {
     dispatch({ type: "SHOW_SUCCESS", payload: msg });
@@ -55,39 +54,25 @@ function AccountFormModal({ updateGames }) {
     dispatch({ type: "SHOW_ERROR", payload: msg });
   };
   const handleApply = async () => {
-    const isMissingInfo = !cloneGame.title || !cloneGame.guide;
+    const isMissingInfo = !cloneGame.name || !cloneGame.description;
     if (isMissingInfo) {
-      handleError("Vui lòng nhập đầy đủ thông tin game!");
+      handleError("Please fill in all the fields!");
       return;
     }
-    const successMessage = "Chỉnh sửa thành công!";
-    const errorMessage = "Chỉnh sửa thất bại!";
     try {
-      const response = editGame(cloneGame);
-      if (response.status === 200) {
+      const isSuccess = await editGame(cloneAccount);
+      if (isSuccess) {
         const updatedGame = { ...cloneGame };
         updateGames(updatedGame);
-        handleSuccess(successMessage);
+        handleSuccess("Edit the game successful!");
       } else {
-        handleError(errorMessage);
+        handleError("Fail to edit the game!");
       }
     } catch (error) {
-      handleError("Đã xảy ra lỗi khi xử lý!");
+      handleError("Something wrong has happened!");
     }
     toggleModal(false);
   };
-  const fetchData = async () => {
-    try {
-      const [typesRes] = await Promise.all([loadAllTypes()]);
-      setTypes(typesRes.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   return (
     <MDBox>
@@ -118,10 +103,10 @@ function AccountFormModal({ updateGames }) {
                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
                   objectFit: "cover",
                 }}
-                image={cloneGame.image}
+                image={cloneGame.imageUrl}
                 alt="green iguana"
               />
-              <Button
+              {/* <Button
                 sx={{ margin: "20px 10px 10px" }}
                 component="label"
                 role={undefined}
@@ -134,7 +119,7 @@ function AccountFormModal({ updateGames }) {
                   type="file"
                   onChange={(e) => handleChange("image", e.target.files)}
                 />
-              </Button>
+              </Button> */}
             </Grid>
             <Grid
               item
@@ -154,14 +139,14 @@ function AccountFormModal({ updateGames }) {
                   fontWeight: 900,
                 }}
               >
-                Title
+                Name
               </Typography>
               <MDInput
                 fullWidth
                 className="input"
                 type="text"
-                value={cloneGame.title}
-                onChange={(e) => handleChange("title", e.target.value)}
+                value={cloneGame.name}
+                onChange={(e) => handleChange("name", e.target.value)}
               />
             </Grid>
             <Grid
@@ -191,11 +176,11 @@ function AccountFormModal({ updateGames }) {
                 rows={3}
                 className="input"
                 type="text"
-                value={cloneGame.guide}
-                onChange={(e) => handleChange("guide", e.target.value)}
+                value={cloneGame.description}
+                onChange={(e) => handleChange("description", e.target.value)}
               />
             </Grid>
-            <Grid
+            {/* <Grid
               item
               xs={12}
               md={7}
@@ -255,7 +240,7 @@ function AccountFormModal({ updateGames }) {
                   <div className="slider"></div>
                 </label>
               </MDBox>
-            </Grid>
+            </Grid> */}
           </Grid>
           <Stack
             direction="row"

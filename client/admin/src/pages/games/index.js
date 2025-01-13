@@ -13,6 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 import { ModalProvider } from "./context";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
@@ -20,6 +21,15 @@ import MDBox from "components/MDBox";
 import GamesTable from "./components/GamesTable";
 
 function Games() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />

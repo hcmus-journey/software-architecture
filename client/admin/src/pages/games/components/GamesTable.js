@@ -63,7 +63,7 @@ function AccountsTable() {
           </MDBox>
         ) : (
           games.map((card) => (
-            <Grid key={card.id} item xs={12} md={3}>
+            <Grid key={card.gameId} item xs={12} md={3}>
               <Card sx={{ padding: "0px" }}>
                 <CardActionArea
                   sx={{
@@ -85,34 +85,19 @@ function AccountsTable() {
                       objectFit: "cover",
                       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
                     }}
-                    image={card.image}
-                    alt={card.title}
+                    image={card.imageUrl}
+                    alt={card.name}
                   />
                   <CardContent sx={{ width: "88%", padding: "15px 0px 25px" }}>
                     <Typography gutterBottom variant="h5" component="div">
-                      {card.title}
+                      {card.name}
                     </Typography>
                     <Typography variant="body2" sx={{ color: "gray", fontSize: "15px" }}>
-                      {card.guide}
+                      {card.description}
                     </Typography>
                     <Box sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 1 }}>
                       <Chip
                         label={card.type}
-                        sx={{
-                          backgroundColor: darkMode
-                            ? "rgba(228, 74, 228, 0.1)"
-                            : "rgba(128, 0, 128, 0.1)",
-                          color: darkMode ? "rgb(255, 70, 255)" : "purple",
-                          fontSize: "0.75rem",
-                          borderRadius: "9999px",
-                          paddingX: 1.25,
-                          paddingY: 0.5,
-                        }}
-                      />
-                      <Chip
-                        label={
-                          card.tradable ? "Tradable".toUpperCase() : "Untradable".toUpperCase()
-                        }
                         sx={{
                           backgroundColor: darkMode
                             ? "rgba(228, 74, 228, 0.1)"

@@ -7,24 +7,22 @@ ModalContext.displayName = "ModalContext";
 export function ModalProvider({ children }) {
   const [modal, setModal] = useState(false);
   const [cloneGame, setCloneGame] = useState({
-    id: "",
-    title: "",
-    guide: "",
-    image: "",
-    type: "QUIZ",
-    collectable: false,
+    gameId: "",
+    name: "",
+    description: "",
+    imageUrl: "",
+    type: "",
   });
 
   const toggleModal = (open) => setModal(open);
   const changeCloneGame = (g) => {
     if (g === null) {
       setCloneGame({
-        id: "",
-        title: "",
-        guide: "",
-        image: "",
-        type: "QUIZ",
-        collectable: false,
+        gameId: "",
+        name: "",
+        description: "",
+        imageUrl: "",
+        type: "",
       });
     } else {
       setCloneGame({ ...g });

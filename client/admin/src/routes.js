@@ -39,7 +39,7 @@ Coded by www.creative-tim.com
 import Dashboard from "pages/dashboard";
 import Accounts from "pages/accounts";
 import Games from "pages/games";
-import Test from "pages/test";
+import Quizzes from "pages/quizzes";
 import Login from "pages/login";
 import Icon from "@mui/material/Icon";
 
@@ -70,11 +70,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Test",
-    key: "test",
-    icon: <Icon fontSize="small">science</Icon>,
-    route: "/test",
-    component: <Test />,
+    name: "Quizzes",
+    key: "quizzes",
+    icon: <Icon fontSize="small">quiz</Icon>,
+    route: "/quizzes",
+    component: <Quizzes />,
   },
   {
     type: "collapse",

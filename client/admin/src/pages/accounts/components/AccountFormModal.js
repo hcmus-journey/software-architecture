@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import { addNewAccount, editAccount, loadAllRoles } from "../api";
+import { editAccount, getAllRoles, getAllStatus } from "../api";
 import { useNotification } from "context/NotificationContext";
 import { useModalContext } from "../context";
 import Modal from "@mui/material/Modal";
@@ -32,6 +32,7 @@ function AccountFormModal({ updateAccount }) {
   const { modal, toggleModal, cloneAccount, handleChange } = useModalContext();
   const [_, dispatch] = useNotification();
   const [roles, setRoles] = useState([]);
+  const [status, setStatus] = useState([]);
 
   const handleSuccess = (msg) => {
     dispatch({ type: "SHOW_SUCCESS", payload: msg });
@@ -40,48 +41,32 @@ function AccountFormModal({ updateAccount }) {
     dispatch({ type: "SHOW_ERROR", payload: msg });
   };
   const handleApply = async () => {
-    const isAdding = !cloneAccount.hasOwnProperty("id");
-    const isMissingInfo =
-      !cloneAccount.name ||
-      !cloneAccount.username ||
-      !cloneAccount.email ||
-      !cloneAccount.phone ||
-      isAdding
-        ? !cloneAccount.password
-        : false;
+    const isMissingInfo = !cloneAccount.username;
     if (isMissingInfo) {
-      handleError("Vui lòng nhập đầy đủ thông tin người dùng!");
+      handleError("Please fill in all the fields!");
       return;
     }
-    const successMessage = isAdding
-      ? "Thêm thành công người dùng mới!"
-      : "Chỉnh sửa thành công tài khoản!";
-    const errorMessage = isAdding ? "Thêm người dùng mới thất bại!" : "Chỉnh sửa thất bại!";
     try {
-      const response = isAdding ? addNewAccount(cloneAccount) : editAccount(cloneAccount);
-      if (response.status === 200) {
-        const updatedAcc = isAdding ? { ...cloneAccount, id: response.id } : { ...cloneAccount };
+      const isSuccess = await editAccount(cloneAccount);
+      if (isSuccess) {
+        const updatedAcc = { ...cloneAccount };
         updateAccount(updatedAcc);
-        handleSuccess(successMessage);
+        handleSuccess("Edit the account successful!");
       } else {
-        handleError(errorMessage);
+        handleError("Fail to edit the account!");
       }
     } catch (error) {
-      handleError("Đã xảy ra lỗi khi xử lý tài khoản!");
+      handleError("Something wrong has happened!");
     }
     toggleModal(false);
   };
-  const fetchData = async () => {
-    try {
-      const [rolesRes] = await Promise.all([loadAllRoles()]);
-      setRoles(rolesRes.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+  const loadData = () => {
+    setRoles(getAllRoles());
+    setStatus(getAllStatus());
   };
 
   useEffect(() => {
-    fetchData();
+    loadData();
   }, []);
 
   return (
@@ -101,18 +86,12 @@ function AccountFormModal({ updateAccount }) {
                 fontSize: 25,
               }}
             >
-              {cloneAccount.hasOwnProperty("id") ? "Edit Account" : "Add New Account"}
+              Edit Account
             </MDTypography>
           </MDBox>
         </MDBox>
         <Grid container spacing={3}>
-          {[
-            { label: "Name", key: "name", type: "text" },
-            { label: "Username", key: "username", type: "text" },
-            { label: "Email", key: "email", type: "email" },
-            { label: "Phone", key: "phone", type: "text" },
-            { label: "Password", key: "password", type: "text" },
-          ].map(({ label, key, type }) => (
+          {[{ label: "Username", key: "username", type: "text" }].map(({ label, key, type }) => (
             <Grid
               key={key}
               item
@@ -132,20 +111,14 @@ function AccountFormModal({ updateAccount }) {
                 {label}
               </Typography>
               <MDInput
-                placeholder={
-                  label === "Password" && cloneAccount.hasOwnProperty("id")
-                    ? "Type new password (*option)"
-                    : "Type here..."
-                }
+                placeholder="Type here..."
                 fullWidth
                 className="input"
-                type={type}
                 value={cloneAccount[key]}
-                onChange={(e) => handleChange(key, e.target.value)}
               />
             </Grid>
           ))}
-          <Grid item xs={12} md={7} display="flex" justifyContent="flex-start" alignItems="center">
+          <Grid item xs={12} md={6} display="flex" justifyContent="flex-start" alignItems="center">
             <Typography
               variant="h6"
               sx={{
@@ -171,30 +144,31 @@ function AccountFormModal({ updateAccount }) {
               ))}
             </Select>
           </Grid>
-          <Grid item xs={12} md={5} display="flex" justifyContent="flex-end" alignItems="center">
+          <Grid item xs={12} md={6} display="flex" justifyContent="flex-start" alignItems="center">
             <Typography
-              mr={2}
               variant="h6"
               sx={{
+                width: "110px",
                 color: "#323232",
                 fontWeight: 900,
               }}
+              mr={1.9}
             >
-              Active
+              Status
             </Typography>
-            <MDBox>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  className="checkbox"
-                  checked={cloneAccount.status.toUpperCase() === "ACTIVE" ? true : false}
-                  onChange={(e) =>
-                    handleChange("status", e.target.checked === true ? "ACTIVE" : "INACTIVE")
-                  }
-                />
-                <div className="slider"></div>
-              </label>
-            </MDBox>
+            <Select
+              value={cloneAccount.status}
+              onChange={(e) => handleChange("status", e.target.value)}
+              sx={{ padding: "5px 2px", margin: "9px 0px 8px" }}
+              className="input"
+              fullWidth
+            >
+              {status.map((s) => (
+                <MenuItem key={s} value={s}>
+                  {s.toUpperCase()}
+                </MenuItem>
+              ))}
+            </Select>
           </Grid>
         </Grid>
         <Stack

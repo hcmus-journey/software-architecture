@@ -14,12 +14,10 @@ Coded by www.creative-tim.com
 */
 
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { login } from "./api.js";
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
-import Grid from "@mui/material/Grid";
-import MuiLink from "@mui/material/Link";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
@@ -28,24 +26,22 @@ import BasicLayout from "pages/login/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 function Basic() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState([]);
   const navigate = useNavigate();
 
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
   const handleLogin = async () => {
     try {
-      const response = await login(email, password);
+      const response = await login(username, password);
       if (response.success) {
         navigate("/dashboard");
-        setError("");
+        setError([]);
       } else {
-        setError(response.msg);
+        setError(response.message);
       }
     } catch (error) {
-      setError("An unexpected error occurred.");
+      setError(["An unexpected error occurred!"]);
     }
   };
 
@@ -76,10 +72,9 @@ function Basic() {
           <MDBox component="form" role="form">
             <MDBox mb={2}>
               <MDInput
-                type="email"
-                label="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                label="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 fullWidth
               />
             </MDBox>
@@ -92,25 +87,15 @@ function Basic() {
                 fullWidth
               />
             </MDBox>
-            {error && (
-              <MDBox mb={2}>
-                <MDTypography variant="caption" color="error">
-                  {error}
-                </MDTypography>
+            {error.length > 0 && (
+              <MDBox>
+                {error.map((err, index) => (
+                  <MDTypography key={index} variant="caption" color="error">
+                    *{err}
+                  </MDTypography>
+                ))}
               </MDBox>
             )}
-            <MDBox display="flex" alignItems="center" ml={-1}>
-              <Switch checked={rememberMe} onChange={handleSetRememberMe} />
-              <MDTypography
-                variant="button"
-                fontWeight="regular"
-                color="text"
-                onClick={handleSetRememberMe}
-                sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-              >
-                &nbsp;&nbsp;Remember me
-              </MDTypography>
-            </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" onClick={handleLogin} fullWidth>
                 login

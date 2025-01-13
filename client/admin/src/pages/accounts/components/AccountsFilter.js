@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useEffect, useState, Fragment } from "react";
-import { loadAllStatus, loadAllRoles } from "../api";
+import { getAllStatus, getAllRoles } from "../api";
 import { useMaterialUIController } from "context";
 import Box from "@mui/material/Box";
 import Icon from "@mui/material/Icon";
@@ -19,7 +19,7 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 
 function AccountFilterModal({ filters, changeFilters }) {
-  const sortFields = ["id", "name", "email", "username", "role", "status", "phone"];
+  const sortFields = ["id", "username", "role", "status"];
   const [controller, dispatch] = useMaterialUIController();
   const { darkMode } = controller;
   const [status, setStatus] = useState([]);
@@ -78,26 +78,21 @@ function AccountFilterModal({ filters, changeFilters }) {
     }
     setFilterModal(open);
   };
-  const fetchData = async () => {
-    try {
-      const [statusRes, rolesRes] = await Promise.all([loadAllStatus(), loadAllRoles()]);
-      setStatus(statusRes.data);
-      setRoles(rolesRes.data);
-      changeFilters({
-        keyword: keyword,
-        statusFilter: statusRes.data,
-        roleFilter: rolesRes.data,
-        sort: sort,
-      });
-      setStatusFilter(statusRes.data);
-      setRoleFilter(rolesRes.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+  const loadData = () => {
+    setStatus(getAllStatus());
+    setRoles(getAllRoles());
+    changeFilters({
+      keyword: keyword,
+      statusFilter: getAllStatus(),
+      roleFilter: getAllRoles(),
+      sort: sort,
+    });
+    setStatusFilter(getAllStatus());
+    setRoleFilter(getAllRoles());
   };
 
   useEffect(() => {
-    fetchData();
+    loadData();
   }, []);
 
   return (
@@ -135,7 +130,7 @@ function AccountFilterModal({ filters, changeFilters }) {
                 />
               </MDBox>
             </MDBox>
-            <MDBox px={3} pb={3.5}>
+            <MDBox px={3} pb={3}>
               <MDTypography variant="h6">Status</MDTypography>
               <FormGroup>
                 {status.map((s) => (
@@ -153,7 +148,7 @@ function AccountFilterModal({ filters, changeFilters }) {
                 ))}
               </FormGroup>
             </MDBox>
-            <MDBox px={3} pb={3.5}>
+            <MDBox px={3} pb={3}>
               <MDTypography variant="h6">Role</MDTypography>
               <FormGroup>
                 {roles.map((r) => (
@@ -171,7 +166,7 @@ function AccountFilterModal({ filters, changeFilters }) {
                 ))}
               </FormGroup>
             </MDBox>
-            <MDBox px={3} pb={5}>
+            <MDBox px={3} pb={4}>
               <MDTypography variant="h6">Sort</MDTypography>
               <Select
                 labelId="sort-field-select-label"
