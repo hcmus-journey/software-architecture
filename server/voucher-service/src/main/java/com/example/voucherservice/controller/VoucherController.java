@@ -1,6 +1,7 @@
 package com.example.voucherservice.controller;
 
 import com.example.voucherservice.dto.EventVoucherDto;
+import com.example.voucherservice.dto.UseVoucherRequest;
 import com.example.voucherservice.dto.VoucherDto;
 import com.example.voucherservice.security.JwtUtil;
 import com.example.voucherservice.service.EventVoucherService;
@@ -71,6 +72,7 @@ public class VoucherController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
+    @Operation(tags = "Player", description = "Get all vouchers for a player")
     public ResponseEntity<List<VoucherDto>> getVouchers(
             @RequestHeader("Authorization") String authorizationHeader) {
 
@@ -79,10 +81,24 @@ public class VoucherController {
     }
 
     @RequestMapping(value = "/{voucherId}", method = RequestMethod.GET)
+    @Operation(tags = "Player", description = "Get voucher by voucher id")
     public ResponseEntity<VoucherDto> getVoucher(
             @PathVariable String voucherId,
             @RequestHeader("Authorization") String authorizationHeader) {
 
         return ResponseEntity.ok(voucherService.getVoucher(UUID.fromString(voucherId)));
+    }
+
+    @RequestMapping(value = "/use", method = RequestMethod.PUT)
+    @Operation(tags = "Brand", description = "Get voucher from player and mark it as used")
+    public ResponseEntity<VoucherDto> applyDiscount(
+            @RequestBody UseVoucherRequest useVoucherRequest,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        VoucherDto voucherDto = voucherService
+                .useVoucher(
+                        UUID.fromString(useVoucherRequest.getEventId()),
+                        useVoucherRequest.getVoucherCode()
+                );
+        return ResponseEntity.ok(voucherDto);
     }
 }

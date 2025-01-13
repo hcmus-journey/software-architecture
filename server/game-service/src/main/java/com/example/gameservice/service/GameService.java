@@ -10,4 +10,5 @@ public interface GameService {
     GameDto getGameById(UUID gameId);
     void updateGame(UUID gameId, GameDto gameDto);
     GameDto getGameByType(String gameType);
+    List<Long> getTotalQuizAndShakeGameAttempts();
 }

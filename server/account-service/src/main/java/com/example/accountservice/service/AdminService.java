@@ -12,4 +12,5 @@ public interface AdminService {
     void setRole(UUID userId, UserRole role);
     void setStatus(UUID userId, UserStatus status);
     List<UserDto> getAllUsers();
+    List<Long> getTotalPlayersAndBrands();
 }

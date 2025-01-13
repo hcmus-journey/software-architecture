@@ -5,6 +5,8 @@ import com.example.gameservice.entity.Game;
 import com.example.gameservice.exception.BadRequestException;
 import com.example.gameservice.mapper.GameMapper;
 import com.example.gameservice.repository.GameRepository;
+import com.example.gameservice.repository.QuizGameResultRepository;
+import com.example.gameservice.repository.ShakeGameResultRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class GameServiceImpl implements GameService {
     final private GameRepository gameRepository;
+
+    final private QuizGameResultRepository quizGameResultRepository;
+
+    final private ShakeGameResultRepository shakeGameResultRepository;
 
     @Override
     public List<GameDto> getAllGames() {
@@ -62,5 +68,13 @@ public class GameServiceImpl implements GameService {
                 .findFirst()
                 .map(GameMapper.INSTANCE::convertToGameDto)
                 .orElse(null);
+    }
+
+    @Override
+    public List<Long> getTotalQuizAndShakeGameAttempts() {
+        return List.of(
+                quizGameResultRepository.count(),
+                shakeGameResultRepository.count()
+        );
     }
 }

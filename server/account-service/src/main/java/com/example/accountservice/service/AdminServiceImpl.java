@@ -44,4 +44,12 @@ public class AdminServiceImpl implements AdminService{
     public List<UserDto> getAllUsers() {
         return userRepository.findAll().stream().map(UserMapper.INSTANCE::convertToUserDto).toList();
     }
+
+    @Override
+    public List<Long> getTotalPlayersAndBrands() {
+        List<Long> totalPlayersAndBrands = new ArrayList<>();
+        totalPlayersAndBrands.add(userRepository.countByRole(UserRole.PLAYER));
+        totalPlayersAndBrands.add(userRepository.countByRole(UserRole.BRAND));
+        return totalPlayersAndBrands;
+    }
 }

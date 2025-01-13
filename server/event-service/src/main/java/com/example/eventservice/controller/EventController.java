@@ -173,4 +173,10 @@ public class EventController {
         return ResponseEntity.ok(shakeGameEventDto);
     }
 
+    @RequestMapping(value ="/total", method = RequestMethod.GET)
+    @Operation(hidden = true)
+    public ResponseEntity<List<Long>> getTotalQuizEventsAndShakeEvents() {
+
+        return ResponseEntity.ok(eventService.getTotalQuizAndShakeEvents());
+    }
 }

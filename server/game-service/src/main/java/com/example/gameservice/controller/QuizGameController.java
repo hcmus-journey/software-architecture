@@ -32,11 +32,11 @@ public class QuizGameController {
 
     @RequestMapping(value = "/quizzes", method = RequestMethod.POST)
     @Operation(tags = "Admin", description = "Add a new quiz to the system.")
-    public ResponseEntity<Void> getQuizzes(
+    public ResponseEntity<QuizDto> getQuizzes(
             @RequestBody QuizDto quizDto,
             @RequestHeader("Authorization") String authorizationHeader) {
-        quizGameService.addQuiz(quizDto);
-        return ResponseEntity.ok().build();
+        QuizDto newQuiz = quizGameService.addQuiz(quizDto);
+        return ResponseEntity.ok(newQuiz);
     }
 
     @RequestMapping(value = "/quizzes/{quizId}", method = RequestMethod.GET)

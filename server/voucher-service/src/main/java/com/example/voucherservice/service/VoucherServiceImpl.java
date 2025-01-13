@@ -73,8 +73,8 @@ public class VoucherServiceImpl implements VoucherService{
     }
 
     @Override
-    public void useVoucher(UUID voucherId) {
-        Voucher voucher = voucherRepository.findByVoucherId(voucherId);
+     public VoucherDto useVoucher(UUID eventId, String voucherCode) {
+        Voucher voucher = voucherRepository.findByEventIdAndCode(eventId, voucherCode);
         if(voucher == null) {
             throw new BadRequestException("Voucher not found");
         }
@@ -82,12 +82,15 @@ public class VoucherServiceImpl implements VoucherService{
         voucher.setStatus(VoucherStatus.USED);
 
         voucherRepository.save(voucher);
+
+        return VoucherMapper.INSTANCE.convertToVoucherDto(voucher);
     }
 
     @Override
     public void deleteVoucher(UUID eventId) {
 
     }
+
 
     @Override
     public VoucherDto getVoucher(UUID voucherId) {
