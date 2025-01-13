@@ -1,14 +1,17 @@
 package com.example.voucherservice.controller;
 
 import com.example.voucherservice.dto.EventVoucherDto;
+import com.example.voucherservice.dto.VoucherDto;
 import com.example.voucherservice.security.JwtUtil;
 import com.example.voucherservice.service.EventVoucherService;
+import com.example.voucherservice.service.VoucherService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -18,6 +21,8 @@ import java.util.UUID;
 public class VoucherController {
 
     final private EventVoucherService eventVoucherService;
+
+    final private VoucherService voucherService;
 
     final private JwtUtil jwtUtil;
 
@@ -55,5 +60,29 @@ public class VoucherController {
         EventVoucherDto eventVoucherDto = eventVoucherService.getEventVoucher(UUID.fromString(id));
 
         return ResponseEntity.ok(eventVoucherDto);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    @Operation(hidden = true)
+    public ResponseEntity<VoucherDto> distributeVoucher(@RequestParam UUID eventId, @RequestParam UUID playerId) {
+        VoucherDto voucherDto = voucherService.distributeVoucher(eventId, playerId);
+
+        return ResponseEntity.ok(voucherDto);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<List<VoucherDto>> getVouchers(
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
+        return ResponseEntity.ok(voucherService.getVouchers(playerId));
+    }
+
+    @RequestMapping(value = "/{voucherId}", method = RequestMethod.GET)
+    public ResponseEntity<VoucherDto> getVoucher(
+            @PathVariable String voucherId,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        return ResponseEntity.ok(voucherService.getVoucher(UUID.fromString(voucherId)));
     }
 }

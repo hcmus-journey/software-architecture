@@ -3,11 +3,11 @@ package com.example.eventservice.controller;
 import com.example.eventservice.dto.EventDto;
 import com.example.eventservice.dto.QuizGameEventDto;
 import com.example.eventservice.dto.ShakeGameEventDto;
+import com.example.eventservice.dto.UpdateEventStatusRequest;
 import com.example.eventservice.security.JwtUtil;
 import com.example.eventservice.security.UserRole;
 import com.example.eventservice.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -71,8 +71,7 @@ public class EventController {
     @RequestMapping(value = "/{eventId}", method = RequestMethod.GET)
     @Operation(tags = {"Brand", "Player", "Admin"}, summary = "Get an event")
     public ResponseEntity<EventDto> getEvent(
-            @PathVariable String eventId,
-            @RequestHeader("Authorization") String authorizationHeader) {
+            @PathVariable String eventId) {
 
         EventDto eventDto = eventService.getEvent(UUID.fromString(eventId));
 
@@ -108,10 +107,10 @@ public class EventController {
     @Operation(tags = "Admin", summary = "Update event status")
     public ResponseEntity<Map<String, String>> updateEventStatus(
             @PathVariable String eventId,
-            @Schema(allowableValues = {"ACCEPTED", "NOT_ACCEPTED"}) @RequestPart String status,
+            @RequestBody UpdateEventStatusRequest request,
             @RequestHeader("Authorization") String authorizationHeader) {
 
-        eventService.updateEventStatus(UUID.fromString(eventId), status);
+        eventService.updateEventStatus(UUID.fromString(eventId), request.getStatus());
 
         return ResponseEntity.ok(Map.of("message", "Event status updated successfully"));
     }
@@ -153,4 +152,25 @@ public class EventController {
 
         return ResponseEntity.ok().build();
     }
+
+    @RequestMapping(value ="/{eventId}/quiz-game-event", method = RequestMethod.GET)
+    @Operation(hidden = true)
+    public ResponseEntity<QuizGameEventDto> getQuizGameEvent(
+            @PathVariable String eventId) {
+
+        QuizGameEventDto quizGameEventDto = eventService.getQuizGameEvent(UUID.fromString(eventId));
+
+        return ResponseEntity.ok(quizGameEventDto);
+    }
+
+    @RequestMapping(value ="/{eventId}/shake-game-event", method = RequestMethod.GET)
+    @Operation(hidden = true)
+    public ResponseEntity<ShakeGameEventDto> getShakeGameEvent(
+            @PathVariable String eventId) {
+
+        ShakeGameEventDto shakeGameEventDto = eventService.getShakeGameEvent(UUID.fromString(eventId));
+
+        return ResponseEntity.ok(shakeGameEventDto);
+    }
+
 }

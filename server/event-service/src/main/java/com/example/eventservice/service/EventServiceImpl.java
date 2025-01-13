@@ -71,11 +71,11 @@ public class EventServiceImpl implements EventService {
 
         Event event = eventRepository.findByEventId(eventId);
 
-        if(event == null) {
+        if (event == null) {
             throw new BadRequestException("Event not found");
         }
 
-        if(event.getStartTime().isBefore(LocalDate.now())) {
+        if (event.getStartTime().isBefore(LocalDate.now())) {
             throw new BadRequestException("Event is already started");
         }
 
@@ -104,10 +104,10 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void updateEventStatus(UUID eventId, String status){
+    public void updateEventStatus(UUID eventId, String status) {
         Event event = eventRepository.findByEventId(eventId);
 
-        if(event == null) {
+        if (event == null) {
             throw new BadRequestException("Event not found");
         }
 
@@ -120,11 +120,11 @@ public class EventServiceImpl implements EventService {
     public void deleteEvent(UUID eventId) {
         Event event = eventRepository.findByEventId(eventId);
 
-        if(event == null) {
+        if (event == null) {
             throw new BadRequestException("Event not found");
         }
 
-        if(event.getStartTime().isBefore(LocalDate.now())) {
+        if (event.getStartTime().isBefore(LocalDate.now())) {
             throw new BadRequestException("Event is already started");
         }
 
@@ -144,9 +144,9 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDto> getEvents(UserRole userRole, UUID userId) {
         List<Event> events;
-        if(userRole == UserRole.PLAYER) {
+        if (userRole == UserRole.PLAYER) {
             events = eventRepository.findAllByStatus("ACCEPTED");
-        } else if(userRole == UserRole.ADMIN) {
+        } else if (userRole == UserRole.ADMIN) {
             events = eventRepository.findAll();
         } else {
             events = eventRepository.findByBrandId(userId);
@@ -160,7 +160,7 @@ public class EventServiceImpl implements EventService {
                 .map(EventMapper.INSTANCE::convertToDto)
                 .toList();
 
-        for(EventDto eventDto : eventDtos) {
+        for (EventDto eventDto : eventDtos) {
             EventVoucherDto eventVoucherDto = voucherClient.getEventVoucherDetails(eventDto.getEventId().toString());
             eventDto.setTotalVouchers(eventVoucherDto.getTotalVouchers());
             eventDto.setRedeemedVouchers(eventVoucherDto.getRedeemedVouchers());
@@ -170,14 +170,14 @@ public class EventServiceImpl implements EventService {
 
             ShakeGameEvent shakeGameEvent = shakeGameEventRepository.findByEventId(eventDto.getEventId());
 
-            if(shakeGameEvent != null) {
+            if (shakeGameEvent != null) {
                 GameDto gameDto = gameClient.getShakeGameInfo();
                 eventDto.getGames().add(gameDto);
             }
 
             QuizGameEvent quizGameEvent = quizGameEventRepository.findByEventId(eventDto.getEventId());
 
-            if(quizGameEvent != null) {
+            if (quizGameEvent != null) {
                 GameDto gameDto = gameClient.getQuizGameInfo();
                 eventDto.getGames().add(gameDto);
             }
@@ -228,7 +228,7 @@ public class EventServiceImpl implements EventService {
                 .map(EventMapper.INSTANCE::convertToDto)
                 .toList();
 
-        for(EventDto eventDto : eventDtos) {
+        for (EventDto eventDto : eventDtos) {
             EventVoucherDto eventVoucherDto = voucherClient.getEventVoucherDetails(eventDto.getEventId().toString());
             eventDto.setTotalVouchers(eventVoucherDto.getTotalVouchers());
             eventDto.setRedeemedVouchers(eventVoucherDto.getRedeemedVouchers());
@@ -238,14 +238,14 @@ public class EventServiceImpl implements EventService {
 
             ShakeGameEvent shakeGameEvent = shakeGameEventRepository.findByEventId(eventDto.getEventId());
 
-            if(shakeGameEvent != null) {
+            if (shakeGameEvent != null) {
                 GameDto gameDto = gameClient.getShakeGameInfo();
                 eventDto.getGames().add(gameDto);
             }
 
             QuizGameEvent quizGameEvent = quizGameEventRepository.findByEventId(eventDto.getEventId());
 
-            if(quizGameEvent != null) {
+            if (quizGameEvent != null) {
                 GameDto gameDto = gameClient.getQuizGameInfo();
                 eventDto.getGames().add(gameDto);
             }
@@ -266,5 +266,15 @@ public class EventServiceImpl implements EventService {
     public void removeFavoriteEvent(UUID playerId, UUID eventId) {
         PlayerFavoriteEvent playerFavoriteEvent = playerFavoriteEventRepository.findByPlayerIdAndEventId(playerId, eventId);
         playerFavoriteEventRepository.delete(playerFavoriteEvent);
+    }
+
+    @Override
+    public QuizGameEventDto getQuizGameEvent(UUID eventId) {
+        return EventMapper.INSTANCE.convertToDto(quizGameEventRepository.findByEventId(eventId));
+    }
+
+    @Override
+    public ShakeGameEventDto getShakeGameEvent(UUID eventId) {
+        return EventMapper.INSTANCE.convertToDto(shakeGameEventRepository.findByEventId(eventId));
     }
 }

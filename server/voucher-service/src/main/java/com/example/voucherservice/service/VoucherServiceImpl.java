@@ -1,16 +1,19 @@
 package com.example.voucherservice.service;
 
+import com.example.voucherservice.client.EventClient;
+import com.example.voucherservice.dto.EventDto;
+import com.example.voucherservice.dto.VoucherDto;
 import com.example.voucherservice.entity.EventVoucher;
 import com.example.voucherservice.entity.Voucher;
 import com.example.voucherservice.entity.VoucherStatus;
 import com.example.voucherservice.exception.BadRequestException;
+import com.example.voucherservice.mapper.VoucherMapper;
 import com.example.voucherservice.repository.EventVoucherRepository;
 import com.example.voucherservice.repository.VoucherRepository;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,17 +25,22 @@ public class VoucherServiceImpl implements VoucherService{
 
     final private VoucherRepository voucherRepository;
 
+    final private EventClient eventClient;
+
     @Override
     public String generateVoucherCode() {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
     }
 
-    @Transactional
     @Override
-    public void distributeVoucher(UUID eventId, UUID playerId) {
+    public VoucherDto distributeVoucher(UUID eventId, UUID playerId) {
         EventVoucher eventVoucher = eventVoucherRepository.findByEventId(eventId);
         if(eventVoucher == null) {
             throw new BadRequestException("Event voucher not found");
+        }
+
+        if(eventVoucher.getRedeemedVouchers() >= eventVoucher.getTotalVouchers()) {
+            throw new BadRequestException("Voucher is out of stock");
         }
 
         eventVoucher.setRedeemedVouchers(eventVoucher.getRedeemedVouchers() + 1);
@@ -49,11 +57,19 @@ public class VoucherServiceImpl implements VoucherService{
 
         newVoucher.setStatus(VoucherStatus.AVAILABLE);
 
-        newVoucher.setReceivedAt(LocalDate.now());
+        newVoucher.setReceivedAt(LocalDateTime.now());
 
         newVoucher.setDiscount(eventVoucher.getDiscountPercentage());
 
+        EventDto eventDto = eventClient.getEvent(eventId.toString());
+
+        System.out.println(eventDto.getEndTime().atStartOfDay());
+
+        newVoucher.setExpiredAt(eventDto.getEndTime().atStartOfDay());
+
         voucherRepository.save(newVoucher);
+
+        return VoucherMapper.INSTANCE.convertToVoucherDto(newVoucher);
     }
 
     @Override
@@ -74,12 +90,16 @@ public class VoucherServiceImpl implements VoucherService{
     }
 
     @Override
-    public EventVoucher getVoucher(UUID eventId) {
-        return null;
+    public VoucherDto getVoucher(UUID voucherId) {
+        return VoucherMapper.INSTANCE
+                .convertToVoucherDto(voucherRepository.findByVoucherId(voucherId));
     }
 
     @Override
-    public List<EventVoucher> getVouchers() {
-        return List.of();
+    public List<VoucherDto> getVouchers(UUID playerId) {
+        return voucherRepository.findByPlayerId(playerId)
+                .stream()
+                .map(VoucherMapper.INSTANCE::convertToVoucherDto)
+                .toList();
     }
 }
