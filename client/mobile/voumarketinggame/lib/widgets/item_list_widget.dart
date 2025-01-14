@@ -37,18 +37,37 @@ class EventItem extends StatelessWidget {
               children: [
             
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Stack(
-                    children: [
-                      Image.asset(
-                        event.imageUrl,
-                        width: 90,
-                        height: 70,
-                        fit: BoxFit.cover,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      constraints: const BoxConstraints(
+                        maxWidth: 150, 
+                        maxHeight: 120,
                       ),
-                    ],
+                      child: Image.network(
+                        event.imageUrl, 
+                        fit: BoxFit.cover,
+                        width: 120,
+                        height: 120,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child; 
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ?? 1)
+                                    : null,
+                              ),
+                            ); 
+                          }
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.error, size: 50); 
+                        },
+                      ),
+                    ),
                   ),
-                ),
                 const SizedBox(width: 12),
                 
                 Expanded(
@@ -89,9 +108,12 @@ class EventItem extends StatelessWidget {
             Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: AssetImage(event.brandImageUrl),
+                    backgroundImage: NetworkImage(event.brandImageUrl),
                     radius: 10,
+                    child: const Icon(Icons.error, size: 10), 
                   ),
+
+
                   const SizedBox(width: 5),
                   Text(
                     event.brandName,

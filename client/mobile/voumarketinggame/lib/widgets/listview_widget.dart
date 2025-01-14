@@ -26,8 +26,8 @@ class HorizontalList extends StatelessWidget {
           final int used = item.redeemedVouchers;
           final int count = item.totalVouchers;
           final double progress = (used / count).clamp(0.0, 1.0);
-
-
+          
+          
           return GestureDetector(
             onTap: () {
               onItemTap(item);
@@ -55,13 +55,30 @@ class HorizontalList extends StatelessWidget {
                       topLeft: Radius.circular(16.0),
                       topRight: Radius.circular(16.0),
                     ),
-                    child: Image.asset(
+                    child: Image.network(
                       item.imageUrl,
                       height: 120,
                       width: double.infinity,
                       fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
+                            ),
+                          ); 
+                        }
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.error, size: 50);
+                      },
                     ),
                   ),
+
                   const SizedBox(height: 8),
                   // Store Info
                   Padding(
@@ -69,9 +86,14 @@ class HorizontalList extends StatelessWidget {
                     child: Row(
                       children: [
                         CircleAvatar(
-                          backgroundImage: AssetImage(item.brandImageUrl),
-                          radius: 16,
+                          backgroundImage: NetworkImage(item.brandImageUrl), 
+                          radius: 10,
+                          onBackgroundImageError: (error, stackTrace) {
+                            print('Failed to load brand image: $error');
+                          },
                         ),
+
+
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(

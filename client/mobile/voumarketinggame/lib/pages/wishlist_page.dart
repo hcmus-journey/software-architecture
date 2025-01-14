@@ -1,16 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voumarketinggame/pages/event_detail_page.dart';
-import 'package:voumarketinggame/providers/event_provider.dart';
+import 'package:voumarketinggame/providers/events_provider.dart';
 import 'package:voumarketinggame/widgets/filter_button_widget.dart';
 import 'package:voumarketinggame/widgets/item_list_widget.dart';
 
-class WishlistScreen extends StatelessWidget {
+class WishlistScreen extends StatefulWidget {
   const WishlistScreen({super.key});
 
   @override
+  State<WishlistScreen> createState() => _WishlistScreenState();
+}
+
+class _WishlistScreenState extends State<WishlistScreen> {
+
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => _fetchFavoriteEvents());
+  }
+
+  Future<void> _fetchFavoriteEvents() async {
+    
+    try {
+      
+      final eventProvider = Provider.of<EventProvider>(context, listen: false);
+      await eventProvider.fetchFavoriteEvents(context);
+    } catch (e) {
+      print('Error fetching events: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final wishlistEvent = Provider.of<EventProviderData>(context);
+
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    final wishlistEvent = Provider.of<EventProvider>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -65,7 +98,7 @@ class WishlistScreen extends StatelessWidget {
         const SizedBox(height: 5),
 
         // Wishlist ListView
-        if (wishlistEvent.wishlist.isEmpty)
+        if (wishlistEvent.favorites.isEmpty)
           Expanded(
             child: Center(
               child: Text(
@@ -77,12 +110,12 @@ class WishlistScreen extends StatelessWidget {
               ),
             ),
           )
-        /*else
+        else
           Expanded(
             child: ListView.builder(
-              itemCount: wishlistEvent.wishlist.length,
+              itemCount: wishlistEvent.favorites.length,
               itemBuilder: (context, index) {
-                final event = wishlistEvent.wishlist[index];
+                final event = wishlistEvent.favorites[index];
                 return EventItem(
                   event: event,
                   onTap: () {
@@ -99,7 +132,7 @@ class WishlistScreen extends StatelessWidget {
                 );
               },
             ),
-          ),*/
+          ),
         ],
       ),
     );

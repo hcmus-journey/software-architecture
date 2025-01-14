@@ -63,15 +63,33 @@ class _GuideWidgetState extends State<GuideWidget> {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: Image.asset(
+                    child: Image.network(
                       widget.images[index],
                       fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
+                            ),
+                          );
+                        }
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.error, size: 50, color: Colors.red);
+                      },
                     ),
                   ),
                 );
               },
             ),
           ),
+
 
           // Chỉ số ảnh
           Padding(

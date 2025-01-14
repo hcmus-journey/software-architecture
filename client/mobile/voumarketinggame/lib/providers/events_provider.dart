@@ -13,6 +13,9 @@ class EventProvider with ChangeNotifier {
   String? get errorMessage => _errorMessage;
   List<EventModel> get events => _events;
 
+  List<EventModel> _favorites = []; // Danh sách yêu thích
+  List<EventModel> get favorites => _favorites;
+
   Future<void> fetchAllEvents(BuildContext context) async {
     _isLoading = true;
     _errorMessage = null;
@@ -28,6 +31,7 @@ class EventProvider with ChangeNotifier {
         notifyListeners();
         return;
       }
+      print("[fetchUserProfile] Access token: $token");
 
       final EventService apiService = EventService();
       final result = await apiService.getAllEvents(token: token);
@@ -48,5 +52,87 @@ class EventProvider with ChangeNotifier {
   List<EventModel> getEventsByBrand(String brandId) {
   return _events.where((event) => event.brandId == brandId).toList();
   }
+
+  Future<void> addToFavorite(BuildContext context, String eventId) async {
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final token = await authProvider.getAccessToken();
+
+      if (token == null) {
+        throw Exception("Access token not found.");
+      }
+
+      final EventService apiService = EventService();
+      await apiService.addEventToFavorite(eventId: eventId, token: token);
+
+      await fetchFavoriteEvents(context);
+      notifyListeners();
+    } catch (e) {
+      print("Error adding to favorite: $e");
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
+  }
+
+  // Hàm xóa khỏi danh sách yêu thích
+  Future<void> removeFromFavorite(BuildContext context, String eventId) async {
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final token = await authProvider.getAccessToken();
+
+      if (token == null) {
+        throw Exception("Access token not found.");
+      }
+
+      final EventService apiService = EventService();
+      await apiService.removeFromFavorite(token: token, eventId: eventId);
+
+      await fetchFavoriteEvents(context);
+      //notifyListeners();
+    } catch (e) {
+      print("Error while removing favorite: $e");
+      throw e;
+    }
+  }
+
+ 
+  bool isEventFavorite(String eventId) {
+    return _favorites.any((event) => event.eventId == eventId);
+  }
+
+
+  Future<void> fetchFavoriteEvents(BuildContext context) async {
+  _isLoading = true;
+  _errorMessage = null; // Xóa thông báo lỗi nếu có
+  notifyListeners(); // Cập nhật giao diện loading
+
+  try {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final token = await authProvider.getAccessToken();
+
+    if (token == null) {
+      // Nếu không có token thì chỉ set lỗi và dừng hàm
+      _errorMessage = "Access token not found.";
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+
+    final EventService apiService = EventService();
+    final result = await apiService.fetchFavoriteEvents(token: token);
+
+    _favorites = result.map((e) => EventModel.fromJson(e)).toList();
+  } catch (e) {
+    
+    _errorMessage = e.toString();
+  } finally {
+    // Tắt loading
+    _isLoading = false;
+    notifyListeners();
+  }
+}
+
+
+
 
 }

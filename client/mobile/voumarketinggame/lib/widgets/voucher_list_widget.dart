@@ -123,7 +123,7 @@ class VoucherItem extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      elevation: 6, // Độ nổi (shadow)
+                      elevation: 6, 
                       shadowColor: Colors.pink.withOpacity(0.5), 
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), 
                     ),

@@ -31,16 +31,23 @@ class _ContentDashboard extends State<ContentDashboard> {
   @override
   void initState() {
     super.initState();
-    _fetchEvents();
+    Future.microtask(() => _fetchEvents());
+    
   }
 
   Future<void> _fetchEvents() async {
-    final eventProvider = Provider.of<EventProvider>(context, listen: false);
-    await eventProvider.fetchAllEvents(context);
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      final eventProvider = Provider.of<EventProvider>(context, listen: false);
+      await eventProvider.fetchAllEvents(context);
+    } catch (e) {
+      print('Error fetching events: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
+
 
   List<EventModel> _filterEvents(List<EventModel> events, String type) {
     final now = DateTime.now();

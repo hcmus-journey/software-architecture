@@ -3,11 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:voumarketinggame/models/events_model.dart';
 import 'package:voumarketinggame/pages/event_viewall_page.dart';
 import 'package:voumarketinggame/providers/events_provider.dart';
+import 'package:voumarketinggame/widgets/button_favorite_widget.dart';
 import 'package:voumarketinggame/widgets/event_section_widget.dart';
 import 'package:voumarketinggame/widgets/guide_widget.dart';
 import 'package:voumarketinggame/pages/splash_screen.dart';
 
-class EventDetailScreen extends StatelessWidget {
+class EventDetailScreen extends StatefulWidget {
   final EventModel event;
   final String eventType;
 
@@ -18,12 +19,46 @@ class EventDetailScreen extends StatelessWidget {
   });
 
   @override
+  State<EventDetailScreen> createState() => _EventDetailScreenState();
+}
+
+class _EventDetailScreenState extends State<EventDetailScreen> {
+
+  bool _isLoading = true;
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => _fetchFavoriteEvents());
+  }
+
+  Future<void> _fetchFavoriteEvents() async {
+    try {
+      final eventProvider = Provider.of<EventProvider>(context, listen: false);
+      await eventProvider.fetchFavoriteEvents(context);
+    } catch (e) {
+      print('Error fetching events: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+  
+
+  @override
   Widget build(BuildContext context) {
+    
     final eventProvider = Provider.of<EventProvider>(context);
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return SafeArea(
+      
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
-        body: Column(
+        body: 
+        
+        Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -38,7 +73,7 @@ class EventDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    eventType,
+                    widget.eventType,
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20,
@@ -63,13 +98,36 @@ class EventDetailScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: ClipRRect(
-                        child: Image.asset(
-                          event.imageUrl,
-                          height: MediaQuery.of(context).size.height * 0.25,
+                      child: 
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(16.0),
+                          topRight: Radius.circular(16.0),
+                        ),
+                        child: Image.network(
+                          widget.event.imageUrl,
+                          height: 210,
+                          width: double.infinity,
                           fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                                      : null,
+                                ),
+                              );
+                            }
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.error, size: 50);
+                          },
                         ),
                       ),
+
                     ),
                     const SizedBox(height: 16.0),
 
@@ -93,7 +151,7 @@ class EventDetailScreen extends StatelessWidget {
                               const Icon(Icons.timelapse, color: Colors.black),
                               const SizedBox(width: 8),
                               Text(
-                                eventType,
+                                widget.eventType,
                                 style: const TextStyle(
                                   color: Colors.black87,
                                   fontSize: 16,
@@ -125,7 +183,7 @@ class EventDetailScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            event.name,
+                            widget.event.name,
                             style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -134,7 +192,7 @@ class EventDetailScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            event.description,
+                            widget.event.description,
                             style: const TextStyle(
                               fontSize: 13,
                               color: Colors.black,
@@ -153,13 +211,17 @@ class EventDetailScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    event.brandImageUrl),
-                                radius: 17,
+                                backgroundImage: NetworkImage(widget.event.brandImageUrl), 
+                                radius: 10,
+                                onBackgroundImageError: (error, stackTrace) {
+                                  print('Failed to load brand image: $error'); 
+                                },
                               ),
+
                               const SizedBox(width: 8),
+                              
                               Text(
-                                event.brandName,
+                                widget.event.brandName,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -200,7 +262,7 @@ class EventDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                event.startTime,
+                                widget.event.startTime,
                                 style: const TextStyle(
                                   color: Colors.black87,
                                   fontSize: 14,
@@ -214,7 +276,7 @@ class EventDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                event.endTime,
+                                widget.event.endTime,
                                 style: const TextStyle(
                                   color: Colors.black87,
                                   fontSize: 14,
@@ -237,7 +299,7 @@ class EventDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '${event.totalVouchers - event.redeemedVouchers}',
+                                '${widget.event.totalVouchers - widget.event.redeemedVouchers}',
                                 style: const TextStyle(
                                   color: Colors.black87,
                                   fontSize: 14,
@@ -252,7 +314,7 @@ class EventDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '${event.totalVouchers}',
+                                '${widget.event.totalVouchers}',
                                 style: const TextStyle(
                                   color: Colors.black87,
                                   fontSize: 14,
@@ -265,10 +327,8 @@ class EventDetailScreen extends StatelessWidget {
                     ),
 
                     Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 16.0),
+                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      padding: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -288,67 +348,54 @@ class EventDetailScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          const Text(
-                            '• Áp dụng cho khách hàng mới và cũ.',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          const Text(
-                            '• Đạt số điểm tối thiểu 80/120.',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          const Text(
-                            '• Số lượt chơi tối đa 3 lần.',
-                            style: TextStyle(fontSize: 16),
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const Text(
-                            '• Số lượng voucher có hạn.',
-                            style: TextStyle(fontSize: 16),
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 5),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                TextButton(
-                                  onPressed: () {},
-                                  child: const Text(
-                                    'Xem thêm',
-                                    style: TextStyle(color: Colors.pink),
+                          if (widget.event.games.isNotEmpty)
+                            ...widget.event.games.map((game) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '• ${game.name}',
+                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                   ),
-                                ),
-                              ]),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    game.description,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                  const SizedBox(height: 8),
+                                ],
+                              );
+                            }).toList()
+                          else
+                            const Text(
+                              'Không có trò chơi nào!',
+                              style: TextStyle(fontSize: 16, color: Colors.grey),
+                            ),
                         ],
                       ),
                     ),
 
+
                     // Guide Section
                     GestureDetector(
                       onTap: () {
+                        final gameImages = widget.event.games.map((game) => game.imageUrl).toList();
                         showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
                           shape: const RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(20)),
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                           ),
                           builder: (context) {
-                            return const GuideWidget(
-                              images: [
-                                'assets/images/toco.png',
-                                'assets/images/fashion.png',
-                                'assets/images/trasuadodo.png',
-                              ],
+                            return GuideWidget(
+                              images: gameImages,
                               title: 'Hướng dẫn chơi game',
                             );
                           },
                         );
                       },
                       child: Container(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
+                        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                         padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -371,16 +418,16 @@ class EventDetailScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            Icon(Icons.arrow_forward_ios,
-                                color: Colors.grey, size: 16),
+                            Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
                           ],
                         ),
                       ),
                     ),
 
+
                     EventSection(
                       time: "Sự kiện cùng hãng",
-                      items: eventProvider.getEventsByBrand(event.brandId),
+                      items: eventProvider.getEventsByBrand(widget.event.brandId),
                       onItemTap: (event) {
                         Navigator.push(
                           context,
@@ -397,7 +444,7 @@ class EventDetailScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => EventViewallScreen(
-                              events: eventProvider.getEventsByBrand(event.brandId),
+                              events: eventProvider.getEventsByBrand(widget.event.brandId),
                               eventType: "Sự kiện cùng hãng",
                             ),
                           ),
@@ -414,41 +461,35 @@ class EventDetailScreen extends StatelessWidget {
           color: Colors.white,
           padding: const EdgeInsets.all(16.0),
           child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            ElevatedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Đã thêm vào danh sách yêu thích!'),
-                  ),
-                );
+            
+            FavoriteButton(
+              eventId: widget.event.eventId,
+              isFavorite: eventProvider.isEventFavorite(widget.event.eventId),
+              onToggleFavorite: (isFavorite) async {
+                final eventProvider = Provider.of<EventProvider>(context, listen: false);
+
+                try {
+                  if (isFavorite) {
+                    // Thêm vào danh sách yêu thích
+                    await eventProvider.addToFavorite(context, widget.event.eventId);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Đã thêm vào danh sách yêu thích!')),
+                    );
+                  } else {
+                    // Xóa khỏi danh sách yêu thích
+                    await eventProvider.removeFromFavorite(context, widget.event.eventId);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Đã xóa khỏi danh sách yêu thích!')),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Lỗi: ${e.toString()}')),
+                  );
+                }
               },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 12.0),
-                backgroundColor: Colors.white,
-                shadowColor: Colors.blue.withOpacity(0.5),
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                side: const BorderSide(
-                  color: Colors.black38,
-                  width: 1,
-                ),
-              ),
-              icon: const Icon(
-                Icons.favorite_border,
-                color: Colors.black,
-                size: 20,
-              ),
-              label: const Text(
-                'Save',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-              ),
             ),
+
             const SizedBox(width: 8),
             Expanded(
               child: ElevatedButton(
