@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voumarketinggame/pages/inventory_screen.dart';
 import 'package:voumarketinggame/pages/profile_user_page.dart';
+import 'package:voumarketinggame/pages/welcome_page.dart';
+import 'package:voumarketinggame/providers/auth_provider.dart';
+import 'package:voumarketinggame/providers/bottom_navigation_provider.dart';
 import 'package:voumarketinggame/providers/user_provider.dart';
 import 'package:voumarketinggame/widgets/item_menu_widget.dart';
 
@@ -40,6 +43,7 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
     final user = userProvider.user;
 
     if (_isLoading) {
@@ -265,7 +269,17 @@ class _MenuScreenState extends State<MenuScreen> {
                     children: [
                       Expanded(
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            await authProvider.logout();
+                            Provider.of<BottomNavigationProvider>(context, listen: false).updateIndex(0);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                              (route) => false,
+                            );
+                          },
+
+
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.red[100],
                             padding: const EdgeInsets.symmetric(
