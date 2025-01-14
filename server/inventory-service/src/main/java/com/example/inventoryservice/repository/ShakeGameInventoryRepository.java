@@ -11,5 +11,7 @@ import java.util.UUID;
 @Repository
 public interface ShakeGameInventoryRepository extends JpaRepository<ShakeGameInventory, UUID> {
     Optional<ShakeGameInventory> findByEventId(UUID eventId);
+    ShakeGameInventory findByInventoryId(UUID inventoryId);
     List<ShakeGameInventory> findByPlayerId(UUID playerId);
+    ShakeGameInventory findByPlayerIdAndEventId(UUID playerId, UUID eventId);
 }

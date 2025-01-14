@@ -1,10 +1,10 @@
 package com.example.inventoryservice.service;
 
 import com.example.inventoryservice.client.EventClient;
-import com.example.inventoryservice.dto.EventDto;
-import com.example.inventoryservice.dto.ShakeGameEventDto;
-import com.example.inventoryservice.dto.ShakeGameInventoryDto;
+import com.example.inventoryservice.client.VoucherClient;
+import com.example.inventoryservice.dto.*;
 import com.example.inventoryservice.entity.ShakeGameInventory;
+import com.example.inventoryservice.exception.BadRequestException;
 import com.example.inventoryservice.mapper.InventoryMapper;
 import com.example.inventoryservice.repository.ShakeGameInventoryRepository;
 import lombok.AllArgsConstructor;
@@ -20,6 +20,8 @@ public class InventoryServiceImpl implements InventoryService {
     final private ShakeGameInventoryRepository shakeGameInventoryRepository;
 
     final private EventClient eventClient;
+
+    final private VoucherClient voucherClient;
 
     @Override
     public void collectCoin(UUID playerId, UUID eventId) {
@@ -67,5 +69,50 @@ public class InventoryServiceImpl implements InventoryService {
         }
 
         return shakeGameEventDtos;
+    }
+
+    @Override
+    public VoucherDto exchangeCoin(UUID playerId, UUID inventoryId) {
+        ShakeGameInventory shakeGameInventory = shakeGameInventoryRepository.findByInventoryId(inventoryId);
+
+        if (shakeGameInventory.getCollectedCoins() < shakeGameInventory.getRequiredCoins()) {
+            throw new BadRequestException("Not enough coins to exchange");
+        }
+
+        shakeGameInventory.setCollectedCoins(shakeGameInventory.getCollectedCoins() - shakeGameInventory.getRequiredCoins());
+
+        shakeGameInventoryRepository.save(shakeGameInventory);
+
+        return voucherClient.distributeVoucher(shakeGameInventory.getEventId(), playerId);
+    }
+
+    @Override
+    public void giftCoin(UUID currentUserId, GiftCoinRequest giftCoinRequest, UUID inventoryId) {
+        ShakeGameInventory currentPlayerInventory = shakeGameInventoryRepository.findByInventoryId(inventoryId);
+
+        if (currentPlayerInventory.getCollectedCoins() < giftCoinRequest.getCoins()) {
+            throw new BadRequestException("Not enough coins to gift");
+        }
+
+        currentPlayerInventory.setCollectedCoins(currentPlayerInventory.getCollectedCoins() - giftCoinRequest.getCoins());
+
+        shakeGameInventoryRepository.save(currentPlayerInventory);
+
+        ShakeGameInventory receiverShakeGameInventory = shakeGameInventoryRepository.findByPlayerIdAndEventId(
+                UUID.fromString(giftCoinRequest.getReceiverId()), currentPlayerInventory.getEventId());
+
+        if (receiverShakeGameInventory == null) {
+            receiverShakeGameInventory = new ShakeGameInventory();
+            receiverShakeGameInventory.setInventoryId(UUID.randomUUID());
+            receiverShakeGameInventory.setPlayerId(UUID.fromString(giftCoinRequest.getReceiverId()));
+            receiverShakeGameInventory.setEventId(currentPlayerInventory.getEventId());
+            receiverShakeGameInventory.setRequiredCoins(currentPlayerInventory.getRequiredCoins());
+            receiverShakeGameInventory.setCollectedCoins(giftCoinRequest.getCoins());
+        }
+        else {
+            receiverShakeGameInventory.setCollectedCoins(receiverShakeGameInventory.getCollectedCoins() + giftCoinRequest.getCoins());
+        }
+
+        shakeGameInventoryRepository.save(receiverShakeGameInventory);
     }
 }
