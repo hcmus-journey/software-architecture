@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:voumarketinggame/providers/event_provider.dart';
+import 'package:voumarketinggame/models/events_model.dart';
+import 'package:voumarketinggame/models/vouchers_model.dart';
+import 'package:voumarketinggame/providers/events_provider.dart';
 import 'package:voumarketinggame/widgets/guide_widget.dart';
 import 'package:voumarketinggame/widgets/item_voucher_widget.dart';
 
 class VoucherDetailScreen extends StatelessWidget {
-  final Map<String, dynamic> voucher;
+  final VoucherModel voucher;
+  final EventModel? event;
   final String type;
 
   const VoucherDetailScreen({
     super.key,
     required this.voucher,
+    required this.event,
     required this.type,
   });
 
   @override
   Widget build(BuildContext context) {
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    final event = eventProvider.getEventById(voucher.eventId);
+    final String formattedExpiredAt =
+        DateFormat('yyyy-MM-dd').format(voucher.expiredAt);
 
-    final eventProvider = Provider.of<EventProviderData>(context);
-    final event = eventProvider.AllEvents.firstWhere(
-      (event) => event['id'] == voucher['eventID'],
-      orElse: () => {'detail': 'Thông tin không khả dụng', 'store': ''},
-    );
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
@@ -80,7 +84,7 @@ class VoucherDetailScreen extends StatelessWidget {
                             const Icon(Icons.timelapse, color: Colors.black),
                             const SizedBox(width: 8),
                             Text(
-                            "Hạn sử dụng tới ${voucher['date_exp']}",
+                            "Hạn sử dụng tới $formattedExpiredAt",
                             style: const TextStyle(
                               color: Colors.black87,
                               fontSize: 16,
@@ -114,7 +118,7 @@ class VoucherDetailScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          event['title'] ?? '',
+                          event != null ? event.name : 'Event not available',
                           style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -123,7 +127,7 @@ class VoucherDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          event['detail'] ?? '',
+                          event != null ? event.description : 'Event not available',
                           style: const TextStyle(
                             fontSize: 13,
                             color: Colors.black,
@@ -137,18 +141,25 @@ class VoucherDetailScreen extends StatelessWidget {
                           thickness: 1,
                           color: Colors.grey,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 7),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  event['avatar'] ?? 'assets/bg2.png'),
+                              backgroundImage: event != null
+                                  ? NetworkImage(event.brandImageUrl,)
+                                  : const AssetImage('assets/images/logo.png') as ImageProvider,
                               radius: 17,
+                              onBackgroundImageError: event != null
+                                  ? (error, stackTrace) {
+                                      print('Failed to load image: $error');
+                                    }
+                                  : null,
                             ),
+
                             const SizedBox(width: 8),
                             Text(
-                              event['store'] ?? '',
+                              event?.brandName ?? 'Brand not available',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

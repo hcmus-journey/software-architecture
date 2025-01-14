@@ -39,7 +39,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     if (user != null) {
 
       setState(() {
-        _controllers['id'] = TextEditingController(text: user.idPlayer);
+        _controllers['id'] = TextEditingController(text: user.playerId);
         _controllers['name'] = TextEditingController(text: user.name);
         _controllers['email'] = TextEditingController(text: user.email);
         _controllers['phoneNumber'] = TextEditingController(text: user.phoneNumber);

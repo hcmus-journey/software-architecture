@@ -1,20 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voumarketinggame/pages/voucher_detail_page.dart';
-import 'package:voumarketinggame/providers/event_provider.dart';
-import 'package:voumarketinggame/providers/voucher_provider.dart';
+import 'package:voumarketinggame/providers/events_provider.dart';
+import 'package:voumarketinggame/providers/vouchers_provider.dart';
 import 'package:voumarketinggame/widgets/filter_button_widget.dart';
 import 'package:voumarketinggame/widgets/voucher_list_widget.dart';
 
-class VoucherlistScreen extends StatelessWidget {
+class VoucherlistScreen extends StatefulWidget {
   const VoucherlistScreen({super.key});
 
   @override
+  State<VoucherlistScreen> createState() => _VoucherlistScreenState();
+}
+
+class _VoucherlistScreenState extends State<VoucherlistScreen> {
+
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => _fetchFavoriteEvents());
+  }
+
+  Future<void> _fetchFavoriteEvents() async {
+    
+    try {
+      final eventProvider = Provider.of<VoucherProvider>(context, listen: false);
+      await eventProvider.fetchVouchers(context);
+    } catch (e) {
+      print('Error fetching events: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final wishlistEvent = Provider.of<EventProviderData>(context);
+
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     final voucherList = Provider.of<VoucherProvider>(context);
 
+    
+    
     return Scaffold(
+      
       backgroundColor: Colors.white,
       body: Column(
         children: [
@@ -66,7 +100,7 @@ class VoucherlistScreen extends StatelessWidget {
 
         const SizedBox(height: 5),
 
-        if (wishlistEvent.wishlist.isEmpty)
+        if (voucherList.vouchers.isEmpty)
           Expanded(
             child: Center(
               child: Text(
@@ -81,17 +115,21 @@ class VoucherlistScreen extends StatelessWidget {
         else
           Expanded(
             child: ListView.builder(
-              itemCount: voucherList.voucherList.length,
+              itemCount: voucherList.vouchers.length,
               itemBuilder: (context, index) {
-                final voucher = voucherList.voucherList[index];
+                final voucher = voucherList.vouchers[index];
+                final eventProvider = Provider.of<EventProvider>(context, listen: false);
+                final event = eventProvider.getEventById(voucher.eventId);
                 return VoucherItem(
                   voucher: voucher,
+                  event: event,
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => VoucherDetailScreen(
                           voucher: voucher,
+                          event: event,
                           type: 'Chi tiết Voucher',
                         ),
                       ),

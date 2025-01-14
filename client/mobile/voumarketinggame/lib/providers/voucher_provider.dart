@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 // Định nghĩa enum
 enum VoucherStatus { received, notReceived }
 
-class VoucherProvider with ChangeNotifier {
+class VoucherProviderData with ChangeNotifier {
   
   int currentIndex = 0;
   final List<Map<String, dynamic>> voucherList = [

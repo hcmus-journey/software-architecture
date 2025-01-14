@@ -6,7 +6,7 @@ import 'package:voumarketinggame/providers/bottom_navigation_provider.dart';
 import 'package:voumarketinggame/providers/event_provider.dart';
 import 'package:voumarketinggame/providers/events_provider.dart';
 import 'package:voumarketinggame/providers/user_provider.dart';
-import 'package:voumarketinggame/providers/voucher_provider.dart';
+import 'package:voumarketinggame/providers/vouchers_provider.dart';
 import 'package:voumarketinggame/theme/theme.dart';
 
 

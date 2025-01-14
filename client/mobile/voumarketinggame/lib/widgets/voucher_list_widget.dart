@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:voumarketinggame/providers/event_provider.dart';
+import 'package:intl/intl.dart';
+import 'package:voumarketinggame/models/events_model.dart';
+import 'package:voumarketinggame/models/vouchers_model.dart';
 
 class VoucherItem extends StatelessWidget {
-  final Map<String, dynamic> voucher;
+  final VoucherModel voucher;
+  final EventModel? event;
   final VoidCallback onTap;
 
   const VoucherItem({
     super.key,
     required this.voucher,
+    required this.event,
     required this.onTap,
   });
 
+  
   @override
   Widget build(BuildContext context) {
-
-    final allEvents = Provider.of<EventProviderData>(context, listen: false).AllEvents;
-    final event = allEvents.firstWhere(
-      (event) => event['id'] == voucher['eventID'],
-      orElse: () => {'detail': 'Thông tin không khả dụng', 'store': ''},
-    );
     
+    // Định dạng ngày thành YYYY-MM-DD
+    final String formattedReceivedAt =
+        DateFormat('yyyy-MM-dd').format(voucher.receivedAt);
+    final String formattedExpiredAt =
+        DateFormat('yyyy-MM-dd').format(voucher.expiredAt);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Container(
@@ -45,18 +48,15 @@ class VoucherItem extends StatelessWidget {
               children: [
             
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Stack(
-                    children: [
-                      Image.asset(
-                        event['image']!,
-                        width: 90,
-                        height: 70,
-                        fit: BoxFit.cover,
-                      ),
-                    ],
-                  ),
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  event?.imageUrl ?? 'assets/images/logo.png',
+                  width: 90,
+                  height: 70,
+                  fit: BoxFit.cover,
                 ),
+              ),
+
                 const SizedBox(width: 12),
                 
                 Expanded(
@@ -64,7 +64,7 @@ class VoucherItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Voucher: Discount ${voucher['discount']!}',
+                        'Voucher: Discount ${voucher.discount} %',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
@@ -72,7 +72,7 @@ class VoucherItem extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        event['detail']!,
+                        event?.description ?? "Not description",
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -82,7 +82,7 @@ class VoucherItem extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Received: ${voucher['received_at']}',
+                        'Received: $formattedReceivedAt',
                         style: const TextStyle(
                           color: Colors.red,
                           fontSize: 12,
@@ -90,7 +90,7 @@ class VoucherItem extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'HSD: ${voucher['date_exp']}',
+                        'HSD: $formattedExpiredAt',
                         style: const TextStyle(
                           color: Colors.red,
                           fontSize: 12,
@@ -104,12 +104,15 @@ class VoucherItem extends StatelessWidget {
             Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: AssetImage(event['avatar']!),
+                    backgroundImage: event?.brandImageUrl != null
+                        ? NetworkImage(event!.brandImageUrl)
+                        : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
                     radius: 10,
                   ),
+
                   const SizedBox(width: 5),
                   Text(
-                    event['store']!,
+                    event?.brandName ?? 'Brand not available',
                     style: const TextStyle(fontSize: 14),
                   ),
                   const Spacer(),

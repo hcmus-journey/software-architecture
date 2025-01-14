@@ -133,6 +133,16 @@ class EventProvider with ChangeNotifier {
 }
 
 
+EventModel? getEventById(String eventId) {
+  try {
+    return _events.firstWhere((event) => event.eventId == eventId);
+  } catch (e) {
+ 
+    return null;
+  }
+}
+
+
 
 
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:voumarketinggame/models/vouchers_model.dart';
 
 class VoucherCard extends StatelessWidget {
-  final Map<String, dynamic> voucher;
+  final VoucherModel voucher;
 
   const VoucherCard({
     super.key,
@@ -10,6 +12,9 @@ class VoucherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final String formattedExpiredAt =
+        DateFormat('yyyy-MM-dd').format(voucher.expiredAt);
     return Container(
       width: double.infinity,
       color: Colors.white,
@@ -74,22 +79,24 @@ class VoucherCard extends StatelessWidget {
                           children: [
                             const SizedBox(height: 12),
                             Text(
-                              "Discount ${voucher['discount'] ?? 0}",
+                              "Discount ${voucher.discount} %",
                               style: const TextStyle(
-                                fontSize: 33,
+                                fontSize: 28,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
                             ),
+                            const SizedBox(height: 2),
                             Text(
-                              "Code: ${voucher['code'] ?? "N/A"}",
+                              "Code: ${voucher.code}",
                               style: const TextStyle(
                                 fontSize: 15,
                                 color: Colors.white,
                               ),
                             ),
+                            const SizedBox(height: 2),
                             Text(
-                              "Exp: ${voucher['date_exp'] ?? "N/A"}",
+                              "Exp: $formattedExpiredAt",
                               style: const TextStyle(
                                 fontSize: 15,
                                 color: Colors.white,
