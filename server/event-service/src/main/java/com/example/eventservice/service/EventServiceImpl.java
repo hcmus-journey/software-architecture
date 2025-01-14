@@ -1,5 +1,6 @@
 package com.example.eventservice.service;
 
+import com.example.eventservice.client.AccountClient;
 import com.example.eventservice.client.GameClient;
 import com.example.eventservice.client.VoucherClient;
 import com.example.eventservice.dto.*;
@@ -25,6 +26,8 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class EventServiceImpl implements EventService {
+
+    final private AccountClient accountClient;
 
     final private VoucherClient voucherClient;
 
@@ -153,6 +156,10 @@ public class EventServiceImpl implements EventService {
             GameDto gameDto = gameClient.getQuizGameInfo();
             eventDto.getGames().add(gameDto);
         }
+
+        BrandDto brandDto = accountClient.getBrandInfo(eventDto.getBrandId().toString());
+        eventDto.setBrandName(brandDto.getName());
+        eventDto.setBrandImageUrl(brandDto.getImageUrl());
         return eventDto;
     }
 
@@ -196,6 +203,10 @@ public class EventServiceImpl implements EventService {
                 GameDto gameDto = gameClient.getQuizGameInfo();
                 eventDto.getGames().add(gameDto);
             }
+
+            BrandDto brandDto = accountClient.getBrandInfo(eventDto.getBrandId().toString());
+            eventDto.setBrandName(brandDto.getName());
+            eventDto.setBrandImageUrl(brandDto.getImageUrl());
         }
 
         return eventDtos;
@@ -264,6 +275,10 @@ public class EventServiceImpl implements EventService {
                 GameDto gameDto = gameClient.getQuizGameInfo();
                 eventDto.getGames().add(gameDto);
             }
+
+            BrandDto brandDto = accountClient.getBrandInfo(eventDto.getBrandId().toString());
+            eventDto.setBrandName(brandDto.getName());
+            eventDto.setBrandImageUrl(brandDto.getImageUrl());
         }
 
         return eventDtos;
