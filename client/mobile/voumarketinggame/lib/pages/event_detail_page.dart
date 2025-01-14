@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:voumarketinggame/models/events_model.dart';
 import 'package:voumarketinggame/pages/event_viewall_page.dart';
-import 'package:voumarketinggame/providers/event_provider.dart';
+import 'package:voumarketinggame/providers/events_provider.dart';
 import 'package:voumarketinggame/widgets/event_section_widget.dart';
 import 'package:voumarketinggame/widgets/guide_widget.dart';
 import 'package:voumarketinggame/pages/splash_screen.dart';
 
 class EventDetailScreen extends StatelessWidget {
-  final Map<String, String> event;
+  final EventModel event;
   final String eventType;
 
   const EventDetailScreen({
@@ -18,7 +19,7 @@ class EventDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final eventProvider = Provider.of<EventProviderData>(context);
+    final eventProvider = Provider.of<EventProvider>(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
@@ -64,7 +65,7 @@ class EventDetailScreen extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         child: Image.asset(
-                          event['image']!,
+                          event.imageUrl,
                           height: MediaQuery.of(context).size.height * 0.25,
                           fit: BoxFit.cover,
                         ),
@@ -124,7 +125,7 @@ class EventDetailScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            event['title'] ?? '',
+                            event.name,
                             style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -133,7 +134,7 @@ class EventDetailScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            event['detail'] ?? '',
+                            event.description,
                             style: const TextStyle(
                               fontSize: 13,
                               color: Colors.black,
@@ -153,12 +154,12 @@ class EventDetailScreen extends StatelessWidget {
                             children: [
                               CircleAvatar(
                                 backgroundImage: AssetImage(
-                                    event['avatar'] ?? 'assets/bg2.png'),
+                                    event.brandImageUrl),
                                 radius: 17,
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                event['store'] ?? '',
+                                event.brandName,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -199,7 +200,7 @@ class EventDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                event['startDate'] ?? '',
+                                event.startTime,
                                 style: const TextStyle(
                                   color: Colors.black87,
                                   fontSize: 14,
@@ -213,7 +214,7 @@ class EventDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                event['endDate'] ?? '',
+                                event.endTime,
                                 style: const TextStyle(
                                   color: Colors.black87,
                                   fontSize: 14,
@@ -236,7 +237,7 @@ class EventDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '${int.parse(event['voucherCount'] ?? '0') - int.parse(event['voucherUsed'] ?? '0')}',
+                                '${event.totalVouchers - event.redeemedVouchers}',
                                 style: const TextStyle(
                                   color: Colors.black87,
                                   fontSize: 14,
@@ -251,7 +252,7 @@ class EventDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                event['voucherCount'] ?? '0',
+                                '${event.totalVouchers}',
                                 style: const TextStyle(
                                   color: Colors.black87,
                                   fontSize: 14,
@@ -379,8 +380,7 @@ class EventDetailScreen extends StatelessWidget {
 
                     EventSection(
                       time: "Sự kiện cùng hãng",
-                      items:
-                          eventProvider.getEventsByStore(event['store'] ?? ''),
+                      items: eventProvider.getEventsByBrand(event.brandId),
                       onItemTap: (event) {
                         Navigator.push(
                           context,
@@ -397,8 +397,7 @@ class EventDetailScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => EventViewallScreen(
-                              events: eventProvider
-                                  .getEventsByStore(event['store'] ?? ''),
+                              events: eventProvider.getEventsByBrand(event.brandId),
                               eventType: "Sự kiện cùng hãng",
                             ),
                           ),

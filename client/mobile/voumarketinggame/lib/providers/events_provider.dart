@@ -44,4 +44,9 @@ class EventProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  List<EventModel> getEventsByBrand(String brandId) {
+  return _events.where((event) => event.brandId == brandId).toList();
+  }
+
 }

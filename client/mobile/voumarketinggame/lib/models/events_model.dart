@@ -1,5 +1,8 @@
 class EventModel {
   final String eventId;
+  final String brandId;
+  final String brandName;
+  final String brandImageUrl;
   final String name;
   final String imageUrl;
   final String startTime;
@@ -14,6 +17,9 @@ class EventModel {
 
   EventModel({
     required this.eventId,
+    required this.brandId,
+    required this.brandName,
+    required this.brandImageUrl,
     required this.name,
     required this.imageUrl,
     required this.startTime,
@@ -30,6 +36,9 @@ class EventModel {
   factory EventModel.fromJson(Map<String, dynamic> json) {
     return EventModel(
       eventId: json['eventId'],
+      brandId: json['brandId'],
+      brandName: json['brandName'],
+      brandImageUrl: json['brandImageUrl'],
       name: json['name'],
       imageUrl: json['imageUrl'],
       startTime: json['startTime'],

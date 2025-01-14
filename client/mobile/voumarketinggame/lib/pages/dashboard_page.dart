@@ -7,7 +7,6 @@ import 'package:voumarketinggame/pages/menu_page.dart';
 import 'package:voumarketinggame/pages/voucherlist_page.dart';
 import 'package:voumarketinggame/pages/wishlist_page.dart';
 import 'package:voumarketinggame/providers/bottom_navigation_provider.dart';
-import 'package:voumarketinggame/providers/event_provider.dart';
 import 'package:voumarketinggame/providers/events_provider.dart';
 import 'package:voumarketinggame/widgets/appbar_widget.dart';
 import 'package:voumarketinggame/widgets/bottom_navigation_widget.dart';
@@ -61,7 +60,7 @@ class _ContentDashboard extends State<ContentDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final eventProviderTest = Provider.of<EventProviderData>(context);
+    //final eventProviderTest = Provider.of<EventProviderData>(context);
     final eventProvider = Provider.of<EventProvider>(context);
 
     if (_isLoading) {
@@ -90,7 +89,6 @@ class _ContentDashboard extends State<ContentDashboard> {
               const SizedBox(height: 10),
               
               EventSection(
-                
                 time: typeEvent1,
                 items: ongoingEvents,
                 onViewAll: () {
@@ -98,7 +96,7 @@ class _ContentDashboard extends State<ContentDashboard> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => EventViewallScreen(
-                        events: eventProviderTest.getOngoingEvents(),
+                        events: ongoingEvents,
                         eventType: typeEvent2,
                       ),
                     ),
@@ -122,7 +120,7 @@ class _ContentDashboard extends State<ContentDashboard> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => EventViewallScreen(
-                        events: eventProviderTest.getUpcomingEvents(),
+                        events: upcomingEvents,
                         eventType: typeEvent2,
                       ),
                     ),
@@ -146,7 +144,7 @@ class _ContentDashboard extends State<ContentDashboard> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => EventViewallScreen(
-                        events: eventProviderTest.getEndedEvents(),
+                        events: endedEvents,
                         eventType: typeEvent2,
                       ),
                     ),

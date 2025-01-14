@@ -5,7 +5,7 @@ import 'package:voumarketinggame/pages/event_detail_page.dart';
 class HorizontalList extends StatelessWidget {
   final String time;
   final List<EventModel> items;
-  final Function(Map<String, String>) onItemTap;
+  final Function(EventModel) onItemTap;
 
   const HorizontalList({
     super.key,
@@ -56,7 +56,7 @@ class HorizontalList extends StatelessWidget {
                       topRight: Radius.circular(16.0),
                     ),
                     child: Image.asset(
-                      item['image']!,
+                      item.imageUrl,
                       height: 120,
                       width: double.infinity,
                       fit: BoxFit.cover,
@@ -69,13 +69,13 @@ class HorizontalList extends StatelessWidget {
                     child: Row(
                       children: [
                         CircleAvatar(
-                          backgroundImage: AssetImage(item['avatar'] ?? 'assets/images/bg6.png'),
+                          backgroundImage: AssetImage(item.brandImageUrl),
                           radius: 16,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            item. ?? 'Store Name',
+                            item.brandName,
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -91,7 +91,7 @@ class HorizontalList extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
-                      item['title'] ?? '',
+                      item.name,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -105,7 +105,7 @@ class HorizontalList extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
-                      item['detail'] ?? 'No details available.',
+                      item.description,
                       style: const TextStyle(
                         fontSize: 12,
                         color: Colors.grey,

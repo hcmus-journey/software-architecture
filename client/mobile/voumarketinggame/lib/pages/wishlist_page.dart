@@ -77,7 +77,7 @@ class WishlistScreen extends StatelessWidget {
               ),
             ),
           )
-        else
+        /*else
           Expanded(
             child: ListView.builder(
               itemCount: wishlistEvent.wishlist.length,
@@ -99,7 +99,7 @@ class WishlistScreen extends StatelessWidget {
                 );
               },
             ),
-          ),
+          ),*/
         ],
       ),
     );

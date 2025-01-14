@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:voumarketinggame/models/events_model.dart';
 
 class EventItem extends StatelessWidget {
-  final Map<String, String> event;
+  final EventModel event;
   final VoidCallback onTap;
 
   const EventItem({
@@ -40,7 +41,7 @@ class EventItem extends StatelessWidget {
                   child: Stack(
                     children: [
                       Image.asset(
-                        event['image']!,
+                        event.imageUrl,
                         width: 90,
                         height: 70,
                         fit: BoxFit.cover,
@@ -55,7 +56,7 @@ class EventItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        event['title']!,
+                        event.name,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
@@ -63,7 +64,7 @@ class EventItem extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        event['detail']!,
+                        event.description,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -73,7 +74,7 @@ class EventItem extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'HSD: ${event['endDate']}',
+                        'HSD: ${event.endTime}',
                         style: const TextStyle(
                           color: Colors.red,
                           fontSize: 12,
@@ -88,12 +89,12 @@ class EventItem extends StatelessWidget {
             Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: AssetImage(event['avatar']!),
+                    backgroundImage: AssetImage(event.brandImageUrl),
                     radius: 10,
                   ),
                   const SizedBox(width: 5),
                   Text(
-                    event['store']!,
+                    event.brandName,
                     style: const TextStyle(fontSize: 14),
                   ),
                   const Spacer(),

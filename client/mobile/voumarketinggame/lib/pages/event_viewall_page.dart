@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:voumarketinggame/models/events_model.dart';
 import 'package:voumarketinggame/pages/event_detail_page.dart';
 import 'package:voumarketinggame/widgets/item_list_widget.dart';
 
 class EventViewallScreen extends StatelessWidget {
-  final List<Map<String, String>> events;
+  final List<EventModel> events;
   final String eventType; 
 
   const EventViewallScreen({
