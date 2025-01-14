@@ -23,9 +23,6 @@ public class ShakeGameInventory {
     @Column(name = "event_id", nullable = false)
     private UUID eventId;
 
-    @Column(name = "event_name")
-    private String eventName;
-
     @NotNull
     @Column(name = "collected_coins", nullable = false)
     private Integer collectedCoins;

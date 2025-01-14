@@ -10,6 +10,7 @@ import com.example.inventoryservice.repository.ShakeGameInventoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,11 +30,8 @@ public class InventoryServiceImpl implements InventoryService {
             newShakeGameInventory.setInventoryId(UUID.randomUUID());
             newShakeGameInventory.setCollectedCoins(0);
 
-            EventDto eventDto = eventClient.getEvent(eventId.toString());
-
             ShakeGameEventDto shakeGameEventDto = eventClient.getShakeGameEvents(eventId.toString());
 
-            newShakeGameInventory.setEventName(eventDto.getName());
             newShakeGameInventory.setRequiredCoins(shakeGameEventDto.getRequiredCoins());
 
             return newShakeGameInventory;
@@ -48,6 +46,26 @@ public class InventoryServiceImpl implements InventoryService {
     public List<ShakeGameInventoryDto> getInventory(UUID playerId) {
         List<ShakeGameInventory> shakeGameInventories = shakeGameInventoryRepository.findByPlayerId(playerId);
 
-        return shakeGameInventories.stream().map(InventoryMapper.INSTANCE::convertToDto).toList();
+        List<ShakeGameInventoryDto> shakeGameEventDtos = new ArrayList<>();
+
+        for(ShakeGameInventory shakeGameInventory : shakeGameInventories) {
+            ShakeGameInventoryDto shakeGameInventoryDto = InventoryMapper.INSTANCE.convertToDto(shakeGameInventory);
+
+            ShakeGameEventDto shakeGameEventDto = eventClient
+                    .getShakeGameEvents(shakeGameInventoryDto.getEventId().toString());
+
+            EventDto eventDto = eventClient.getEvent(shakeGameInventoryDto.getEventId().toString());
+
+            shakeGameInventoryDto.setEventName(eventDto.getName());
+
+            shakeGameInventoryDto.setEventImageUrl(eventDto.getImageUrl());
+
+            shakeGameInventoryDto.setRequiredCoins(shakeGameEventDto.getRequiredCoins());
+
+            shakeGameEventDtos.add(shakeGameInventoryDto);
+
+        }
+
+        return shakeGameEventDtos;
     }
 }
