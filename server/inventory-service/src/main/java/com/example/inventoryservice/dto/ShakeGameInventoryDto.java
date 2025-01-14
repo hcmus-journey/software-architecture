@@ -22,6 +22,8 @@ public class ShakeGameInventoryDto {
 
     private String eventName;
 
+    private String eventImageUrl;
+
     private Integer collectedCoins;
 
     private Integer requiredCoins;
