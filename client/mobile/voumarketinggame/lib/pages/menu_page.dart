@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:voumarketinggame/pages/inventory_screen.dart';
 import 'package:voumarketinggame/pages/profile_user_page.dart';
@@ -302,7 +303,9 @@ class _MenuScreenState extends State<MenuScreen> {
                       ),
                       Expanded(
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            SystemNavigator.pop(); 
+                          },
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.blue[100],
                             padding: const EdgeInsets.symmetric(

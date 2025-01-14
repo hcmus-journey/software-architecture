@@ -4,6 +4,7 @@ class FieldContainer extends StatelessWidget {
   final IconData icon;
   final String label;
   final TextEditingController controller;
+  final bool readOnly;
   final VoidCallback? onEdit;
 
   const FieldContainer({
@@ -11,6 +12,7 @@ class FieldContainer extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.controller,
+    this.readOnly = false,
     this.onEdit,
   });
 
@@ -41,8 +43,8 @@ class FieldContainer extends StatelessWidget {
               onFocusChange: (hasFocus) {},
               child: TextField(
                 controller: controller,
-                readOnly: onEdit != null,
-                onTap: onEdit,
+                readOnly: readOnly,
+                onTap: readOnly ? null : onEdit, // Chỉ kí
                 decoration: InputDecoration(
                   labelText: label,
                   labelStyle: const TextStyle(

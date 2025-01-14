@@ -39,6 +39,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     if (user != null) {
 
       setState(() {
+        _controllers['id'] = TextEditingController(text: user.idPlayer);
         _controllers['name'] = TextEditingController(text: user.name);
         _controllers['email'] = TextEditingController(text: user.email);
         _controllers['phoneNumber'] = TextEditingController(text: user.phoneNumber);
@@ -211,7 +212,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     appBar: AppBar(
       title: const Text(
         'Trang cá nhân',
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       ),
       centerTitle: true,
       backgroundColor: Colors.pinkAccent,
@@ -224,7 +225,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ),
     ),
     body: SingleChildScrollView(
-    padding: const EdgeInsets.all(16),
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -272,7 +273,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
         // Personal Information Section
         Container(
-          padding: const EdgeInsets.all(13),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(13),
@@ -286,6 +287,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ),
           child: Column(
             children: [
+              FieldContainer(
+                icon: CupertinoIcons.person,
+                label: "User ID",
+                controller: _controllers['id']!,
+                readOnly: true, // Thêm dòng này
+              ),
               FieldContainer(
                 icon: CupertinoIcons.person_crop_rectangle,
                 label: "Name",
@@ -316,7 +323,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 7),
 
         // Update Button
         ElevatedButton(
