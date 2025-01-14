@@ -10,7 +10,7 @@ class WishlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final wishlistEvent = Provider.of<EventProvider>(context);
+    final wishlistEvent = Provider.of<EventProviderData>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,

@@ -11,7 +11,7 @@ class VoucherlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final wishlistEvent = Provider.of<EventProvider>(context);
+    final wishlistEvent = Provider.of<EventProviderData>(context);
     final voucherList = Provider.of<VoucherProvider>(context);
 
     return Scaffold(

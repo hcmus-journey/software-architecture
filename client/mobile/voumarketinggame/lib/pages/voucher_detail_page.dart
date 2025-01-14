@@ -17,7 +17,7 @@ class VoucherDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final eventProvider = Provider.of<EventProvider>(context);
+    final eventProvider = Provider.of<EventProviderData>(context);
     final event = eventProvider.AllEvents.firstWhere(
       (event) => event['id'] == voucher['eventID'],
       orElse: () => {'detail': 'Thông tin không khả dụng', 'store': ''},

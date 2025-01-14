@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:voumarketinggame/models/events_model.dart';
 import 'package:voumarketinggame/pages/event_detail_page.dart';
 import 'package:voumarketinggame/pages/event_viewall_page.dart';
 import 'package:voumarketinggame/pages/menu_page.dart';
@@ -7,6 +8,7 @@ import 'package:voumarketinggame/pages/voucherlist_page.dart';
 import 'package:voumarketinggame/pages/wishlist_page.dart';
 import 'package:voumarketinggame/providers/bottom_navigation_provider.dart';
 import 'package:voumarketinggame/providers/event_provider.dart';
+import 'package:voumarketinggame/providers/events_provider.dart';
 import 'package:voumarketinggame/widgets/appbar_widget.dart';
 import 'package:voumarketinggame/widgets/bottom_navigation_widget.dart';
 import 'package:voumarketinggame/widgets/carousel_slider_widget.dart';
@@ -25,9 +27,58 @@ class _ContentDashboard extends State<ContentDashboard> {
   String typeEvent2 = 'Sự kiện sắp diễn ra';
   String typeEvent4 = 'Sự kiện đã kết thúc';
 
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchEvents();
+  }
+
+  Future<void> _fetchEvents() async {
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    await eventProvider.fetchAllEvents(context);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  List<EventModel> _filterEvents(List<EventModel> events, String type) {
+    final now = DateTime.now();
+    switch (type) {
+      case 'ongoing':
+        return events.where((e) =>
+            DateTime.parse(e.startTime).isBefore(now) &&
+            DateTime.parse(e.endTime).isAfter(now)).toList();
+      case 'upcoming':
+        return events.where((e) => DateTime.parse(e.startTime).isAfter(now)).toList();
+      case 'ended':
+        return events.where((e) => DateTime.parse(e.endTime).isBefore(now)).toList();
+      default:
+        return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final eventProviderTest = Provider.of<EventProviderData>(context);
     final eventProvider = Provider.of<EventProvider>(context);
+
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (eventProvider.errorMessage != null) {
+      return Center(child: Text(eventProvider.errorMessage!));
+    }
+
+    if (eventProvider.events.isEmpty) {
+      return const Center(child: Text("No events available."));
+    }
+
+    final ongoingEvents = _filterEvents(eventProvider.events, 'ongoing');
+    final upcomingEvents = _filterEvents(eventProvider.events, 'upcoming');
+    final endedEvents = _filterEvents(eventProvider.events, 'ended');
 
     return SingleChildScrollView(
           child: Column(
@@ -41,13 +92,13 @@ class _ContentDashboard extends State<ContentDashboard> {
               EventSection(
                 
                 time: typeEvent1,
-                items: eventProvider.getOngoingEvents(),
+                items: ongoingEvents,
                 onViewAll: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => EventViewallScreen(
-                        events: eventProvider.getOngoingEvents(),
+                        events: eventProviderTest.getOngoingEvents(),
                         eventType: typeEvent2,
                       ),
                     ),
@@ -65,13 +116,13 @@ class _ContentDashboard extends State<ContentDashboard> {
               
               EventSection(
                 time: typeEvent2,
-                items: eventProvider.getUpcomingEvents(),
+                items: upcomingEvents,
                 onViewAll: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => EventViewallScreen(
-                        events: eventProvider.getUpcomingEvents(),
+                        events: eventProviderTest.getUpcomingEvents(),
                         eventType: typeEvent2,
                       ),
                     ),
@@ -89,13 +140,13 @@ class _ContentDashboard extends State<ContentDashboard> {
               
               EventSection(
                 time: typeEvent4,
-                items: eventProvider.getEndedEvents(),
+                items: endedEvents,
                 onViewAll: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => EventViewallScreen(
-                        events: eventProvider.getEndedEvents(),
+                        events: eventProviderTest.getEndedEvents(),
                         eventType: typeEvent2,
                       ),
                     ),

@@ -18,7 +18,7 @@ class EventDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final eventProvider = Provider.of<EventProvider>(context);
+    final eventProvider = Provider.of<EventProviderData>(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class EventProvider with ChangeNotifier {
+class EventProviderData with ChangeNotifier {
   int currentIndex = 0;
 
   final List<Map<String, String>> AllEvents = [

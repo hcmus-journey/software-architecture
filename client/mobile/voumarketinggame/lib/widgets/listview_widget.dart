@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:voumarketinggame/models/events_model.dart';
 import 'package:voumarketinggame/pages/event_detail_page.dart';
 
 class HorizontalList extends StatelessWidget {
   final String time;
-  final List<Map<String, String>> items;
+  final List<EventModel> items;
   final Function(Map<String, String>) onItemTap;
 
   const HorizontalList({
@@ -22,9 +23,10 @@ class HorizontalList extends StatelessWidget {
         itemCount: items.length,
         itemBuilder: (context, index) {
           final item = items[index];
-          final int used = int.tryParse(item['voucherUsed'] ?? '0') ?? 0;
-          final int count = int.tryParse(item['voucherCount'] ?? '1') ?? 1;
+          final int used = item.redeemedVouchers;
+          final int count = item.totalVouchers;
           final double progress = (used / count).clamp(0.0, 1.0);
+
 
           return GestureDetector(
             onTap: () {
@@ -73,7 +75,7 @@ class HorizontalList extends StatelessWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            item['store'] ?? 'Store Name',
+                            item. ?? 'Store Name',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:voumarketinggame/models/events_model.dart';
 import 'package:voumarketinggame/widgets/listview_widget.dart';
 
 class EventSection extends StatelessWidget {
   final String time;
-  final List<Map<String, String>> items;
+  final List<EventModel> items;
   final VoidCallback onViewAll;
   final Function(Map<String, String>) onItemTap; 
 
