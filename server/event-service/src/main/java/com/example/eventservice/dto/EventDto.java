@@ -19,6 +19,15 @@ public class EventDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID eventId;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private UUID brandId;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String brandName;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String brandImageUrl;
+
     @NotEmpty(message = "Name is required")
     private String name;
 

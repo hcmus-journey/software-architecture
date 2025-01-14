@@ -49,12 +49,22 @@ public class BrandController {
 
     @RequestMapping(path = "/profile", method = RequestMethod.GET)
     @Operation(tags = "Brand", description = "Get brand profile")
-    public ResponseEntity<BrandProfileDto> activeBrandRequest(
+    public ResponseEntity<BrandProfileDto> getBrandProfile(
             @RequestHeader("Authorization") String authorizationHeader) {
 
         UUID playerId = jwtUtil.getUserIdFromAuthorizationHeader(authorizationHeader);
 
         BrandProfileDto brandProfileDto = brandService.getBrandProfile(playerId);
+
+        return ResponseEntity.ok(brandProfileDto);
+    }
+
+    @RequestMapping(path = "/{brandId}", method = RequestMethod.GET)
+    @Operation(hidden = true)
+    public ResponseEntity<BrandProfileDto> getBrandInfo(
+            @PathVariable String brandId) {
+
+        BrandProfileDto brandProfileDto = brandService.getBrandProfile(UUID.fromString(brandId));
 
         return ResponseEntity.ok(brandProfileDto);
     }

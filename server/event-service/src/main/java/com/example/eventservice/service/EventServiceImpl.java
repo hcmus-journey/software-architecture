@@ -1,5 +1,6 @@
 package com.example.eventservice.service;
 
+import com.example.eventservice.client.AccountClient;
 import com.example.eventservice.client.GameClient;
 import com.example.eventservice.client.VoucherClient;
 import com.example.eventservice.dto.*;
@@ -26,6 +27,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EventServiceImpl implements EventService {
 
+    final private AccountClient accountClient;
+
     final private VoucherClient voucherClient;
 
     final private GameClient gameClient;
@@ -46,7 +49,7 @@ public class EventServiceImpl implements EventService {
 
         newEvent.setCreatedAt(LocalDate.now());
 
-        newEvent.setStatus("PENDING");
+        newEvent.setStatus("ACCEPTED");
 
         UUID eventId = UUID.randomUUID();
 
@@ -89,7 +92,7 @@ public class EventServiceImpl implements EventService {
 
         event.setDescription(eventDto.getDescription());
 
-        event.setStatus("PENDING");
+        event.setStatus("ACCEPTED");
 
         eventRepository.save(event);
 
@@ -138,6 +141,25 @@ public class EventServiceImpl implements EventService {
         eventDto.setTotalVouchers(eventVoucherDto.getTotalVouchers());
         eventDto.setRedeemedVouchers(eventVoucherDto.getRedeemedVouchers());
         eventDto.setDiscountPercentage(eventVoucherDto.getDiscountPercentage());
+        eventDto.setGames(new ArrayList<>());
+
+        ShakeGameEvent shakeGameEvent = shakeGameEventRepository.findByEventId(eventDto.getEventId());
+
+        if (shakeGameEvent != null) {
+            GameDto gameDto = gameClient.getShakeGameInfo();
+            eventDto.getGames().add(gameDto);
+        }
+
+        QuizGameEvent quizGameEvent = quizGameEventRepository.findByEventId(eventDto.getEventId());
+
+        if (quizGameEvent != null) {
+            GameDto gameDto = gameClient.getQuizGameInfo();
+            eventDto.getGames().add(gameDto);
+        }
+
+        BrandDto brandDto = accountClient.getBrandInfo(eventDto.getBrandId().toString());
+        eventDto.setBrandName(brandDto.getName());
+        eventDto.setBrandImageUrl(brandDto.getImageUrl());
         return eventDto;
     }
 
@@ -181,6 +203,10 @@ public class EventServiceImpl implements EventService {
                 GameDto gameDto = gameClient.getQuizGameInfo();
                 eventDto.getGames().add(gameDto);
             }
+
+            BrandDto brandDto = accountClient.getBrandInfo(eventDto.getBrandId().toString());
+            eventDto.setBrandName(brandDto.getName());
+            eventDto.setBrandImageUrl(brandDto.getImageUrl());
         }
 
         return eventDtos;
@@ -249,6 +275,10 @@ public class EventServiceImpl implements EventService {
                 GameDto gameDto = gameClient.getQuizGameInfo();
                 eventDto.getGames().add(gameDto);
             }
+
+            BrandDto brandDto = accountClient.getBrandInfo(eventDto.getBrandId().toString());
+            eventDto.setBrandName(brandDto.getName());
+            eventDto.setBrandImageUrl(brandDto.getImageUrl());
         }
 
         return eventDtos;
