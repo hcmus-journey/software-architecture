@@ -249,6 +249,7 @@ export const fetchEventsStat = async (startDate, endDate) => {
 
       const start = new Date(startDate);
       const end = new Date(endDate);
+      const diffDays = (end - start) / (1000 * 60 * 60 * 24);
 
       const filteredEvents = events.filter((event) => {
         const eventDate = new Date(event.createdAt);
@@ -257,27 +258,47 @@ export const fetchEventsStat = async (startDate, endDate) => {
 
       const dates = [];
       let current = new Date(start);
-      current.setDate(1);
-      while (current <= end) {
-        dates.push(current.toISOString().slice(0, 7));
-        current.setMonth(current.getMonth() + 1);
+
+      if (diffDays <= 30) {
+        while (current <= end) {
+          dates.push(current.toISOString().slice(0, 10));
+          current.setDate(current.getDate() + 1);
+        }
+
+        const data = dates.map((date) => {
+          return filteredEvents.filter((event) => {
+            const eventDate = new Date(event.createdAt);
+            return eventDate.toISOString().slice(0, 10) === date;
+          }).length;
+        });
+
+        return {
+          dates,
+          data,
+        };
+      } else {
+        current.setDate(1);
+        while (current <= end) {
+          dates.push(current.toISOString().slice(0, 7));
+          current.setMonth(current.getMonth() + 1);
+        }
+
+        const data = dates.map((date) => {
+          const [year, month] = date.split("-");
+          return filteredEvents.filter((event) => {
+            const eventDate = new Date(event.createdAt);
+            return (
+              eventDate.getFullYear() === parseInt(year, 10) &&
+              eventDate.getMonth() + 1 === parseInt(month, 10)
+            );
+          }).length;
+        });
+
+        return {
+          dates,
+          data,
+        };
       }
-
-      const data = dates.map((date) => {
-        const [year, month] = date.split("-");
-        return filteredEvents.filter((event) => {
-          const eventDate = new Date(event.createdAt);
-          return (
-            eventDate.getFullYear() === parseInt(year, 10) &&
-            eventDate.getMonth() + 1 === parseInt(month, 10)
-          );
-        }).length;
-      });
-
-      return {
-        dates,
-        data,
-      };
     }
   } catch (error) {
     console.error("Error fetching events stat:", error.message);
@@ -302,13 +323,19 @@ export const fetchLastestEvents = async (number) => {
 
       const formattedEvents = latestEvents.map((event) => ({
         name: event.name,
-        brand: event.totalVouchers + " vouchers",
-        datetime: new Date(event.createdAt).toLocaleString("vi-VN", {
-          weekday: "short",
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        }),
+        brand:
+          new Date(event.startTime).toLocaleDateString("vi-VN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          }) + " ⏳",
+        datetime:
+          "Created at " +
+          new Date(event.createdAt).toLocaleDateString("vi-VN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }),
       }));
 
       return formattedEvents;
@@ -317,6 +344,26 @@ export const fetchLastestEvents = async (number) => {
     console.error("Error fetching latest events:", error.message);
   }
   return [];
+};
+
+export const fetchGamePlayStat = async () => {
+  try {
+    const response = await api.get("/api/statistics/admin");
+    if (response.status === 200) {
+      const stats = response.data;
+      return stats;
+    }
+  } catch (error) {
+    console.error("Error fetching latest events:", error.message);
+  }
+  return {
+    totalPlayers: 0,
+    totalBrands: 0,
+    totalShakeGameEvents: 0,
+    totalQuizGameEvents: 0,
+    quizGameAttempts: 0,
+    shakeGameAttemps: 0,
+  };
 };
 
 // export const fetchAllEvents = async () => {

@@ -21,6 +21,7 @@ import MDBox from "components/MDBox";
 import Grid from "@mui/material/Grid";
 import GeneralStatistic from "./components/GeneralStatistic";
 import GameStatistic from "./components/GameStatistic";
+import GamePlayStatistic from "./components/GamePlayStatistic";
 import AccountsStatistic from "./components/AccountsStatistic";
 import EventsStatistic from "./components/EventsStatistic";
 import EventsOverview from "./components/EventsOverview";
@@ -41,10 +42,13 @@ function Dashboard() {
       <MDBox py={3}>
         <GeneralStatistic />
         <Grid container spacing={3} mt={1}>
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={6}>
             <GameStatistic />
           </Grid>
-          <Grid item xs={12} md={7}>
+          <Grid item xs={12} md={6}>
+            <GamePlayStatistic />
+          </Grid>
+          <Grid item xs={12} md={12}>
             <AccountsStatistic />
           </Grid>
         </Grid>

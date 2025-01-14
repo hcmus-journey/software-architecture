@@ -15,8 +15,10 @@ function EventsStatistic() {
   const { darkMode } = controller;
   const [eventsStat, setEventsStat] = useState({ dates: [], data: [] });
   const [loading, setLoading] = useState(true);
-  const [startDate, setStartDate] = useState("2023-11-20");
-  const [endDate, setEndDate] = useState("2024-11-24");
+  const [startDate, setStartDate] = useState(
+    new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split("T")[0]
+  );
+  const [endDate, setEndDate] = useState(new Date().toISOString().split("T")[0]);
 
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);

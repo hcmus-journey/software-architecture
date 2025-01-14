@@ -7,8 +7,8 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import Grid from "@mui/material/Grid";
 
-function GameStatistic() {
-  const colorPalette = ["#63993D", "#5E40BE", "#0066CC", "#CA6C0F", "#FF4560"];
+function GamePlayStatistic() {
+  const colorPalette = ["#0066CC", "#CA6C0F", "#FF4560"];
   const [gameStat, setGameStat] = useState({
     total: 0,
     data: [],
@@ -20,14 +20,15 @@ function GameStatistic() {
       setLoading(true);
       try {
         const [game] = await Promise.all([fetchGamePlayStat()]);
+        console.log(game);
         const gameData = [
           {
             title: "Shake Game",
-            count: game.totalShakeGameEvents,
+            count: game.shakeGameAttempts,
           },
           {
             title: "Quiz Game",
-            count: game.totalQuizGameEvents,
+            count: game.quizGameAttempts,
           },
         ];
         const total = gameData.reduce((sum, item) => sum + item.count, 0);
@@ -42,11 +43,11 @@ function GameStatistic() {
   }, []);
 
   return (
-    <Card sx={{ minHeight: "350px" }}>
+    <Card sx={{ height: "100%" }}>
       <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">
         <MDBox>
           <MDTypography variant="h6" fontWeight="medium">
-            Game Statistic
+            Game Attempt Statistic
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
             <Icon
@@ -59,7 +60,7 @@ function GameStatistic() {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>Total events</strong> added to each game
+              &nbsp;<strong>Total player attempts</strong> of each game
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -93,7 +94,7 @@ function GameStatistic() {
                     })),
                     highlightScope: { fade: "global", highlight: "item" },
                     faded: { color: "gray" },
-                    valueFormatter: (item) => `${item.value} events`,
+                    valueFormatter: (item) => `${item.value} plays`,
                   },
                 ]}
                 sx={{
@@ -123,4 +124,4 @@ function GameStatistic() {
   );
 }
 
-export default GameStatistic;
+export default GamePlayStatistic;
