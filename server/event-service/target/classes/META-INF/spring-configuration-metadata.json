@@ -1,0 +1,37 @@
+{
+  "groups": [
+    {
+      "name": "jwt",
+      "type": "com.example.eventservice.security.JwtProperties",
+      "sourceType": "com.example.eventservice.security.JwtProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "jwt.access-token-expiration-minute",
+      "type": "java.lang.Long",
+      "sourceType": "com.example.eventservice.security.JwtProperties"
+    },
+    {
+      "name": "jwt.access-token-secret-key",
+      "type": "java.lang.String",
+      "sourceType": "com.example.eventservice.security.JwtProperties"
+    },
+    {
+      "name": "jwt.issuer",
+      "type": "java.lang.String",
+      "sourceType": "com.example.eventservice.security.JwtProperties"
+    },
+    {
+      "name": "jwt.refresh-token-expiration-day",
+      "type": "java.lang.Long",
+      "sourceType": "com.example.eventservice.security.JwtProperties"
+    },
+    {
+      "name": "jwt.refresh-token-secret-key",
+      "type": "java.lang.String",
+      "sourceType": "com.example.eventservice.security.JwtProperties"
+    }
+  ],
+  "hints": []
+}
