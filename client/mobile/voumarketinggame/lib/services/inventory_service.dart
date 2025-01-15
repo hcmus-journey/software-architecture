@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 class InventoryService {
   final String baseUrl;
 
-  InventoryService({this.baseUrl = 'http://localhost:8080'});
+  //InventoryService({this.baseUrl = 'http://localhost:8080'});
+  InventoryService({this.baseUrl = 'http://10.0.2.2:8080'});
 
   // Fetch inventories
   Future<List<Map<String, dynamic>>> fetchInventories(String authToken) async {

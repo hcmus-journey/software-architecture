@@ -47,7 +47,7 @@ class EventItem extends StatelessWidget {
                         event.imageUrl, 
                         fit: BoxFit.cover,
                         width: 120,
-                        height: 120,
+                        height: 80,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) {
                             return child; 
