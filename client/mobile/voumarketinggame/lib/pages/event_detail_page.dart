@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:voumarketinggame/models/events_model.dart';
 import 'package:voumarketinggame/pages/event_viewall_page.dart';
@@ -7,6 +8,7 @@ import 'package:voumarketinggame/widgets/button_favorite_widget.dart';
 import 'package:voumarketinggame/widgets/event_section_widget.dart';
 import 'package:voumarketinggame/widgets/guide_widget.dart';
 import 'package:voumarketinggame/pages/splash_screen.dart';
+import 'package:voumarketinggame/widgets/global_event.dart';
 
 class EventDetailScreen extends StatefulWidget {
   final EventModel event;
@@ -23,7 +25,6 @@ class EventDetailScreen extends StatefulWidget {
 }
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
-
   bool _isLoading = true;
   @override
   void initState() {
@@ -43,22 +44,33 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       });
     }
   }
-  
+
+  bool _isEventActive() {
+    // Lấy thời gian hiện tại
+    final now = DateTime.now();
+
+    // Chuyển đổi startTime và endTime thành đối tượng DateTime
+    final startTime = DateFormat("yyyy-MM-dd").parse(widget.event.startTime);
+    final endTime = DateFormat("yyyy-MM-dd").parse(widget.event.endTime);
+
+    // Kiểm tra nếu thời gian hiện tại nằm trong khoảng thời gian của sự kiện
+    return now.isAfter(startTime) && now.isBefore(endTime);
+  }
 
   @override
   Widget build(BuildContext context) {
-    
     final eventProvider = Provider.of<EventProvider>(context);
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
+
+    // Kiểm tra trạng thái sự kiện
+    final isEventActive = _isEventActive();
+
     return SafeArea(
-      
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
-        body: 
-        
-        Column(
+        body: Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -98,8 +110,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                           ),
                         ],
                       ),
-                      child: 
-                      ClipRRect(
+                      child: ClipRRect(
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(16.0),
                           topRight: Radius.circular(16.0),
@@ -115,8 +126,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                             } else {
                               return Center(
                                 child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          (loadingProgress.expectedTotalBytes ??
+                                              1)
                                       : null,
                                 ),
                               );
@@ -127,7 +141,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                           },
                         ),
                       ),
-
                     ),
                     const SizedBox(height: 16.0),
 
@@ -211,15 +224,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CircleAvatar(
-                                backgroundImage: NetworkImage(widget.event.brandImageUrl), 
+                                backgroundImage:
+                                    NetworkImage(widget.event.brandImageUrl),
                                 radius: 10,
                                 onBackgroundImageError: (error, stackTrace) {
-                                  print('Failed to load brand image: $error'); 
+                                  print('Failed to load brand image: $error');
                                 },
                               ),
-
                               const SizedBox(width: 8),
-                              
                               Text(
                                 widget.event.brandName,
                                 style: const TextStyle(
@@ -327,7 +339,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     ),
 
                     Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
                       padding: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -355,7 +368,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                 children: [
                                   Text(
                                     '• ${game.name}',
-                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
@@ -369,22 +384,25 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                           else
                             const Text(
                               'Không có trò chơi nào!',
-                              style: TextStyle(fontSize: 16, color: Colors.grey),
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.grey),
                             ),
                         ],
                       ),
                     ),
 
-
                     // Guide Section
                     GestureDetector(
                       onTap: () {
-                        final gameImages = widget.event.games.map((game) => game.imageUrl).toList();
+                        final gameImages = widget.event.games
+                            .map((game) => game.imageUrl)
+                            .toList();
                         showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
                           shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(20)),
                           ),
                           builder: (context) {
                             return GuideWidget(
@@ -395,7 +413,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                         );
                       },
                       child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
                         padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -418,16 +437,17 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                 ),
                               ],
                             ),
-                            Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
+                            Icon(Icons.arrow_forward_ios,
+                                color: Colors.grey, size: 16),
                           ],
                         ),
                       ),
                     ),
 
-
                     EventSection(
                       time: "Sự kiện cùng hãng",
-                      items: eventProvider.getEventsByBrand(widget.event.brandId),
+                      items:
+                          eventProvider.getEventsByBrand(widget.event.brandId),
                       onItemTap: (event) {
                         Navigator.push(
                           context,
@@ -444,7 +464,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => EventViewallScreen(
-                              events: eventProvider.getEventsByBrand(widget.event.brandId),
+                              events: eventProvider
+                                  .getEventsByBrand(widget.event.brandId),
                               eventType: "Sự kiện cùng hãng",
                             ),
                           ),
@@ -461,25 +482,29 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           color: Colors.white,
           padding: const EdgeInsets.all(16.0),
           child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            
             FavoriteButton(
               eventId: widget.event.eventId,
               isFavorite: eventProvider.isEventFavorite(widget.event.eventId),
               onToggleFavorite: (isFavorite) async {
-                final eventProvider = Provider.of<EventProvider>(context, listen: false);
+                final eventProvider =
+                    Provider.of<EventProvider>(context, listen: false);
 
                 try {
                   if (isFavorite) {
                     // Thêm vào danh sách yêu thích
-                    await eventProvider.addToFavorite(context, widget.event.eventId);
+                    await eventProvider.addToFavorite(
+                        context, widget.event.eventId);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Đã thêm vào danh sách yêu thích!')),
+                      const SnackBar(
+                          content: Text('Đã thêm vào danh sách yêu thích!')),
                     );
                   } else {
                     // Xóa khỏi danh sách yêu thích
-                    await eventProvider.removeFromFavorite(context, widget.event.eventId);
+                    await eventProvider.removeFromFavorite(
+                        context, widget.event.eventId);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Đã xóa khỏi danh sách yêu thích!')),
+                      const SnackBar(
+                          content: Text('Đã xóa khỏi danh sách yêu thích!')),
                     );
                   }
                 } catch (e) {
@@ -489,11 +514,21 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 }
               },
             ),
-
             const SizedBox(width: 8),
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
+                  if (!isEventActive) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Sự kiện không khả dụng!'),
+                        duration: Duration(seconds: 1),
+                      ),
+                    );
+                    return;
+                  }
+                  GlobalEvent.instance.setCurrentEvent(widget.event);
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(

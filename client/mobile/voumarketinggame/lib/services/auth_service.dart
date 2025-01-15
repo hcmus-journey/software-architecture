@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiServiceAuthentication {
-  static const String _baseUrl = "http://10.0.2.2:8080";
-
+  static const String _baseUrl = "http://localhost:8080";
 
   Future<Map<String, dynamic>> signUp({
     required String username,
@@ -41,11 +40,9 @@ class ApiServiceAuthentication {
     }
   }
 
-  Future<Map<String, dynamic>> login({
-    required String username,
-    required String password
-    })async {
-    final url = Uri.parse('$_baseUrl/api/auth/login'); 
+  Future<Map<String, dynamic>> login(
+      {required String username, required String password}) async {
+    final url = Uri.parse('$_baseUrl/api/auth/login');
     try {
       final response = await http.post(
         url,
@@ -67,6 +64,4 @@ class ApiServiceAuthentication {
       throw Exception("Error during login: $e");
     }
   }
-
-
 }

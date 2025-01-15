@@ -72,8 +72,8 @@ class _GameButtonState extends State<GameButton> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    widget.image,
+                  child: Image.network(
+                    widget.image, // Sử dụng URL để tải ảnh
                     width: double.infinity,
                     height: 150,
                     fit: BoxFit.cover,

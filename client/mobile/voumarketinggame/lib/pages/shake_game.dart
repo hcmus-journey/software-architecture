@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:voumarketinggame/services/game_service.dart';
+import 'package:voumarketinggame/providers/auth_provider.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:voumarketinggame/widgets/game_state.dart';
+import 'package:voumarketinggame/widgets/global_event.dart';
 
 class ShakeGame extends StatefulWidget {
   final String roomName;
@@ -14,72 +19,199 @@ class ShakeGame extends StatefulWidget {
 class _ShakeGamePageState extends State<ShakeGame>
     with TickerProviderStateMixin {
   bool _isShaking = false;
-  late final AnimationController _controller; // Declare controller
-  bool _isCongratulationsVisible =
-      false; // Track if congratulation animation should be shown
+  late final AnimationController _controller;
+  bool _isCongratulationsVisible = false;
+  late ApiServiceGame _apiServiceGame;
+  late FlutterSoundPlayer _soundPlayer;
+  int remainingGames = 10;
+  bool _hasShownSnackBar =
+      false; // Biến cờ để kiểm tra SnackBar đã hiển thị hay chưa
 
   @override
   void initState() {
     super.initState();
-    // Initialize the controller with duration and vsync
+    _loadRemainingGames();
+    _soundPlayer = FlutterSoundPlayer();
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 2));
+    _apiServiceGame = ApiServiceGame();
 
-    // Add listener to reset _isShaking when animation completes
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
-          _isShaking = false; // Reset shaking flag when animation completes
-          _isCongratulationsVisible =
-              true; // Show congratulation animation after shaking
+          _isShaking = false;
         });
       }
     });
   }
 
-  // Function to be called when the swipe gesture is detected
-  void _onSwipe() {
-    if (!_isShaking && !_isCongratulationsVisible) {
-      setState(() {
-        _isShaking = true; // Set shaking state to true
-      });
+  // Hàm tải giá trị remainingGames
+  Future<void> _loadRemainingGames() async {
+    await GameState().load(); // Tải giá trị từ SharedPreferences
+    setState(() {
+      remainingGames = GameState().getRemainingGames(); // Cập nhật lại giá trị
+    });
+  }
 
-      // Play the shaking animation when swipe is detected
-      _controller.forward(from: 0.0); // Start animation
+  Future<void> _playSound(String fileName) async {
+    try {
+      if (!_soundPlayer.isOpen()) {
+        await _soundPlayer.openPlayer();
+      }
+
+      // Phát âm thanh từ tài nguyên nội bộ
+      await _soundPlayer.startPlayer(
+        fromURI: 'assets/sounds/$fileName',
+        codec: Codec.defaultCodec,
+      );
+    } catch (e) {
+      //print('Lỗi khi phát âm thanh: $e');
     }
   }
 
-  // Function to show the congratulatory dialog after animation
-  void _onShakeComplete() {
-    // Show the congratulatory dialog after the animation
-    Future.delayed(const Duration(seconds: 1), () {
-      // Show the congratulatory dialog
+  Future<void> _playWinningSounds() async {
+    try {
+      await _playSound('win_gift.wav');
+    } catch (e) {
+      //print('Lỗi khi phát chuỗi âm thanh: $e');
+    }
+  }
+
+  Future<void> _playFailSound() async {
+    try {
+      await _playSound('fail_gift.wav');
+    } catch (e) {
+      //print('Lỗi khi phát âm thanh thất bại: $e');
+    }
+  }
+
+  Future<void> _onSwipe() async {
+    // Kiểm tra nếu không còn lượt chơi và chưa hiển thị SnackBar
+    if (remainingGames <= 0 && !_hasShownSnackBar) {
+      // Hiển thị SnackBar nếu không còn lượt chơi và chưa hiển thị SnackBar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Không đủ lượt chơi'),
+          duration: Duration(seconds: 1), // Hiển thị trong 10 giây
+        ),
+      );
+      Navigator.of(context).pop(); // Đóng trang game
+      setState(() {
+        _hasShownSnackBar = true; // Đánh dấu là SnackBar đã hiển thị
+      });
+      return; // Dừng lại nếu không còn lượt chơi
+    }
+
+    if (_isShaking || _isCongratulationsVisible) {
+      return; // Nếu game đang chơi hoặc có animation chúc mừng, không làm gì
+    }
+
+    setState(() {
+      _isShaking = true;
+      // Giảm lượt chơi khi vào game
+      GameState().decrementRemainingGames(); // Giảm lượt chơi trong GameState
+      _loadRemainingGames(); // Cập nhật lại remainingGames sau khi giảm
+      _hasShownSnackBar = false; // Đặt lại cờ khi có lượt chơi mới
+    });
+
+    _controller.forward(from: 0.0);
+
+    try {
+      // Gọi API startShakeGame
+      final authorizationToken = await AuthProvider().getAccessToken();
+      final isDrop = await _apiServiceGame.startShakeGame(
+        eventId: GlobalEvent.instance.currentEvent!.eventId,
+        authorizationToken: authorizationToken!,
+      );
+
+      setState(() {
+        _isShaking = false;
+      });
+
+      if (isDrop) {
+        setState(() {
+          _isCongratulationsVisible = true; // Kích hoạt animation
+        });
+
+        // Phát chuỗi âm thanh khi trúng thưởng
+        await _playWinningSounds();
+
+        // Hiển thị animation chúc mừng và hộp thoại
+        Future.delayed(const Duration(seconds: 1), () {
+          showDialog(
+            // ignore: use_build_context_synchronously
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text("Chúc mừng!"),
+              content: const Text("Bạn nhận được 1 coin"),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      _isCongratulationsVisible = false;
+                    });
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        });
+      } else {
+        // Phát âm thanh khi không trúng thưởng
+        await _playFailSound();
+
+        // Hiển thị thông báo "may mắn lần sau"
+        Future.delayed(const Duration(seconds: 1), () {
+          showDialog(
+            // ignore: use_build_context_synchronously
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text("Rất tiếc!"),
+              content: const Text("Chúc bạn may mắn lần sau!"),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      _isCongratulationsVisible = false;
+                    });
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        });
+      }
+    } catch (error) {
+      setState(() {
+        _isShaking = false;
+      });
       showDialog(
         // ignore: use_build_context_synchronously
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Chúc mừng!"),
-          content: const Text("Bạn nhận được 1 coin"),
+          title: const Text("Lỗi"),
+          content: const Text("Không thể kết nối đến máy chủ!"),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                // Hide the congratulation animation overlay
-                setState(() {
-                  _isCongratulationsVisible = false; // Hide the overlay
-                });
+                Navigator.of(context).pop();
               },
               child: const Text('OK'),
             ),
           ],
         ),
       );
-    });
+    }
   }
 
   @override
   void dispose() {
-    _controller.dispose(); // Dispose the controller when done
+    _controller.dispose();
+    _soundPlayer.closePlayer();
     super.dispose();
   }
 
@@ -117,27 +249,24 @@ class _ShakeGamePageState extends State<ShakeGame>
                 children: [
                   GestureDetector(
                     onHorizontalDragUpdate: (details) {
-                      // Detect horizontal swipe (swipe left or right)
                       if (details.primaryDelta! > 0) {
                         _onSwipe();
                       }
                     },
                     onVerticalDragUpdate: (details) {
-                      // Detect vertical swipe (swipe up or down)
                       if (details.primaryDelta! > 0) {
                         _onSwipe();
                       }
                     },
                     child: LottieBuilder.asset(
                       'assets/animations/shaking_present.json',
-                      controller: _controller, // Attach the controller
+                      controller: _controller,
                       width: MediaQuery.of(context).size.width * 0.8,
                       height: MediaQuery.of(context).size.width * 0.8,
                       repeat: false,
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Add text box with "Swipe your screen!" message
                   Container(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10.0, horizontal: 20.0),
@@ -148,33 +277,12 @@ class _ShakeGamePageState extends State<ShakeGame>
                         bottom: BorderSide(color: Colors.lightGreen),
                       ),
                     ),
-                    child: ShaderMask(
-                      shaderCallback: (bounds) {
-                        return LinearGradient(
-                          colors: [
-                            Colors.white.withOpacity(
-                                1), // White color with opacity 1 in the middle
-                            Colors.white.withOpacity(
-                                0.2), // White with opacity 0.2 on the sides
-                            Colors.white.withOpacity(
-                                1), // White with opacity 1 in the middle
-                          ],
-                          stops: const [0.0, 0.5, 1.0],
-                        ).createShader(bounds);
-                      },
-                      blendMode: BlendMode.srcATop,
-                      child: Container(
-                        alignment: Alignment.center,
-                        width:
-                            double.infinity, // Stretch text across the screen
-                        child: const Text(
-                          'Swipe your screen!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                          ),
-                        ),
+                    child: const Text(
+                      'Swipe your screen!',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
                       ),
                     ),
                   ),
@@ -182,21 +290,16 @@ class _ShakeGamePageState extends State<ShakeGame>
               ),
             ),
           ),
-          // Display the congratulation animation if needed
           if (_isCongratulationsVisible)
             Positioned.fill(
               child: Container(
-                color:
-                    Colors.black.withOpacity(0.5), // Semi-transparent overlay
+                color: Colors.black.withOpacity(0.5),
                 child: Lottie.asset(
                   'assets/animations/congratulation.json',
                   fit: BoxFit.cover,
                   repeat: false,
                   onLoaded: (composition) {
-                    // Show dialog after the congratulation animation finishes
-                    Future.delayed(const Duration(seconds: 0), () {
-                      _onShakeComplete();
-                    });
+                    Future.delayed(composition.duration, () {});
                   },
                 ),
               ),

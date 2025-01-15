@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 class GlowingButton extends StatefulWidget {
   final Color color1;
   final Color color2;
-  final VoidCallback onTap; // Thêm tham số onTap
+  final VoidCallback onTap;
+  final int remainingGames; // Thêm tham số số lượt chơi còn lại
 
-  const GlowingButton(
-      {required Key key,
-      this.color1 = Colors.blue,
-      this.color2 = Colors.pinkAccent,
-      required this.onTap}) // Yêu cầu tham số onTap
-      : super(key: key);
+  const GlowingButton({
+    required Key key,
+    this.color1 = Colors.blue,
+    this.color2 = Colors.pinkAccent,
+    required this.onTap,
+    required this.remainingGames, // Yêu cầu tham số remainingGames
+  }) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -36,7 +38,7 @@ class _GlowingButtonState extends State<GlowingButton> {
           scale = 1.1;
         });
       },
-      onTap: widget.onTap, // Gọi hàm onTap khi nhấn vào button
+      onTap: widget.onTap,
       child: AnimatedContainer(
         transform: Matrix4.identity()..scale(scale),
         duration: const Duration(milliseconds: 200),
@@ -86,7 +88,9 @@ class _GlowingButtonState extends State<GlowingButton> {
               color: Colors.white,
             ),
             Text(
-              glowing ? "10" : "10",
+              glowing
+                  ? widget.remainingGames.toString()
+                  : widget.remainingGames.toString(),
               style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,

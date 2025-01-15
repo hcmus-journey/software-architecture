@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:voumarketinggame/providers/auth_provider.dart';
+import 'package:voumarketinggame/services/inventory_service.dart';
 
 class InventoryButton extends StatefulWidget {
   final String title;
   final int currentCoins;
+  final int requiredCoins;
   final String image;
+  final String inventoryId;
+  final String eventId;
   final VoidCallback onTap;
 
   const InventoryButton({
     super.key,
     required this.title,
     required this.currentCoins,
+    required this.requiredCoins,
     required this.image,
+    required this.inventoryId,
+    required this.eventId,
     required this.onTap,
   });
 
@@ -46,19 +54,31 @@ class _InventoryButtonState extends State<InventoryButton> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: widget.currentCoins >= 10
-                      ? () {
-                          setState(() {
+                  onPressed: widget.currentCoins >= widget.requiredCoins
+                      ? () async {
+                          try {
+                            final apiService = InventoryService();
+                            final result = await apiService.exchangeCoin(
+                                widget.inventoryId,
+                                (await AuthProvider().getAccessToken())!);
+
+                            // Kiểm tra xem result có chứa các khóa cần thiết hay không
+                            final discount = result['discount'] ??
+                                0; // Nếu không có discount thì lấy giá trị mặc định là 0
+                            final code = result['code'] ??
+                                'INVALID CODE'; // Nếu không có code thì lấy giá trị mặc định là 'INVALID CODE'
+                            // ignore: use_build_context_synchronously
+                            _showVoucherDialog(context, discount, code);
                             widget.onTap();
-                            Navigator.pop(context);
-                            _showVoucherDialog(context);
-                          });
+                          } catch (error) {
+                            //print('Error redeem coin: $error');
+                          }
                         }
                       : () {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Not enough coin!'),
+                              content: Text('Not enough coins!'),
                               duration: Duration(seconds: 2),
                             ),
                           );
@@ -87,7 +107,7 @@ class _InventoryButtonState extends State<InventoryButton> {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Not enough coin!'),
+                              content: Text('Not enough coins!'),
                               duration: Duration(seconds: 2),
                             ),
                           );
@@ -102,7 +122,7 @@ class _InventoryButtonState extends State<InventoryButton> {
     );
   }
 
-  void _showVoucherDialog(BuildContext context) {
+  void _showVoucherDialog(BuildContext context, int discount, String code) {
     showDialog(
       context: context,
       builder: (context) {
@@ -127,10 +147,10 @@ class _InventoryButtonState extends State<InventoryButton> {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       color: Colors.grey.shade200,
-                      child: const Text(
-                        'ABC12AAAAAAAAAAAAAAAAAAAA3',
+                      child: Text(
+                        code, // Hiển thị code từ API trả về
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ),
@@ -139,8 +159,8 @@ class _InventoryButtonState extends State<InventoryButton> {
                   IconButton(
                     icon: const Icon(Icons.copy, color: Colors.pinkAccent),
                     onPressed: () {
-                      Clipboard.setData(const ClipboardData(
-                          text: 'ABC12AAAAAAAAAAAAAAAAAAAA3'));
+                      Clipboard.setData(ClipboardData(
+                          text: code)); // Sao chép code vào clipboard
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -151,6 +171,12 @@ class _InventoryButtonState extends State<InventoryButton> {
                     },
                   ),
                 ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Discount: $discount%', // Hiển thị discount
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ],
           ),
@@ -285,7 +311,7 @@ class _InventoryButtonState extends State<InventoryButton> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pop(context); // Đóng dialog khi nhấn Cancel
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.pink,
@@ -297,9 +323,31 @@ class _InventoryButtonState extends State<InventoryButton> {
                     ),
                     const SizedBox(width: 10),
                     ElevatedButton(
-                      onPressed: () {
-                        // Implement gift logic
-                        Navigator.pop(context);
+                      onPressed: () async {
+                        try {
+                          final apiService = InventoryService();
+                          await apiService.giftCoin(
+                            widget.inventoryId,
+                            (await AuthProvider().getAccessToken())!,
+                            widget.eventId,
+                            selectedCoins,
+                            inputController.text,
+                          );
+                          widget.onTap();
+                          // ignore: use_build_context_synchronously
+                          Navigator.pop(context); // Đóng dialog
+
+                          // Hiển thị SnackBar thông báo thành công
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Gift coin thành công!'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        } catch (error) {
+                          //print('Error gift coin: $error');
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.pink,
@@ -352,7 +400,7 @@ class _InventoryButtonState extends State<InventoryButton> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${widget.currentCoins}/10',
+                    '${widget.currentCoins}/${widget.requiredCoins}',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
@@ -363,11 +411,25 @@ class _InventoryButtonState extends State<InventoryButton> {
             ),
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                widget.image,
+              child: Image.network(
+                widget.image, // Đây là URL của ảnh
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                (loadingProgress.expectedTotalBytes ?? 1)
+                            : null,
+                      ),
+                    );
+                  }
+                },
               ),
             ),
           ],

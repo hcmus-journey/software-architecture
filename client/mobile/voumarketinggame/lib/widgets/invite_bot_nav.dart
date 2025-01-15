@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'neumorphism_button.dart';
+import 'package:voumarketinggame/widgets/game_state.dart';
 
 class InviteBottomSheet extends StatefulWidget {
   const InviteBottomSheet({super.key});
@@ -66,8 +68,13 @@ class _InviteBottomSheetState extends State<InviteBottomSheet> {
                     color: Colors.grey[300]!,
                     borderRadius: BorderRadius.circular(50),
                     onTap: () {
-                      // Đây là callback khi nút được nhấn
-                      print("Nút Facebook được nhấn!");
+                      GameState()
+                          .incrementRemainingGames(); // Tăng số lượt chơi còn lại
+                      // Chia sẻ thông điệp mời qua Facebook
+                      Share.share(
+                        'Mời bạn tham gia game này trên Facebook!',
+                        subject: 'Game Invitation',
+                      );
                     },
                   ),
                   const SizedBox(width: 20), // Khoảng cách giữa 2 nút
@@ -81,8 +88,13 @@ class _InviteBottomSheetState extends State<InviteBottomSheet> {
                     color: Colors.grey[300]!,
                     borderRadius: BorderRadius.circular(50),
                     onTap: () {
-                      // Đây là callback khi nút được nhấn
-                      print("Nút Share được nhấn!");
+                      GameState()
+                          .incrementRemainingGames(); // Tăng số lượt chơi còn lại
+                      // Chia sẻ thông điệp mời qua bất kỳ nền tảng nào
+                      Share.share(
+                        'Mời bạn tham gia game này!',
+                        subject: 'Game Invitation',
+                      );
                     },
                   ),
                 ],

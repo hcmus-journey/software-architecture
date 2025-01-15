@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class VoucherService {
-  static const String _baseUrl = "http://10.0.2.2:8080";
+  static const String _baseUrl = "http://localhost:8080";
 
-  Future<List<Map<String, dynamic>>> fetchVouchers({required String token}) async {
+  Future<List<Map<String, dynamic>>> fetchVouchers(
+      {required String token}) async {
     try {
       final response = await http.get(
         Uri.parse("$_baseUrl/api/vouchers"),
