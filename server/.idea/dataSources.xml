@@ -29,7 +29,7 @@
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
     <data-source source="LOCAL" name="game_service_db" uuid="c11a7043-5a8d-4af5-9c51-beb75defda50">
-      <driver-ref>mongo.4</driver-ref>
+      <driver-ref>mongo</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
       <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
