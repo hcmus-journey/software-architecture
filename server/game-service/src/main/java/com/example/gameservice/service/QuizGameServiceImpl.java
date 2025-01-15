@@ -86,6 +86,7 @@ public class QuizGameServiceImpl implements QuizGameService {
 
     @Override
     public VoucherDto endQuizGame(UUID playerId, QuizGameDto quizGameDto) {
+
         QuizGameResult quizGameResult = QuizGameResult.builder()
                 .eventId(UUID.fromString(quizGameDto.getEventId()))
                 .id(UUID.randomUUID())
@@ -93,6 +94,7 @@ public class QuizGameServiceImpl implements QuizGameService {
                 .questionCount(quizGameDto.getQuestionCount())
                 .correctAnswerCount(quizGameDto.getCorrectAnswerCount())
                 .build();
+
         VoucherDto voucherDto = null;
         if(quizGameDto.getCorrectAnswerCount().equals(quizGameDto.getQuestionCount())) {
             voucherDto = voucherClient.distributeVoucher(UUID.fromString(quizGameDto.getEventId()), playerId);

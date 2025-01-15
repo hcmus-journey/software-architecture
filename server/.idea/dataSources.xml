@@ -15,19 +15,6 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="event_service_db@ep-hidden-mode-a16whkln.ap-southeast-1.aws.neon.tech" uuid="cecdc175-8793-471d-a478-2a2b25248c3d">
-      <driver-ref>postgresql</driver-ref>
-      <synchronize>true</synchronize>
-      <imported>true</imported>
-      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://ep-hidden-mode-a16whkln.ap-southeast-1.aws.neon.tech/event_service_db?sslmode=require</jdbc-url>
-      <jdbc-additional-properties>
-        <property name="com.intellij.clouds.kubernetes.db.host.port" />
-        <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
-        <property name="com.intellij.clouds.kubernetes.db.container.port" />
-      </jdbc-additional-properties>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
     <data-source source="LOCAL" name="voucher_service_db@ep-hidden-mode-a16whkln.ap-southeast-1.aws.neon.tech" uuid="5f020a58-89bf-4336-899d-4312ea07c31d">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
@@ -60,6 +47,19 @@
       <imported>true</imported>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://ep-hidden-mode-a16whkln.ap-southeast-1.aws.neon.tech/inventory_service_db?sslmode=require</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="com.intellij.clouds.kubernetes.db.host.port" />
+        <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
+        <property name="com.intellij.clouds.kubernetes.db.container.port" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="event_service_db@ep-hidden-mode-a16whkln.ap-southeast-1.aws.neon.tech" uuid="0a17099a-018c-4428-b02b-e07d741a8650">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ep-hidden-mode-a16whkln.ap-southeast-1.aws.neon.tech/event_service_db?sslmode=require</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.host.port" />
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
