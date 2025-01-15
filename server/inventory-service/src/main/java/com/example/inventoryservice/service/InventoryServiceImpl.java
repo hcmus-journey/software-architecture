@@ -25,7 +25,9 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public void collectCoin(UUID playerId, UUID eventId) {
-        ShakeGameInventory shakeGameInventory = shakeGameInventoryRepository.findByEventId(eventId).orElseGet(() -> {
+        ShakeGameInventory shakeGameInventory = shakeGameInventoryRepository.findByPlayerIdAndEventId(playerId, eventId);
+        if(shakeGameInventory == null)
+        {
             ShakeGameInventory newShakeGameInventory = new ShakeGameInventory();
             newShakeGameInventory.setPlayerId(playerId);
             newShakeGameInventory.setEventId(eventId);
@@ -36,8 +38,9 @@ public class InventoryServiceImpl implements InventoryService {
 
             newShakeGameInventory.setRequiredCoins(shakeGameEventDto.getRequiredCoins());
 
-            return newShakeGameInventory;
-        });
+            shakeGameInventoryRepository.save(newShakeGameInventory);
+            return;
+        }
 
         shakeGameInventory.setCollectedCoins(shakeGameInventory.getCollectedCoins() + 1);
 
