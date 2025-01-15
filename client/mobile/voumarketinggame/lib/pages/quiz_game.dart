@@ -322,33 +322,6 @@ class _QuizGamePageState extends State<QuizGamePage>
                         ),
                       ),
                       Positioned(
-                        top: 10,
-                        left: 10,
-                        child: Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: const Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('assets/images/quiz_banner.png'),
-                                radius: 20,
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Owner Name',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
                         bottom: 10,
                         left: 10,
                         right: 10,
