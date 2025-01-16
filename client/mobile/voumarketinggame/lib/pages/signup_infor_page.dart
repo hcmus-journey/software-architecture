@@ -156,7 +156,15 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         password: widget.password,
                       );
 
+
+
                       if (isSignUpSuccess) {
+
+                        await authProvider.login(
+                          username: widget.username,
+                          password: widget.password,
+                        );
+
                         final isUpdateSuccess = await userProvider.updateUserActive(
                           userInfo: userInfo,
                           context: context,
