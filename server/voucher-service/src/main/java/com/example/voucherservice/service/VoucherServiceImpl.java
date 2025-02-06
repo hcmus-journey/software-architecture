@@ -79,6 +79,10 @@ public class VoucherServiceImpl implements VoucherService{
             throw new BadRequestException("Voucher not found");
         }
 
+        if(voucher.getStatus() == VoucherStatus.USED) {
+            throw new BadRequestException("Voucher already used");
+        }
+
         voucher.setStatus(VoucherStatus.USED);
 
         voucherRepository.save(voucher);
